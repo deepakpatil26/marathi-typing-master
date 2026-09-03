@@ -1,0 +1,6 @@
+{
+  "name": "Marathi Typing Master",
+  "description": "Interactive Marathi typing tutor with ISM DVBW Remington keyboard layout, chapter drills, real-time telemetry, and GCC-TBC exam mode.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

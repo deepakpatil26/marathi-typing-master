@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-page-dark: #021822;
+    --bg-page-light: #F0F9FF;
+    color-scheme: dark light;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+/* Custom crisp scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(45, 212, 191, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(45, 212, 191, 0.4);
+}
+
+/* Printing styles for GCC-TBC Certificate */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  header, footer, nav, button, #remington-visual-keyboard {
+    display: none !important;
+  }
+}
