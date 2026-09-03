@@ -18,11 +18,11 @@
 
 <div align="center">
   <h3>Interactive Remington Touch-Typing Arena & Real-Time Finger Guide</h3>
-  <img src="./docs/screenshots/app-preview-main.png" alt="Marathi Typing Master Main Interface" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
+  <img src="public/screenshots/app-preview-main.png" alt="Marathi Typing Master Main Interface" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
   <p><i>Live Devanagari text arena, interactive dual-labeled Remington virtual keyboard, and dynamic finger positioning cues.</i></p>
   <br/>
   <h3>MSCE GCC-TBC Exam Simulator & Institute Custom Paper Studio</h3>
-  <img src="./docs/screenshots/app-preview-exam.png" alt="GCC-TBC 30 WPM Exam Simulator and Analytics" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
+  <img src="public/screenshots/app-preview-exam.png" alt="GCC-TBC 30 WPM Exam Simulator and Analytics" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
   <p><i>Official 7-minute timed examination mode, real-time WPM speedometers, weak-key remediation heatmap, and student profiles.</i></p>
 </div>
 
@@ -35,7 +35,7 @@ You can easily deploy your own instance of Marathi Typing Master for free or acc
 | Resource                   | Link                                                                                                                                                   |
 | :------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **🚀 Deploy on Vercel**    | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/marathi-typing-master) |
-| **⚡ Live Production URL** | `https://your-app-name.vercel.app`                                                                                                                     |
+| **⚡ Live Production URL** | `https://marathi-typing-master.vercel.app/`                                                                                                            |
 | **📱 Desktop/Mobile App**  | Install directly via Chrome/Edge browser using the in-app **"Install App"** button                                                                     |
 
 ---
