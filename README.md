@@ -1,205 +1,235 @@
-# ⌨️ मराठी टायपिंग मास्टर (Marathi Typing Master)
+# ⌨️ Marathi Typing Master (मराठी टायपिंग मास्टर)
 
-> **Next-Generation Interactive Marathi Touch Typing Tutor & GCC-TBC Exam Preparation Platform**  
-> *Built with React 19, TypeScript, Tailwind CSS, Express, and Google Gemini AI.*
+> **Next-Generation Interactive Marathi Touch-Typing Tutor, Custom Exam Paper Studio & MSCE GCC-TBC Exam Preparation Platform**  
+> *Engineered with React 19, TypeScript, Tailwind CSS v4, Express, and Google Gemini AI.*
 
 [![React 19](https://img.shields.io/badge/React-19.0.1-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Express](https://img.shields.io/badge/Express-4.21-000000?logo=express&logoColor=white)](https://expressjs.com/)
-[![Google Gemini AI](https://img.shields.io/badge/Google_Gemini-2.5_Flash-8E75B2?logo=google&logoColor=white)](https://ai.google.dev/)
-[![GCC-TBC Ready](https://img.shields.io/badge/MSCE_GCC--TBC-30_%7C_40_WPM_Compliant-10B981)](#-gcc-tbc-exam-simulator)
+[![PWA Ready](https://img.shields.io/badge/PWA-Installable_&_Offline-5A0FC8?logo=pwa&logoColor=white)](#-progressive-web-app-pwa--offline-mode)
+[![GCC-TBC Compliant](https://img.shields.io/badge/MSCE_GCC--TBC-30_%7C_40_WPM_Compliant-10B981)](#-msce-gcc-tbc-exam-simulator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-## 📖 विषय प्रवेश (Overview)
+## 📖 Introduction & Overview
 
-मराठी टंकलेखन (Marathi Typing) विशेषतः **ISM DVBW Remington** कीबोर्ड लेआउटवर आधारित शासकीय परीक्षांसाठी (जसे की **GCC-TBC 30/40 WPM**, MPSC, लिपिक-टंकलेखक भरती, न्यायालयीन भरती, जिल्हा परिषद व मंत्रालय) अनिवार्य मानले जाते. पारंपरिक पद्धतीमध्ये विद्यार्थ्यांना अचूक बोटांचे स्थान (Finger Positioning), की-मॅपिंग आणि वेळेनुसार गती मोजण्यासाठी आधुनिक सॉफ्टवेअर उपलब्ध नसते.
+Marathi touch-typing—particularly on the **ISM DVBW Remington** keyboard layout—is a mandatory requirement for Maharashtra government examinations such as the **MSCE GCC-TBC 30 & 40 WPM Certification**, MPSC clerk-typist recruitments, judicial district court examinations, Zilla Parishad, and state secretariat (Mantralaya) administrative positions.
 
-**मराठी टायपिंग मास्टर (Marathi Typing Master)** हा एक अत्याधुनिक, वेब-आधारित व संवादात्मक (Interactive) टायपिंग प्लॅटफॉर्म आहे. हा प्लॅटफॉर्म जागतिक दर्जाच्या **TypingMaster** पॅटर्नवर आधारित असून, Remington लेआउटवरील अक्षरे, शब्द, वाक्ये, परिच्छेद आणि प्रत्यक्ष परीक्षा वातावरणाचा सराव पुरवतो.
+Traditional typing training tools often lack zero-latency input interception, accurate real-time feedback, ergonomic visual guidance, or modern offline capability.
 
----
-
-## ✨ प्रमुख वैशिष्ट्ये (Key Features)
-
-### 1. ⌨️ अस्सल ISM DVBW Remington कीबोर्ड इंजिन (Authentic Engine)
-- **Zero-Latency Character Interceptor**: मानक इंग्रजी QWERTY कीबोर्डवरील कीज आणि Shift संयोजनांचे अचूक देवनागरी अक्षरांमध्ये (स्वर, व्यंजने, मात्रा, काना-वेलांटी, उकार, अनुस्वार, हलंत आणि जोडाक्षरे) रिअल-टाइम भाषांतर.
-- **अचूक हलंत व जोडाक्षर प्रक्रिया**: `d` (हलंत) वापरून तयार होणारी जोडाक्षरे (उदा. `क् + य = क्य`, `स् + त = स्त`, `त् + र = त्र`) अगदी परीक्षा मानकांनुसार हाताळली जातात.
-
-### 2. 🖥️ व्हिज्युअल इंटरअॅक्टिव्ह कीबोर्ड व फिंगर गाईड (Visual Keyboard & Finger Guide)
-- **ड्युअल-लेबल कीकॅप्स**: प्रत्येक की वर इंग्रजी अक्षर आणि मराठी Remington अक्षर स्पष्टपणे दर्शवले जाते.
-- **कलर-कोडेड फिंगर पोझिशनिंग**: प्रत्येक बोटासाठी (करंगळी, अनामिका, मध्यमा, तर्जनी, अंगठा) विशेष रंगसंगती. पुढील टाईप करावयाचे अक्षर कोणत्या हाताच्या कोणत्या बोटाने दाबायचे याचे लाइव्ह मार्गदर्शन.
-- **डायनॅमिक शिफ्ट इंडिकेटर**: Shift की दाबून टाईप करायच्या अक्षरांसाठी (उदा. `Shift + k = ज्ञ`, `Shift + l = स`) स्क्रीनवर ठळक व्हिज्युअल अलर्ट.
-
-### 3. 📚 टायपिंगमास्टर पद्धतीचा ६ टप्प्यांचा अभ्यासक्रम (Structured Curriculum)
-अभ्यासक्रमाची रचना ६ सुनियोजित टप्प्यांमध्ये (Chapters) करण्यात आली आहे:
-* **टप्पा १ (Stage 1)**: मध्यम ओळ सराव (Home Row - `ASDF` व `JKL;` कीज)
-* **टप्पा २ (Stage 2)**: वरची ओळ सराव (Upper Row - `QWERTY` व `UIOP` कीज)
-* **टप्पा ३ (Stage 3)**: खालची ओळ सराव (Lower Row - `ZXCV` व `NM,./` कीज)
-* **टप्पा ४ (Stage 4)**: अंक व चिन्ह ओळ (Number & Symbol Row)
-* **टप्पा ५ (Stage 5)**: शिफ्ट कीज व विशेष चिन्हे (Shift Key Combinations & Punctuation)
-* **टप्पा ६ (Stage 6)**: कठीण जोडाक्षरे व संमिश्र सराव (Complex Conjuncts & Speed Drills)
-
-प्रत्येक टप्प्यामध्ये **४ प्रकारच्या कसोट्या (Drills)** उपलब्ध आहेत:
-1. **अक्षरे सराव (Key Drills)**: मूलभूत अक्षरांची अचूकता साधण्यासाठी.
-2. **शब्द सराव (Words Drills)**: २-अक्षरी, ३-अक्षरी आणि ४+ अक्षरी शब्दांचे स्वतंत्र फिल्टर्स.
-3. **वाक्य सराव (Sentences Drills)**: सोपे (Easy), मध्यम (Medium) आणि कठीण (Hard) पातळीनुसार वर्गीकृत.
-4. **परिच्छेद सराव (Paragraph Drills)**: प्रवाही वाचनासह टायपिंगचा वेग वाढवण्यासाठी.
-
-### 4. 🎓 MSCE GCC-TBC परीक्षा सिम्युलेटर (Exam Simulator)
-- **३० WPM आणि ४० WPM अधिकृत परीक्षा पद्धत**: महाराष्ट्र राज्य परीक्षा परिषद (MSCE) च्या नियमांनुसार ७ मिनिटांचा वेळ.
-- **रिअल-टाइम स्पीड कॅल्क्युलेशन**: ग्रॉस स्पीड (Gross WPM), नेट स्पीड (Net WPM), अचूकता (Accuracy %) आणि चुकांची वजावट (Penalty Calculation).
-- **किमान ९०% अचूकता निकष**: परीक्षेत उत्तीर्ण होण्यासाठी लागणाऱ्या अचूकतेचे रिअल-टाइम मूल्यांकन.
-- **डिजिटल प्रमाणपत्र (Certificate)**: परीक्षा पूर्ण झाल्यावर तत्काळ निकाल आणि प्रिंट करण्यायोग्य प्रमाणपत्र.
-
-### 5. 🤖 गुगल जेमिनी AI द्वारे सराव जनरेटर (AI-Powered Practice)
-- **कमकुवत अक्षरांचा स्मार्ट सराव (Weak-Key Remediation)**: युझरच्या सर्वाधिक चुकणाऱ्या अक्षरांचे विश्लेषण करून शुद्ध मराठीमध्ये सानुकूल सराव संच तयार करतो (`/api/ai/weak-key-drill`).
-- **विविध विषयांवर परिच्छेद जनरेटर (Passage Generator)**: शासन परिपत्रके (Administration), इतिहास (History), विज्ञान व तंत्रज्ञान (Science), कृषी (Agriculture), मराठी साहित्य (Literature) आणि कायदा/संविधान (Law) अशा विषयांवर ३००-५०० शब्दांचे परिच्छेद क्षणात तयार करतो (`/api/ai/generate-passage`).
-- **ऑफलाईन फॉलबॅक (Offline Fallback)**: इंटरनेट किंवा API Key उपलब्ध नसतानाही इन-बिल्ट अल्गोरिदमद्वारे अविरत सराव सुरू राहतो.
-
-### 6. 📊 सखोल विश्लेषण व एरर हीटमॅप (Analytics & Error Heatmap)
-- **चुकणाऱ्या अक्षरांचा हीटमॅप**: नेमकी कोणती अक्षरे जास्त चुकतात याची सांख्यिकी.
-- **तपशीलवार प्रगती ट्रॅकिंग**: सरासरी गती, अचूकता, पूर्ण केलेले धडे आणि एकूण सराव वेळेची नोंद.
-- **स्टार रेटिंग सिस्टीम**: प्रत्येक धड्यात कामगिरीनुसार १ ते ३ स्टार्स आणि प्रगतीची स्वयंचलित बचत (`localStorage`).
-
-### 7. 🎵 रिदम मेट्रोनाम व ऑडिओ फीडबॅक (Metronome & Audio)
-- **मेट्रोनाम कॅडेन्सर**: २० ते ४५ WPM दरम्यान लयबद्ध बीट्स ऐकून टायपिंगमध्ये एकसमान गती राखण्याची सुविधा.
-- **मेकॅनिकल क्लिक आवाज**: टाइपरायटरसारखा ध्वनी प्रभाव आणि चुकीच्या कीसाठी विशिष्ट सावधगिरी बीप.
-
-### 8. 🌓 ड्युअल थीम व द्विभाषिक समर्थन (Dual Theme & Bilingual)
-- **नाईट आऊल डार्क मोड (Dark Theme)**: रात्रीच्या अभ्यासासाठी डोळ्यांना आराम देणारी डीप टील/स्लेट थीम (`#03151E`).
-- **डेलाईट लाईट मोड (Light Theme)**: स्वच्छ आणि उच्च-कॉन्ट्रास्ट स्काय-ब्लू व पोर्सिलेन व्हाईट थीम (`#F0F9FF`).
-- **मराठी आणि इंग्रजी भाषा**: संपूर्ण UI एका क्लिकवर मराठी किंवा इंग्रजीत बदलण्याची सुविधा.
+**Marathi Typing Master** is a high-performance web and desktop-installable (PWA) software application. Inspired by the internationally recognized **TypingMaster** pedagogical methodology, it provides a complete progressive curriculum across characters, words, sentences, custom institute question papers, and authentic timed examination simulations.
 
 ---
 
-## 🛠️ तंत्रज्ञान स्टॅक (Technology Stack)
+## ✨ Core Features
 
-| स्तर (Layer) | तंत्रज्ञान (Technology) | उपयोग (Usage) |
+### 1. ⌨️ Authentic ISM DVBW Remington Engine
+- **Zero-Latency Keystroke Interceptor**: Accurate real-time mapping of standard English QWERTY keyboard keys and Shift states into Devanagari characters (vowels, consonants, matras, halant, anuswar, and conjuncts).
+- **Exact Halant & Conjunct Processing**: Realistic handling of `d` (halant/virama) combinations (e.g., `क् + य = क्य`, `स् + त = स्त`, `त् + र = त्र`, `प्र`, `श्र`, `ज्ञ`).
+
+### 2. 🖥️ Interactive Virtual Keyboard & Finger Guide
+- **Dual-Labeled Keycaps**: Clearly displays both the standard QWERTY key and the corresponding Marathi Remington character.
+- **Ergonomic Finger Color-Coding**: Visual cues indicating exact hand and finger placement (Pinky, Ring, Middle, Index, Thumb) for the incoming character.
+- **Dynamic Shift Alerts**: Immediate visual indicator whenever a character requires holding down the Shift key.
+
+### 3. 📱 Progressive Web App (PWA) & Offline Operation
+- **Installable Desktop Application**: Install directly onto Windows, macOS, Linux, or mobile devices via Chrome, Edge, or Safari with a single click.
+- **Works Without Internet**: Once loaded or installed, all core typing lessons, Remington layouts, audio synthesizers, and scoring engines work completely offline. Ideal for computer institutes with intermittent internet connectivity.
+
+### 4. 📄 Custom Exam Paper Studio & .txt Uploader
+- **Instant .txt File Upload**: Instructors and students can drag and drop or upload `.txt` files containing their institute's weekly test papers or government resolutions (GRs).
+- **Institute Question Paper Library**: Save custom passages with custom titles to the local library for repeated practice.
+- **Pre-Loaded Official GCC-TBC Papers**: Includes built-in 30 WPM and 40 WPM sample question papers.
+- **Instant Metrics**: Real-time word count, character count, and estimated completion time at 30 WPM and 40 WPM.
+
+### 5. 👥 Multi-Student Institute Profiles
+- **Multi-User Management for Shared Institute PCs**: Create separate student profiles (Name, Roll Number / Batch, Target Speed 30/40 WPM) on a single shared computer.
+- **Individual Progress Isolation**: Tracks distinct lesson completion records, typing speeds, accuracy percentages, and weak-key error heatmaps per student.
+- **Offline Flash Drive Backup (Export/Import)**: Students can download a lightweight `.json` backup to a USB flash drive and restore their exact progress on any other computer—100% private, free, and offline.
+
+### 6. 📚 Structured 6-Stage Curriculum (TypingMaster Pattern)
+- **Stage 1 (Home Row)**: `ASDF` and `JKL;` key exercises.
+- **Stage 2 (Upper Row)**: `QWERTY` and `UIOP` key exercises.
+- **Stage 3 (Lower Row)**: `ZXCV` and `NM,./` key exercises.
+- **Stage 4 (Numbers & Symbols)**: Top number row and punctuation.
+- **Stage 5 (Shift Combinations)**: Complex uppercase shift keys and special characters.
+- **Stage 6 (Conjuncts & Speed Drills)**: Advanced Devanagari ligatures and speed drills.
+
+*Available Drill Types:*
+1. **Key Drills**: Foundational keystroke muscle memory.
+2. **Word Drills**: Filterable by word length (2-letter, 3-letter, 4+ letters).
+3. **Sentence Drills**: Tiered by difficulty (Easy, Medium, Hard).
+4. **Paragraph Drills**: Continuous flowing text passages.
+
+### 7. 🎓 MSCE GCC-TBC Exam Simulator
+- **Official 7-Minute Timed Mode**: Replicates the exact Maharashtra State Council of Examination (MSCE) GCC-TBC examination pattern for 30 WPM and 40 WPM.
+- **Real-Time Speed Calculation**: Gross WPM, Net WPM, Accuracy (%), and penalty deduction for mistakes.
+- **Pass/Fail Evaluation**: Applies the official ≥ 90% accuracy benchmark.
+- **Printable Certificate**: Generates an immediate downloadable/printable certificate upon passing.
+
+### 8. 🤖 AI-Powered Practice (Google Gemini 2.5 Flash)
+- **Weak-Key Remediation**: Analyzes the user's most frequently missed keys and generates targeted Marathi drill exercises (`/api/ai/weak-key-drill`).
+- **Topic Passage Generator**: Creates realistic passages on administration, science, agriculture, literature, or constitution (`/api/ai/generate-passage`).
+- **Offline Fallback**: Seamless internal generation algorithm ensures continuous practice even when offline or without an API key.
+
+### 9. 🎵 Rhythm Metronome & Audio Engine
+- **Cadence Metronome**: Adjustable 20 to 45 WPM rhythmic beats to build a steady, unhurried typing cadence.
+- **Mechanical Typewriter Audio**: Zero-latency clicks with distinctive warning beeps for incorrect keystrokes.
+
+### 10. 🌓 Dual Theme & Bilingual Support
+- **Night Owl Dark Theme**: Ergonomic deep slate/teal theme (`#03151E`) for reduced eye strain during long practice sessions.
+- **Daylight Clean Light Theme**: High-contrast, clean porcelain white layout (`#F0F9FF`).
+- **Instant Language Switch**: Toggle the entire UI between English and Marathi with a single click.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Description |
 | :--- | :--- | :--- |
-| **Frontend Framework** | React 19 + TypeScript | जलद आणि सुरक्षित कंपोनंट आर्किटेक्चर |
-| **Styling & CSS** | Tailwind CSS v4 | मॉडर्न, ॲडॅप्टिव्ह आणि रिस्पॉन्सिव्ह डिझाईन |
-| **Animations** | Motion (`motion/react`) | सुरेख ट्रान्झिशन्स आणि स्मूथ इंटरॅक्शन्स |
-| **Icons** | Lucide React | स्पष्ट आणि सुसंगत आयकॉन्स |
-| **Audio Engine** | Web Audio API Synthesizer | झिरो-लेटन्सी की-क्लिक्स, बीप्स आणि मेट्रोनाम |
-| **Celebration** | Canvas Confetti | धडा पूर्ण केल्यावर यशाचा आनंद साजरा करण्यासाठी |
-| **Backend Server** | Node.js + Express + TSX | API एंडपॉईंट्स आणि प्रॉक्सी सर्व्हर |
-| **AI Intelligence** | `@google/genai` (Gemini 2.5 Flash) | कमकुवत अक्षरांचे परिच्छेद व परीक्षा उतारे निर्मिती |
-| **Build Tool** | Vite 6 + ESBuild | अतिजलद हॉट-रिलोडिंग आणि प्रॉडक्शन बंडलिंग |
+| **Frontend Framework** | React 19 + TypeScript | High-speed component architecture and strict type safety |
+| **Styling** | Tailwind CSS v4 | Modern, responsive, utility-first design system |
+| **Animations** | Motion (`motion/react`) | Fluid transitions and tactile interaction feedback |
+| **Offline Engine** | Vite Plugin PWA + Workbox | Service worker caching, offline capability, web manifest |
+| **Icons** | Lucide React | Clean, consistent interface iconography |
+| **Audio Engine** | Web Audio API Synthesizer | Zero-latency mechanical keyclicks and metronome |
+| **Backend Server** | Node.js + Express + TSX | API routing and AI proxy endpoints |
+| **AI Integration** | `@google/genai` (Gemini 2.5 Flash) | Contextual drill generation and weak-key remediation |
+| **Build Tool** | Vite 6 + ESBuild | Ultra-fast development and optimized production bundling |
 
 ---
 
-## 📁 फोल्डर रचना (Directory Structure)
+## 📁 Directory Structure
 
 ```text
 marathi-typing-master/
-├── assets/                     # स्थिर ॲसेट्स व इमेजेस
+├── public/                     # PWA icons, web manifest, and static assets
+│   ├── icon.svg
+│   ├── pwa-192x192.png
+│   ├── pwa-512x512.png
+│   └── apple-touch-icon.png
 ├── src/
-│   ├── components/             # मॉड्यूलर रिॲक्ट कंपोनेंट्स
-│   │   ├── AIPassageGenerator.tsx  # AI परिच्छेद निर्मिती पॅनेल
-│   │   ├── AnalyticsView.tsx       # सखोल सांख्यिकी व एरर हीटमॅप
-│   │   ├── CourseHub.tsx           # टायपिंगमास्टर पद्धतीचा धडा हब
-│   │   ├── CustomTextPractice.tsx  # स्वतःचा मजकूर सराव
-│   │   ├── ExamMode.tsx            # GCC-TBC ३०/४० WPM परीक्षा सिम्युलेटर
-│   │   ├── FingerGuide.tsx         # बोटांचे स्थान व मार्गदर्शन चार्ट
-│   │   ├── Header.tsx              # मुख्य नॅव्हिगेशन बार व कंट्रोल्स
-│   │   ├── InfoView.tsx            # Remington कीबोर्ड नियमावली व मदत
-│   │   ├── LessonNavigator.tsx     # द्रुत धडा निवडक
-│   │   ├── ReviewView.tsx          # अक्षरे व चुकांचे पुनरावलोकन
-│   │   ├── RightSidebar.tsx        # उजवीकडील द्रुत आकडेवारी साइडबार
-│   │   ├── SettingsView.tsx        # ध्वनी, थीम, फॉन्ट साईझ सेटिंग्ज
-│   │   ├── TypingArea.tsx          # मुख्य संवादात्मक टायपिंग अरेना
-│   │   └── VisualKeyboard.tsx      # व्हर्च्युअल रेमिंग्टन कीबोर्ड
+│   ├── components/             # Modular React UI components
+│   │   ├── AIPassageGenerator.tsx  # Gemini AI passage creation panel
+│   │   ├── AnalyticsView.tsx       # Comprehensive metrics & error heatmap
+│   │   ├── CourseHub.tsx           # Chapter & drill browser
+│   │   ├── CustomTextPractice.tsx  # .txt upload & custom exam paper studio
+│   │   ├── ExamMode.tsx            # GCC-TBC 30/40 WPM timed exam simulator
+│   │   ├── FingerGuide.tsx         # Hand and finger placement guide
+│   │   ├── Header.tsx              # Navigation bar & global controls
+│   │   ├── InfoView.tsx            # Remington keyboard reference & shortcuts
+│   │   ├── LessonNavigator.tsx     # Quick lesson switcher
+│   │   ├── OfflineIndicator.tsx    # Visual alert when offline mode is active
+│   │   ├── PWAInstallButton.tsx    # Desktop & mobile PWA installation trigger
+│   │   ├── ReviewView.tsx          # Key mistake review and practice
+│   │   ├── RightSidebar.tsx        # Quick live statistics panel
+│   │   ├── SettingsView.tsx        # Sound, theme, font size controls
+│   │   ├── StudentProfileModal.tsx # Multi-student profile switcher & USB backup
+│   │   ├── TypingArea.tsx          # Core interactive typing arena
+│   │   └── VisualKeyboard.tsx      # Virtual Remington keyboard with live cues
 │   ├── context/
-│   │   └── ThemeContext.tsx        # डार्क / लाईट थीम स्टेट मॅनेजर
+│   │   └── ThemeContext.tsx        # Dark/Light theme state manager
 │   ├── data/
-│   │   ├── curriculum.ts           # ६ टप्पे, २४ सराव संच, शेकडो वाक्ये व शब्द
-│   │   └── remingtonMap.ts         # QWERTY ते Remington मराठी की-मॅपिंग
+│   │   ├── curriculum.ts           # 6 stages, 24 drill sets, hundreds of sentences
+│   │   └── remingtonMap.ts         # QWERTY to Marathi Remington key mapping
 │   ├── utils/
-│   │   ├── audio.ts                # सिंथेसायझर की-क्लिक व मेट्रोनाम ऑडिओ
-│   │   └── telemetry.ts            # WPM, अचूकता आणि प्रगती गणना सूत्रे
-│   ├── App.tsx                     # मुख्य ॲप्लिकेशन ऑर्केस्ट्रेटर
-│   ├── index.css                   # Tailwind v4 ग्लोबल स्टाईल्स
-│   ├── main.tsx                    # रिॲक्ट रूट माउंटिंग
-│   └── types.ts                    # शेअर केलेले टाईपस्क्रिप्ट इंटरफेसेस
-├── server.ts                       # Express + Gemini AI बॅकएंड सर्व्हर
-├── metadata.json                   # AI Studio व ॲप मेटाडेटा
-├── package.json                    # अवलंबित्वे (Dependencies) व स्क्रिप्ट्स
-├── tsconfig.json                   # TypeScript कॉन्फिगरेशन
-├── vite.config.ts                  # Vite कॉन्फिगरेशन
-└── README.md                       # सर्वसमावेशक प्रकल्प दस्तऐवजीकरण
+│   │   ├── audio.ts                # Synthesized audio effects & metronome
+│   │   ├── studentProfiles.ts      # Multi-student local storage & backup engine
+│   │   ├── telemetry.ts            # WPM, accuracy, and penalty calculations
+│   │   └── usePWAInstall.ts        # PWA beforeinstallprompt event hook
+│   ├── App.tsx                     # Main application orchestrator
+│   ├── index.css                   # Global Tailwind v4 styles
+│   ├── main.tsx                    # React DOM root mounting
+│   └── types.ts                    # Global TypeScript interfaces
+├── server.ts                       # Express + Gemini AI backend server
+├── metadata.json                   # App metadata configuration
+├── package.json                    # Dependencies and scripts
+├── tsconfig.json                   # TypeScript configuration
+├── vite.config.ts                  # Vite + VitePWA configuration
+└── README.md                       # Comprehensive project documentation
 ```
 
 ---
 
-## 🚀 सुरू करण्याची पद्धत (Getting Started)
+## 🚀 Getting Started
 
-### पूर्वतयारी (Prerequisites)
-- **Node.js**: आवृत्ती `18.0.0` किंवा त्याहून नवीन (Node 20+ शिफारस केली जाते)
-- **npm** किंवा **bun**
+### Prerequisites
+- **Node.js**: Version `18.0.0` or newer (`20+` recommended)
+- **npm** or **bun**
 
-### १. प्रकल्प क्लोन करा (Clone Repository)
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/your-username/marathi-typing-master.git
 cd marathi-typing-master
 ```
 
-### २. अवलंबित्वे इन्स्टॉल करा (Install Dependencies)
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-### ३. पर्यावरण व्हेरिएबल्स (Environment Variables - पर्यायी)
-AI फिचर्स (Gemini 2.5 Flash) वापरण्यासाठी `.env` फाईल तयार करा:
+### 3. Environment Variables (Optional)
+To enable the Google Gemini AI passage generator, copy the example environment file:
 ```bash
 cp .env.example .env
 ```
-`.env` मध्ये तुमची Google Gemini API Key टाका:
+Add your Google Gemini API Key inside `.env`:
 ```env
-GEMINI_API_KEY=your_google_gemini_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
-*(टीप: API Key नसली तरीही ॲपमधील इन-बिल्ट ऑफलाइन अल्गोरिदमद्वारे सर्व सराव अखंड चालू राहतो.)*
+*(Note: If no API key is provided, the application automatically uses its built-in offline generation algorithms for all drills.)*
 
-### ४. डेव्हलपमेंट सर्व्हर सुरू करा (Run Development Server)
+### 4. Start the Development Server
 ```bash
 npm run dev
 ```
-सर्व्हर सुरू झाल्यावर ब्राउझरमध्ये **`http://localhost:3000`** उघडा.
+Open your browser and navigate to **`http://localhost:3000`**.
 
 ---
 
-## 📦 प्रॉडक्शन बिल्ड (Production Build)
+## 🌐 100% Free Deployment Alternatives (No Credit Card Required)
 
-ॲप्लिकेशन डिप्लॉयमेंटसाठी बिल्ड तयार करण्यासाठी:
-```bash
-npm run build
-```
-बिल्ड केलेली फाईल चालवण्यासाठी:
-```bash
-npm start
-```
+If you wish to host this application publicly without Google Cloud Run billing, you can deploy it for free using any of the following platforms:
+
+### Option 1: Vercel (Recommended — Fastest & Easiest)
+1. Sign up for free at [Vercel.com](https://vercel.com/) using your GitHub account.
+2. Click **"Add New Project"** and import your `marathi-typing-master` repository.
+3. Select **Vite** as the Framework Preset.
+4. *(Optional)* Under Environment Variables, add `GEMINI_API_KEY`.
+5. Click **Deploy**. Your app will be live within 60 seconds with a free global SSL domain (e.g., `https://marathi-typing.vercel.app`).
+
+### Option 2: Netlify
+1. Log in to [Netlify.com](https://www.netlify.com/) with GitHub.
+2. Select **"Add new site" -> "Import an existing project"**.
+3. Choose your repository. Set Build command to `npm run build` and Publish directory to `dist`.
+4. Click **Deploy Site**.
+
+### Option 3: Cloudflare Pages
+1. Go to your [Cloudflare Dashboard](https://dash.cloudflare.com/) and navigate to **Workers & Pages**.
+2. Connect your GitHub repository, choose **Vite** as the build preset, and deploy with unlimited free bandwidth.
 
 ---
 
-## ⌨️ रेमिंग्टन कीबोर्ड संदर्भ तक्ता (Quick Remington Reference)
+## ⌨️ Remington Keyboard Quick Reference
 
-| इंग्रजी की (Key) | मराठी अक्षर (Normal) | शिफ्टसह (With Shift) |
+| English Key | Normal Character | With Shift Key |
 | :---: | :---: | :---: |
-| `k` | **ा** (काना) | **ज्ञ** |
+| `k` | **ा** (Kana / AA matra) | **ज्ञ** |
 | `l` | **स** | **श** |
 | `;` | **य** | **रू** |
-| `d` | **्** (हलंत) | **ध** |
-| `f` | **ि** (पहिली वेलांटी) | **थ** |
+| `d` | **्** (Halant / Virama) | **ध** |
+| `f` | **ि** (First Vellanti / I matra) | **थ** |
 | `g` | **ह** | **भ** |
-| `h` | **ी** (दुसरी वेलांटी) | **ी** |
+| `h` | **ी** (Second Vellanti / EE matra) | **ी** |
 | `j` | **र** | **श्र** |
 | `u` | **ज** | **झ** |
 | `i` | **प** | **फ** |
 | `o` | **व** | **ळ** |
 | `p` | **च** | **छ** |
-| `q` | **ु** (पहिला उकार) | **फ** |
-| `w` | **ू** (दुसरा उकार) | **ॅ** |
+| `q` | **ु** (First Ukar / U matra) | **फ** |
+| `w` | **ू** (Second Ukar / OO matra) | **ॅ** |
 | `e` | **म** | **म्** |
 | `r` | **त** | **त्** |
 | `t` | **ज** | **ज्** |
@@ -209,88 +239,43 @@ npm start
 | `v` | **न** | **न्** |
 | `b` | **व** | **व्** |
 
-### जोडाक्षरे कशी टाईप करावीत? (Typing Conjuncts):
-- **क्य**: `i` (क) दाबा + `d` (हलंत) दाबा + `;` (य) दाबा = **क्य**
-- **स्त**: `l` (स) दाबा + `d` (हलंत) दाबा + `r` (त) दाबा = **स्त**
-- **प्र**: `i` (प) दाबा + `d` (हलंत) दाबा + `j` (र) दाबा = **प्र**
-- **कि**: प्रथम `f` (वेलांटी) दाबा, नंतर `d` (क) दाबा = **कि**
-
-### 6. 📱 प्रोग्रेसिव्ह वेब ॲप (PWA) व पूर्णपणे ऑफलाइन कार्य (Offline Support)
-- **Installable Desktop & Mobile App**: क्रोम, एज किंवा मोबाईलवर थेट 'ॲप इन्स्टॉल करा' वर क्लिक करून स्वतंत्र डेस्कटॉप ॲप्लिकेशन म्हणून इन्स्टॉल करता येते.
-- **इंटरनेटशिवाय अखंड कार्य**: सर्व अभ्यासक्रम, कीबोर्ड लेआउट, ध्वनी आणि प्रगती ट्रॅकिंग इंटरनेट नसतानाही अखंडपणे चालते. टायपिंग क्लासेसमधील संगणकांसाठी आदर्श.
-
-### 7. 📄 .txt प्रश्नपत्रिका अपलोड व इन्स्टिट्यूट लायब्ररी (.txt Upload & Paper Studio)
-- **ड्रॅग & ड्रॉप .txt अपलोड**: टायपिंग क्लासमधील शिक्षक किंवा विद्यार्थी स्वतःच्या प्रश्नपत्रिकांची `.txt` फाईल थेट ड्रॅग किंवा अपलोड करू शकतात.
-- **इन्स्टिट्यूट लायब्ररी**: आवडते किंवा सरावाचे पेपर्स शीर्षकासह स्थानिक लायब्ररीमध्ये सेव्ह करून कधीही पुन्हा वापरता येतात.
-- **अचूक आकडेवारी**: शब्दांची संख्या, अक्षरे आणि ३० व ४० WPM नुसार लागणारा अंदाजे वेळ तत्काळ मोजला जातो.
-
-### 8. 👥 मल्टि-स्टुडंट प्रोफाइल्स (Multi-Student Institute Profiles)
-- **एकाच PC वर अनेक विद्यार्थी**: टायपिंग क्लासेसमध्ये एकाच कॉम्प्युटरवर वेगवेगळ्या बॅचेसचे विद्यार्थी (उदा. सकाळी ९ ची बॅच, दुपारी ३ ची बॅच) स्वतःचे स्वतंत्र प्रोफाइल निवडून सराव करू शकतात.
-- **स्वतंत्र प्रगती व गुण**: प्रत्येक विद्यार्थ्याची गती, अचूकता, पूर्ण केलेले धडे आणि कमकुवत अक्षरे सुरक्षित राहतात.
-- **पेन ड्राईव्ह बॅकअप (JSON Export/Import)**: विद्यार्थी आपला प्रगती डेटा पेन ड्राईव्हवर डाऊनलोड करून घरच्या किंवा क्लासच्या दुसऱ्या पीसीवर इम्पोर्ट करू शकतात. १००% मोफत आणि खाजगी!
+### How to Type Conjuncts (जोडाक्षरे):
+- **क्य**: Press `i` (क) + `d` (् halant) + `;` (य) = **क्य**
+- **स्त**: Press `l` (स) + `d` (् halant) + `r` (त) = **स्त**
+- **प्र**: Press `i` (प) + `d` (् halant) + `j` (र) = **प्र**
+- **कि**: Press `f` (ि first vellanti) followed by `d` (क) = **कि**
 
 ---
 
-## 🚀 मोफत होस्टिंग व डिप्लॉयमेंट पर्याय (100% Free Hosting Alternatives)
+## 🏆 MSCE GCC-TBC Exam Criteria
 
-गुगल क्लाउड रन (Cloud Run) च्या सशुल्क बिलाला पर्याय म्हणून हे ॲप खालील प्रसिद्ध व विश्वासू प्लॅटफॉर्मवर **१ रुपयाही खर्च न करता (१००% Free)** सहज चालवता येते:
-
-### पर्याय १: Vercel (सर्वात सोपा व वेगवान — शिफारस केलेला)
-1. [Vercel.com](https://vercel.com/) वर मोफत अकाऊंट तयार करा (तुमच्या GitHub द्वारे लॉगिन करा).
-2. **"Add New Project"** वर क्लिक करून तुमची ही GitHub रिपॉझिटरी सिलेक्ट करा.
-3. Framework Preset: **Vite** निवडा.
-4. Environment Variables मध्ये (पर्यायी): `GEMINI_API_KEY` जोडा.
-5. **Deploy** वर क्लिक करा. १ मिनिटात तुमचे ॲप जगभरात विनामूल्य लाईव्ह होईल!
-
-### पर्याय २: Netlify (मोफत व अखंड Continuous Deployment)
-1. [Netlify.com](https://www.netlify.com/) वर लॉगिन करा.
-2. **"Add new site" -> "Import an existing project"** निवडून GitHub सिलेक्ट करा.
-3. Build Command: `npm run build` आणि Publish Directory: `dist` टाका.
-4. **Deploy Site** वर क्लिक करा.
-
-### पर्याय ३: Render.com (पूर्ण Node.js एक्सप्रेस बॅकएंडसह मोफत)
-1. [Render.com](https://render.com/) वर मोफत अकाऊंट उघडा.
-2. **"New Web Service"** निवडून तुमची GitHub रिपॉझिटरी कनेक्ट करा.
-3. Build Command: `npm install && npm run build`
-4. Start Command: `npm start`
-5. Free Plan निवडा.
-
-### पर्याय ४: Cloudflare Pages
-1. [Cloudflare Dashboard](https://dash.cloudflare.com/) वर जाऊन Pages निवडा.
-2. GitHub कनेक्ट करून रिपॉझिटरी निवडा. Build Output: `dist`.
-3. अमर्यादित बँडविड्थसह (Unlimited Bandwidth) मोफत होस्टिंग मिळते.
-
----
-
-## 🏆 GCC-TBC परीक्षा निकष (Exam Criteria)
-
-| निकष (Parameter) | ३० WPM परीक्षा | ४० WPM परीक्षा |
+| Parameter | 30 WPM Exam | 40 WPM Exam |
 | :--- | :--- | :--- |
-| **एकूण वेळ (Total Time)** | ७ मिनिटे (४२० सेकंद) | ७ मिनिटे (४२० सेकंद) |
-| **मजकूर लांबी (Target Words)** | सुमारे २१० ते २३० शब्द | सुमारे २८० ते ३०० शब्द |
-| **किमान गती (Min Net Speed)** | ३० WPM | ४० WPM |
-| **किमान अचूकता (Min Accuracy)** | ९०% | ९०% |
-| **चुकांची वजावट (Penalty)** | प्रत्येक चुकीच्या शब्दासाठी १ WPM वजा | प्रत्येक चुकीच्या शब्दासाठी १ WPM वजा |
+| **Duration** | 7 Minutes (420 Seconds) | 7 Minutes (420 Seconds) |
+| **Target Length** | ~210 – 230 Words | ~280 – 300 Words |
+| **Minimum Qualifying Net Speed** | 30 WPM | 40 WPM |
+| **Minimum Qualifying Accuracy** | 90% | 90% |
+| **Penalty for Errors** | 1 WPM deducted per incorrect word | 1 WPM deducted per incorrect word |
 
 ---
 
-## 🤝 सहभाग व योगदान (Contributing)
+## 🤝 Contributing
 
-या खुल्या स्रोतातील (Open-Source) शैक्षणिक उपक्रमात आपले स्वागत आहे!
-1. या रिपॉझिटरीला **Fork** करा.
-2. तुमची नवीन फिचर शाखा तयार करा: `git checkout -b feature/AmazingFeature`
-3. तुमचे बदल कमिट करा: `git commit -m 'Add some AmazingFeature'`
-4. शाखेवर पुश करा: `git push origin feature/AmazingFeature`
-5. एक नवीन **Pull Request** सादर करा.
+Contributions to improve this open-source typing platform are welcome!
+1. Fork the repository.
+2. Create your feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit your changes: `git commit -m 'Add some AmazingFeature'`
+4. Push to your branch: `git push origin feature/AmazingFeature`
+5. Open a Pull Request.
 
 ---
 
-## 📜 परवाना (License)
+## 📜 License
 
-हा प्रकल्प **MIT परवान्यांतर्गत** उपलब्ध आहे. अधिक माहितीसाठी `LICENSE` फाईल पहा.
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
 <div align="center">
-  <sub>मराठी भाषेच्या संवर्धनासाठी आणि विद्यार्थ्यांच्या उज्ज्वल भविष्यासाठी सप्रेम भेट. ❤️</sub>
+  <sub>Dedicated to the advancement of Marathi digital literacy and vocational typing excellence. ❤️</sub>
 </div>
