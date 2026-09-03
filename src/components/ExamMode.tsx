@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ExamResult, Finger } from '../types';
 import { EXAM_PASSAGES } from '../data/curriculum';
 import { remingtonKeyToDevanagari, getRemingtonKeyForChar } from '../data/remingtonMap';
@@ -203,6 +203,33 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     pressedKeysRef.current.delete(e.key.toLowerCase());
     onKeyPressedChange(new Set(pressedKeysRef.current));
   };
+
+  const wordGroups = useMemo(() => {
+    const groups: {
+      chars: { char: string; index: number }[];
+      trailingSpace?: { char: string; index: number };
+    }[] = [];
+    let currentChars: { char: string; index: number }[] = [];
+
+    for (let i = 0; i < targetText.length; i++) {
+      const char = targetText[i];
+      if (char === ' ') {
+        groups.push({
+          chars: currentChars,
+          trailingSpace: { char: ' ', index: i }
+        });
+        currentChars = [];
+      } else {
+        currentChars.push({ char, index: i });
+      }
+    }
+
+    if (currentChars.length > 0) {
+      groups.push({ chars: currentChars });
+    }
+
+    return groups;
+  }, [targetText]);
 
   return (
     <div id="exam-mode-container" className="w-full flex flex-col gap-6">
@@ -449,27 +476,66 @@ export const ExamMode: React.FC<ExamModeProps> = ({
             />
 
             <div
-              className="flex flex-wrap gap-2 sm:gap-3 text-2xl sm:text-3xl leading-relaxed tracking-wide font-sans select-none items-center"
+              className="flex flex-wrap items-baseline text-2xl sm:text-3xl leading-loose font-normal select-none py-2"
               style={{ fontFamily: "'Noto Sans Devanagari', 'Tiro Devanagari Marathi', sans-serif" }}
             >
-              {targetText.split('').map((char, index) => {
-                const isTyped = index < currentIndex;
-                const isCurrent = index === currentIndex;
-                const hasError = mistakeIndexes.has(index);
-
-                let charStyle = 'text-slate-600';
-                if (isTyped) {
-                  charStyle = hasError ? 'text-rose-400 bg-rose-950/40 rounded px-1' : 'text-slate-400';
-                } else if (isCurrent) {
-                  charStyle = 'text-cyan-300 border-b-4 border-cyan-400 bg-cyan-500/20 px-1.5 rounded-t font-semibold shadow-[0_0_15px_rgba(6,182,212,0.3)]';
-                }
-
+              {wordGroups.map((group, wIdx) => {
                 return (
-                  <span
-                    key={index}
-                    className={`relative inline-block transition-colors duration-100 ${charStyle}`}
-                  >
-                    {char === ' ' ? '\u00A0' : char}
+                  <span key={wIdx} className="inline-flex items-baseline mr-3.5 sm:mr-5 mb-2 whitespace-nowrap">
+                    {group.chars.map(({ char, index }) => {
+                      const isTyped = index < currentIndex;
+                      const isCurrent = index === currentIndex;
+                      const hasError = mistakeIndexes.has(index);
+
+                      let charStyle = 'text-slate-500';
+                      if (isTyped) {
+                        charStyle = hasError 
+                          ? 'text-rose-400 bg-rose-950/60 rounded-xs' 
+                          : 'text-slate-200 font-semibold';
+                      } else if (isCurrent) {
+                        charStyle = 'text-cyan-200 border-b-2 border-cyan-400 bg-cyan-400/25 font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)] animate-pulse';
+                      }
+
+                      return (
+                        <span
+                          key={index}
+                          className={`relative inline-block transition-colors duration-75 ${charStyle}`}
+                        >
+                          {char}
+                        </span>
+                      );
+                    })}
+
+                    {/* Trailing Space indicator if followed by space */}
+                    {group.trailingSpace && (() => {
+                      const spIdx = group.trailingSpace.index;
+                      const isTyped = spIdx < currentIndex;
+                      const isCurrent = spIdx === currentIndex;
+                      const hasError = mistakeIndexes.has(spIdx);
+
+                      if (isCurrent) {
+                        return (
+                          <span
+                            key={spIdx}
+                            title={language === 'mr' ? 'स्पेस दाबा' : 'Press Space'}
+                            className="inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded text-xs font-mono font-bold border border-cyan-400/80 bg-cyan-500/25 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)] animate-pulse"
+                          >
+                            ␣
+                          </span>
+                        );
+                      }
+                      if (isTyped && hasError) {
+                        return (
+                          <span
+                            key={spIdx}
+                            className="inline-flex items-center justify-center ml-1 px-1.5 py-0.5 rounded text-xs border border-rose-500/50 bg-rose-950/60 text-rose-400"
+                          >
+                            ␣
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
                   </span>
                 );
               })}

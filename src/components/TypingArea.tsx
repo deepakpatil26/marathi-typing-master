@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Finger, LessonStep, TypingStats, UserProgress } from '../types';
 import { getRemingtonKeyForChar, remingtonKeyToDevanagari, FINGER_COLORS } from '../data/remingtonMap';
 import { calculateTypingStats, saveUserProgress } from '../utils/telemetry';
@@ -497,6 +497,34 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const progressPercent = activeTargetText.length > 0 ? Math.round((currentIndex / activeTargetText.length) * 100) : 0;
   const drillType = lesson.drillType || 'keys';
 
+  // Group activeTargetText into words with absolute indices for natural Devanagari typography
+  const wordGroups = useMemo(() => {
+    const groups: {
+      chars: { char: string; index: number }[];
+      trailingSpace?: { char: string; index: number };
+    }[] = [];
+    let currentChars: { char: string; index: number }[] = [];
+
+    for (let i = 0; i < activeTargetText.length; i++) {
+      const char = activeTargetText[i];
+      if (char === ' ') {
+        groups.push({
+          chars: currentChars,
+          trailingSpace: { char: ' ', index: i }
+        });
+        currentChars = [];
+      } else {
+        currentChars.push({ char, index: i });
+      }
+    }
+
+    if (currentChars.length > 0) {
+      groups.push({ chars: currentChars });
+    }
+
+    return groups;
+  }, [activeTargetText]);
+
   return (
     <div id="typing-stage-wrapper" className="w-full flex flex-col gap-3.5">
       {/* Top Telemetry & Progress Bar */}
@@ -812,34 +840,79 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           tabIndex={0}
         />
 
-        {/* Text Display with Live Active Caret */}
+        {/* Text Display with Natural Devanagari Word Grouping and Live Active Caret */}
         <div
           ref={textContainerRef}
-          className="flex flex-wrap gap-x-2 gap-y-3 text-2xl sm:text-3xl md:text-4xl font-medium tracking-wide leading-relaxed select-none items-center py-4"
+          className="flex flex-wrap items-baseline text-2xl sm:text-3xl md:text-4xl font-normal leading-loose select-none py-3"
           style={{ fontFamily: "'Noto Sans Devanagari', 'Tiro Devanagari Marathi', sans-serif" }}
         >
-          {activeTargetText.split('').map((char, index) => {
-            const isTyped = index < currentIndex;
-            const isCurrent = index === currentIndex;
-            const hasError = mistakeIndexes.has(index);
-
-            let charClass = isDark ? 'text-slate-600' : 'text-slate-400';
-            if (isTyped) {
-              charClass = hasError 
-                ? (isDark ? 'text-rose-400 bg-rose-950/40 rounded px-1' : 'text-rose-600 bg-rose-100 rounded px-1') 
-                : (isDark ? 'text-slate-200' : 'text-teal-900 font-semibold');
-            } else if (isCurrent) {
-              charClass = isDark 
-                ? 'text-cyan-200 border-b-4 border-cyan-400 bg-cyan-500/20 px-1.5 rounded-t font-bold shadow-[0_0_15px_rgba(6,182,212,0.3)] animate-pulse'
-                : 'text-teal-950 border-b-4 border-teal-600 bg-teal-100/90 px-1.5 rounded-t font-bold shadow-[0_0_15px_rgba(13,148,136,0.3)] animate-pulse';
-            }
-
+          {wordGroups.map((group, wIdx) => {
             return (
-              <span
-                key={index}
-                className={`relative inline-block transition-colors duration-100 ${charClass}`}
-              >
-                {char === ' ' ? '\u00A0' : char}
+              <span key={wIdx} className="inline-flex items-baseline mr-3.5 sm:mr-5 mb-2 whitespace-nowrap">
+                {group.chars.map(({ char, index }) => {
+                  const isTyped = index < currentIndex;
+                  const isCurrent = index === currentIndex;
+                  const hasError = mistakeIndexes.has(index);
+
+                  let charClass = isDark ? 'text-slate-500' : 'text-slate-400';
+                  if (isTyped) {
+                    charClass = hasError 
+                      ? (isDark ? 'text-rose-400 bg-rose-950/60 rounded-xs' : 'text-rose-600 bg-rose-100 rounded-xs') 
+                      : (isDark ? 'text-slate-100 font-semibold' : 'text-teal-950 font-semibold');
+                  } else if (isCurrent) {
+                    charClass = isDark 
+                      ? 'text-cyan-200 border-b-2 border-cyan-400 bg-cyan-400/25 font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)] animate-pulse'
+                      : 'text-teal-950 border-b-2 border-teal-600 bg-teal-100/90 font-bold shadow-[0_0_12px_rgba(13,148,136,0.3)] animate-pulse';
+                  }
+
+                  return (
+                    <span
+                      key={index}
+                      className={`relative inline-block transition-colors duration-75 ${charClass}`}
+                    >
+                      {char}
+                    </span>
+                  );
+                })}
+
+                {/* Trailing Space indicator if followed by space */}
+                {group.trailingSpace && (() => {
+                  const spIdx = group.trailingSpace.index;
+                  const isTyped = spIdx < currentIndex;
+                  const isCurrent = spIdx === currentIndex;
+                  const hasError = mistakeIndexes.has(spIdx);
+
+                  if (isCurrent) {
+                    return (
+                      <span
+                        key={spIdx}
+                        title={language === 'mr' ? 'स्पेस दाबा' : 'Press Space'}
+                        className={`inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded text-xs font-mono font-bold border animate-pulse ${
+                          isDark
+                            ? 'border-cyan-400/80 bg-cyan-500/25 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                            : 'border-teal-500/80 bg-teal-100 text-teal-800 shadow-[0_0_10px_rgba(13,148,136,0.2)]'
+                        }`}
+                      >
+                        ␣
+                      </span>
+                    );
+                  }
+                  if (isTyped && hasError) {
+                    return (
+                      <span
+                        key={spIdx}
+                        className={`inline-flex items-center justify-center ml-1 px-1.5 py-0.5 rounded text-xs border ${
+                          isDark
+                            ? 'border-rose-500/50 bg-rose-950/60 text-rose-400'
+                            : 'border-rose-300 bg-rose-100 text-rose-600'
+                        }`}
+                      >
+                        ␣
+                      </span>
+                    );
+                  }
+                  return null;
+                })()}
               </span>
             );
           })}
