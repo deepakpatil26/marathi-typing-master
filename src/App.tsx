@@ -15,7 +15,12 @@ import { AnalyticsView } from './components/AnalyticsView';
 import { ReviewView } from './components/ReviewView';
 import { SettingsView } from './components/SettingsView';
 import { InfoView } from './components/InfoView';
-import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
+import { PWAInstallButton } from './components/PWAInstallButton';
+import { OfflineIndicator } from './components/OfflineIndicator';
+import { StudentProfileModal } from './components/StudentProfileModal';
+import { getActiveProfile, updateActiveProfileProgress } from './utils/studentProfiles';
+import { StudentProfile } from './types';
+import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon, Users } from 'lucide-react';
 
 export default function App() {
   const { theme, isDark, toggleTheme } = useTheme();
@@ -23,9 +28,26 @@ export default function App() {
   const [language, setLanguage] = useState<'mr' | 'en'>('mr');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
-  
-  // Progress
-  const [userProgress, setUserProgress] = useState<UserProgress>(getStoredUserProgress);
+  // Student Profile state
+  const [activeStudent, setActiveStudent] = useState<StudentProfile>(getActiveProfile);
+  const [isStudentModalOpen, setIsStudentModalOpen] = useState<boolean>(false);
+
+  // Progress (seeded from active student profile or fallback)
+  const [userProgress, setUserProgress] = useState<UserProgress>(() => {
+    const prof = getActiveProfile();
+    return prof.progress || getStoredUserProgress();
+  });
+
+  // Keep active student progress in sync whenever userProgress changes
+  useEffect(() => {
+    updateActiveProfileProgress(userProgress);
+  }, [userProgress]);
+
+  const handleProfileSwitched = (newProfile: StudentProfile) => {
+    setActiveStudent(newProfile);
+    setUserProgress(newProfile.progress || getStoredUserProgress());
+  };
+
 
   // Selected Chapter in Hub
   const [selectedChapterId, setSelectedChapterId] = useState<number>(CURRICULUM_CHAPTERS[0].id);
@@ -133,8 +155,31 @@ export default function App() {
           </div>
         </div>
 
-        {/* Header Right Action Buttons: Theme Toggle + Sound + Language */}
-        <div className="flex items-center gap-2">
+        {/* Header Right Action Buttons: Student Profile + PWA Install + Theme Toggle + Sound + Language */}
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          {/* Active Student Profile Selector Button */}
+          <button
+            id="btn-student-profile-switcher"
+            onClick={() => setIsStudentModalOpen(true)}
+            title={language === 'mr' ? 'विद्यार्थी प्रोफाइल बदला / व्यवस्थापित करा' : 'Switch / Manage Student Profiles'}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-sm ${
+              isDark
+                ? 'bg-[#0B2E3F] hover:bg-[#0E3549] border-teal-700/60 text-cyan-300'
+                : 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-900'
+            }`}
+          >
+            <div className="w-5 h-5 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center">
+              <Users className="w-3.5 h-3.5" />
+            </div>
+            <div className="text-left hidden md:block leading-tight">
+              <span className="block text-[11px] font-black truncate max-w-[110px]">{activeStudent.name}</span>
+              <span className="block text-[9px] opacity-75 font-mono truncate max-w-[110px]">{activeStudent.batchOrRoll || 'तुकडी अ'}</span>
+            </div>
+          </button>
+
+          {/* PWA Install Button */}
+          <PWAInstallButton language={language} />
+
           {/* Dark / Light Mode Toggle Button */}
           <button
             id="theme-toggle-btn"
@@ -387,6 +432,17 @@ export default function App() {
           </span>
         </div>
       </footer>
+
+      {/* Offline Status Badge */}
+      <OfflineIndicator language={language} />
+
+      {/* Multi-Student Profile Manager Modal */}
+      <StudentProfileModal
+        isOpen={isStudentModalOpen}
+        onClose={() => setIsStudentModalOpen(false)}
+        language={language}
+        onProfileSwitched={handleProfileSwitched}
+      />
     </div>
   );
 }

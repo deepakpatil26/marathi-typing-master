@@ -2,6 +2,13 @@ import { TypingStats, ExamResult, UserProgress } from '../types';
 
 export const USER_PROGRESS_STORAGE_KEY = 'marathi_typing_master_progress';
 
+export const INITIAL_USER_PROGRESS: UserProgress = {
+  completedLessons: {},
+  totalPracticeTimeSeconds: 0,
+  overallAccuracy: 100,
+  weakCharacters: {},
+};
+
 export function getStoredUserProgress(): UserProgress {
   try {
     const saved = localStorage.getItem(USER_PROGRESS_STORAGE_KEY);
@@ -11,12 +18,7 @@ export function getStoredUserProgress(): UserProgress {
   } catch {
     // ignore
   }
-  return {
-    completedLessons: {},
-    totalPracticeTimeSeconds: 0,
-    overallAccuracy: 100,
-    weakCharacters: {},
-  };
+  return { ...INITIAL_USER_PROGRESS };
 }
 
 export function saveUserProgress(progress: UserProgress) {

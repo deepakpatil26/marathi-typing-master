@@ -129,3 +129,22 @@ export interface UserProgress {
   overallAccuracy: number;
   weakCharacters: Record<string, number>; // character -> error count
 }
+
+export interface StudentProfile {
+  id: string;
+  name: string;
+  batchOrRoll?: string;
+  targetSpeed: 30 | 40;
+  createdAt: string;
+  progress: UserProgress;
+  examHistory?: ExamResult[];
+}
+
+export interface SavedInstitutePaper {
+  id: string;
+  title: string;
+  text: string;
+  wordCount: number;
+  createdAt: string;
+}
+
