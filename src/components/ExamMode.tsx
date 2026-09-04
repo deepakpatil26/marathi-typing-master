@@ -4,6 +4,7 @@ import { EXAM_PASSAGES } from '../data/curriculum';
 import { remingtonKeyToDevanagari, getRemingtonKeyForChar } from '../data/remingtonMap';
 import { evaluateGccTbcExam } from '../utils/telemetry';
 import { sound } from '../utils/audio';
+import { buildDevanagariWordGroups } from '../utils/devanagari';
 import confetti from 'canvas-confetti';
 import { 
   Award, 
@@ -204,32 +205,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     onKeyPressedChange(new Set(pressedKeysRef.current));
   };
 
-  const wordGroups = useMemo(() => {
-    const groups: {
-      chars: { char: string; index: number }[];
-      trailingSpace?: { char: string; index: number };
-    }[] = [];
-    let currentChars: { char: string; index: number }[] = [];
-
-    for (let i = 0; i < targetText.length; i++) {
-      const char = targetText[i];
-      if (char === ' ') {
-        groups.push({
-          chars: currentChars,
-          trailingSpace: { char: ' ', index: i }
-        });
-        currentChars = [];
-      } else {
-        currentChars.push({ char, index: i });
-      }
-    }
-
-    if (currentChars.length > 0) {
-      groups.push({ chars: currentChars });
-    }
-
-    return groups;
-  }, [targetText]);
+  const wordGroups = useMemo(() => buildDevanagariWordGroups(targetText), [targetText]);
 
   return (
     <div id="exam-mode-container" className="w-full flex flex-col gap-6">
@@ -480,63 +456,84 @@ export const ExamMode: React.FC<ExamModeProps> = ({
               style={{ fontFamily: "'Noto Sans Devanagari', 'Tiro Devanagari Marathi', sans-serif" }}
             >
               {wordGroups.map((group, wIdx) => {
+                const isWordActive = (currentIndex >= group.startIndex && currentIndex <= group.endIndex) ||
+                  (group.trailingSpace && currentIndex === group.trailingSpace.index);
+
                 return (
-                  <span key={wIdx} className="inline-flex items-baseline mr-3.5 sm:mr-5 mb-2 whitespace-nowrap">
-                    {group.chars.map(({ char, index }) => {
-                      const isTyped = index < currentIndex;
-                      const isCurrent = index === currentIndex;
-                      const hasError = mistakeIndexes.has(index);
+                  <React.Fragment key={wIdx}>
+                    <span
+                      className={`inline-flex items-baseline mr-3.5 sm:mr-5 mb-2 transition-all duration-100 rounded-lg ${
+                        isWordActive
+                          ? 'bg-cyan-500/10 px-1.5 py-0.5 border-b-2 border-cyan-400/80 shadow-[0_0_12px_rgba(6,182,212,0.15)]'
+                          : ''
+                      }`}
+                    >
+                      {group.aksharas.map((akshara, aIdx) => {
+                        const isAksharaCompleted = currentIndex >= akshara.endIndex;
+                        const isAksharaActive = currentIndex >= akshara.startIndex && currentIndex < akshara.endIndex;
 
-                      let charStyle = 'text-slate-500';
-                      if (isTyped) {
-                        charStyle = hasError 
-                          ? 'text-rose-400 bg-rose-950/60 rounded-xs' 
-                          : 'text-slate-200 font-semibold';
-                      } else if (isCurrent) {
-                        charStyle = 'text-cyan-200 border-b-2 border-cyan-400 bg-cyan-400/25 font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)] animate-pulse';
-                      }
+                        let hasError = false;
+                        for (let i = akshara.startIndex; i < akshara.endIndex; i++) {
+                          if (mistakeIndexes.has(i)) {
+                            hasError = true;
+                            break;
+                          }
+                        }
 
-                      return (
-                        <span
-                          key={index}
-                          className={`relative inline-block transition-colors duration-75 ${charStyle}`}
-                        >
-                          {char}
-                        </span>
-                      );
-                    })}
+                        let charStyle = 'text-slate-500';
+                        if (isAksharaCompleted) {
+                          charStyle = hasError 
+                            ? 'text-rose-400 bg-rose-950/60 rounded-xs px-0.5' 
+                            : 'text-slate-200 font-semibold';
+                        } else if (isAksharaActive) {
+                          charStyle = 'text-cyan-200 border-b-2 border-cyan-400 bg-cyan-400/25 font-bold px-1 rounded-t shadow-[0_0_12px_rgba(6,182,212,0.3)] animate-pulse';
+                        } else if (isWordActive) {
+                          charStyle = 'text-slate-300 font-normal';
+                        }
 
-                    {/* Trailing Space indicator if followed by space */}
-                    {group.trailingSpace && (() => {
-                      const spIdx = group.trailingSpace.index;
-                      const isTyped = spIdx < currentIndex;
-                      const isCurrent = spIdx === currentIndex;
-                      const hasError = mistakeIndexes.has(spIdx);
-
-                      if (isCurrent) {
                         return (
                           <span
-                            key={spIdx}
-                            title={language === 'mr' ? 'स्पेस दाबा' : 'Press Space'}
-                            className="inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded text-xs font-mono font-bold border border-cyan-400/80 bg-cyan-500/25 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)] animate-pulse"
+                            key={aIdx}
+                            className={`transition-colors duration-75 ${charStyle}`}
                           >
-                            ␣
+                            {akshara.text}
                           </span>
                         );
-                      }
-                      if (isTyped && hasError) {
-                        return (
-                          <span
-                            key={spIdx}
-                            className="inline-flex items-center justify-center ml-1 px-1.5 py-0.5 rounded text-xs border border-rose-500/50 bg-rose-950/60 text-rose-400"
-                          >
-                            ␣
-                          </span>
-                        );
-                      }
-                      return null;
-                    })()}
-                  </span>
+                      })}
+
+                      {/* Trailing Space indicator if followed by space */}
+                      {group.trailingSpace && (() => {
+                        const spIdx = group.trailingSpace.index;
+                        const isTyped = spIdx < currentIndex;
+                        const isCurrent = spIdx === currentIndex;
+                        const hasError = mistakeIndexes.has(spIdx);
+
+                        if (isCurrent) {
+                          return (
+                            <span
+                              key={spIdx}
+                              title={language === 'mr' ? 'स्पेस दाबा' : 'Press Space'}
+                              className="inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded text-xs font-mono font-bold border border-cyan-400/80 bg-cyan-500/25 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)] animate-pulse"
+                            >
+                              ␣
+                            </span>
+                          );
+                        }
+                        if (isTyped && hasError) {
+                          return (
+                            <span
+                              key={spIdx}
+                              className="inline-flex items-center justify-center ml-1 px-1.5 py-0.5 rounded text-xs border border-rose-500/50 bg-rose-950/60 text-rose-400"
+                            >
+                              ␣
+                            </span>
+                          );
+                        }
+                        return null;
+                      })()}
+                    </span>
+                    {group.hasNewlineAfter && <div className="w-full h-0 basis-full" />}
+                  </React.Fragment>
                 );
               })}
             </div>

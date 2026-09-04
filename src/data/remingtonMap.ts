@@ -106,9 +106,9 @@ export const DEV_CHAR_ALIAS: Record<string, string> = {
 };
 
 // Returns key and shift requirements to produce a Devanagari char
-export function getRemingtonKeyForChar(char: string): { key: string; isShift: boolean; code: string; finger: Finger; hand: string; displayKey: string } | null {
+export function getRemingtonKeyForChar(char: string): { key: string; isShift: boolean; code: string; finger: Finger; hand: string; displayKey: string; charNameMr?: string } | null {
   if (char === ' ') {
-    return { key: ' ', isShift: false, code: 'Space', finger: 'thumb', hand: 'thumb', displayKey: 'Space' };
+    return { key: ' ', isShift: false, code: 'Space', finger: 'thumb', hand: 'thumb', displayKey: 'Space', charNameMr: 'स्पेस' };
   }
   
   const found = KEY_BY_CHAR[char];
@@ -119,7 +119,8 @@ export function getRemingtonKeyForChar(char: string): { key: string; isShift: bo
       code: found.mapping.code,
       finger: found.mapping.finger,
       hand: found.mapping.hand,
-      displayKey: found.isShift ? `Shift + ${found.mapping.key.toUpperCase()}` : found.mapping.key
+      displayKey: found.isShift ? `Shift + ${found.mapping.key.toUpperCase()}` : found.mapping.key,
+      charNameMr: found.isShift ? found.mapping.shiftNameMr : found.mapping.normalNameMr
     };
   }
 

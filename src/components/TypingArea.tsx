@@ -3,6 +3,7 @@ import { Finger, LessonStep, TypingStats, UserProgress } from '../types';
 import { getRemingtonKeyForChar, remingtonKeyToDevanagari, FINGER_COLORS } from '../data/remingtonMap';
 import { calculateTypingStats, saveUserProgress } from '../utils/telemetry';
 import { sound } from '../utils/audio';
+import { buildDevanagariWordGroups } from '../utils/devanagari';
 import confetti from 'canvas-confetti';
 import { useTheme } from '../context/ThemeContext';
 import { 
@@ -497,33 +498,8 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const progressPercent = activeTargetText.length > 0 ? Math.round((currentIndex / activeTargetText.length) * 100) : 0;
   const drillType = lesson.drillType || 'keys';
 
-  // Group activeTargetText into words with absolute indices for natural Devanagari typography
-  const wordGroups = useMemo(() => {
-    const groups: {
-      chars: { char: string; index: number }[];
-      trailingSpace?: { char: string; index: number };
-    }[] = [];
-    let currentChars: { char: string; index: number }[] = [];
-
-    for (let i = 0; i < activeTargetText.length; i++) {
-      const char = activeTargetText[i];
-      if (char === ' ') {
-        groups.push({
-          chars: currentChars,
-          trailingSpace: { char: ' ', index: i }
-        });
-        currentChars = [];
-      } else {
-        currentChars.push({ char, index: i });
-      }
-    }
-
-    if (currentChars.length > 0) {
-      groups.push({ chars: currentChars });
-    }
-
-    return groups;
-  }, [activeTargetText]);
+  // Group activeTargetText into words and intact Devanagari aksharas (eliminating dotted circles)
+  const wordGroups = useMemo(() => buildDevanagariWordGroups(activeTargetText), [activeTargetText]);
 
   return (
     <div id="typing-stage-wrapper" className="w-full flex flex-col gap-3.5">
@@ -847,73 +823,97 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           style={{ fontFamily: "'Noto Sans Devanagari', 'Tiro Devanagari Marathi', sans-serif" }}
         >
           {wordGroups.map((group, wIdx) => {
+            const isWordActive = (currentIndex >= group.startIndex && currentIndex <= group.endIndex) ||
+              (group.trailingSpace && currentIndex === group.trailingSpace.index);
+            const isWordCompleted = currentIndex > (group.trailingSpace ? group.trailingSpace.index : group.endIndex);
+
             return (
-              <span key={wIdx} className="inline-flex items-baseline mr-3.5 sm:mr-5 mb-2 whitespace-nowrap">
-                {group.chars.map(({ char, index }) => {
-                  const isTyped = index < currentIndex;
-                  const isCurrent = index === currentIndex;
-                  const hasError = mistakeIndexes.has(index);
+              <React.Fragment key={wIdx}>
+                <span
+                  className={`inline-flex items-baseline mr-3.5 sm:mr-5 mb-2 transition-all duration-100 rounded-lg ${
+                    isWordActive
+                      ? isDark
+                        ? 'bg-cyan-500/10 px-1.5 py-0.5 border-b-2 border-cyan-400/80 shadow-[0_0_12px_rgba(6,182,212,0.15)]'
+                        : 'bg-teal-50 px-1.5 py-0.5 border-b-2 border-teal-600 shadow-xs'
+                      : ''
+                  }`}
+                >
+                  {group.aksharas.map((akshara, aIdx) => {
+                    const isAksharaCompleted = currentIndex >= akshara.endIndex;
+                    const isAksharaActive = currentIndex >= akshara.startIndex && currentIndex < akshara.endIndex;
 
-                  let charClass = isDark ? 'text-slate-500' : 'text-slate-400';
-                  if (isTyped) {
-                    charClass = hasError 
-                      ? (isDark ? 'text-rose-400 bg-rose-950/60 rounded-xs' : 'text-rose-600 bg-rose-100 rounded-xs') 
-                      : (isDark ? 'text-slate-100 font-semibold' : 'text-teal-950 font-semibold');
-                  } else if (isCurrent) {
-                    charClass = isDark 
-                      ? 'text-cyan-200 border-b-2 border-cyan-400 bg-cyan-400/25 font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)] animate-pulse'
-                      : 'text-teal-950 border-b-2 border-teal-600 bg-teal-100/90 font-bold shadow-[0_0_12px_rgba(13,148,136,0.3)] animate-pulse';
-                  }
+                    let hasError = false;
+                    for (let i = akshara.startIndex; i < akshara.endIndex; i++) {
+                      if (mistakeIndexes.has(i)) {
+                        hasError = true;
+                        break;
+                      }
+                    }
 
-                  return (
-                    <span
-                      key={index}
-                      className={`relative inline-block transition-colors duration-75 ${charClass}`}
-                    >
-                      {char}
-                    </span>
-                  );
-                })}
+                    let aksharaClass = isDark ? 'text-slate-500' : 'text-slate-400';
+                    if (isAksharaCompleted) {
+                      aksharaClass = hasError 
+                        ? (isDark ? 'text-rose-400 bg-rose-950/60 rounded-xs px-0.5' : 'text-rose-600 bg-rose-100 rounded-xs px-0.5') 
+                        : (isDark ? 'text-slate-100 font-semibold' : 'text-teal-950 font-semibold');
+                    } else if (isAksharaActive) {
+                      aksharaClass = isDark 
+                        ? 'text-cyan-200 border-b-2 border-cyan-400 bg-cyan-400/25 font-bold px-1 rounded-t shadow-[0_0_12px_rgba(6,182,212,0.3)] animate-pulse'
+                        : 'text-teal-950 border-b-2 border-teal-600 bg-teal-100 font-bold px-1 rounded-t shadow-[0_0_12px_rgba(13,148,136,0.25)] animate-pulse';
+                    } else if (isWordActive) {
+                      aksharaClass = isDark ? 'text-slate-300 font-normal' : 'text-slate-600 font-normal';
+                    }
 
-                {/* Trailing Space indicator if followed by space */}
-                {group.trailingSpace && (() => {
-                  const spIdx = group.trailingSpace.index;
-                  const isTyped = spIdx < currentIndex;
-                  const isCurrent = spIdx === currentIndex;
-                  const hasError = mistakeIndexes.has(spIdx);
-
-                  if (isCurrent) {
                     return (
                       <span
-                        key={spIdx}
-                        title={language === 'mr' ? 'स्पेस दाबा' : 'Press Space'}
-                        className={`inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded text-xs font-mono font-bold border animate-pulse ${
-                          isDark
-                            ? 'border-cyan-400/80 bg-cyan-500/25 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
-                            : 'border-teal-500/80 bg-teal-100 text-teal-800 shadow-[0_0_10px_rgba(13,148,136,0.2)]'
-                        }`}
+                        key={aIdx}
+                        className={`transition-colors duration-75 ${aksharaClass}`}
                       >
-                        ␣
+                        {akshara.text}
                       </span>
                     );
-                  }
-                  if (isTyped && hasError) {
-                    return (
-                      <span
-                        key={spIdx}
-                        className={`inline-flex items-center justify-center ml-1 px-1.5 py-0.5 rounded text-xs border ${
-                          isDark
-                            ? 'border-rose-500/50 bg-rose-950/60 text-rose-400'
-                            : 'border-rose-300 bg-rose-100 text-rose-600'
-                        }`}
-                      >
-                        ␣
-                      </span>
-                    );
-                  }
-                  return null;
-                })()}
-              </span>
+                  })}
+
+                  {/* Trailing Space indicator if followed by space */}
+                  {group.trailingSpace && (() => {
+                    const spIdx = group.trailingSpace.index;
+                    const isTyped = spIdx < currentIndex;
+                    const isCurrent = spIdx === currentIndex;
+                    const hasError = mistakeIndexes.has(spIdx);
+
+                    if (isCurrent) {
+                      return (
+                        <span
+                          key={spIdx}
+                          title={language === 'mr' ? 'स्पेस दाबा' : 'Press Space'}
+                          className={`inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded text-xs font-mono font-bold border animate-pulse ${
+                            isDark
+                              ? 'border-cyan-400/80 bg-cyan-500/25 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                              : 'border-teal-500/80 bg-teal-100 text-teal-800 shadow-[0_0_10px_rgba(13,148,136,0.2)]'
+                          }`}
+                        >
+                          ␣
+                        </span>
+                      );
+                    }
+                    if (isTyped && hasError) {
+                      return (
+                        <span
+                          key={spIdx}
+                          className={`inline-flex items-center justify-center ml-1 px-1.5 py-0.5 rounded text-xs border ${
+                            isDark
+                              ? 'border-rose-500/50 bg-rose-950/60 text-rose-400'
+                              : 'border-rose-300 bg-rose-100 text-rose-600'
+                          }`}
+                        >
+                          ␣
+                        </span>
+                      );
+                    }
+                    return null;
+                  })()}
+                </span>
+                {group.hasNewlineAfter && <div className="w-full h-0 basis-full" />}
+              </React.Fragment>
             );
           })}
         </div>
@@ -942,7 +942,9 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                   ? 'text-slate-300 bg-[#0B2A3A] border-teal-800/40' 
                   : 'text-slate-700 bg-white border-slate-200 shadow-sm'
               }`}>
-                ({currentChar === ' ' ? 'स्पेस' : currentChar})
+                ({currentChar === ' ' 
+                  ? 'स्पेस' 
+                  : currentKeyInfo?.charNameMr || currentChar})
               </span>
             </div>
 
