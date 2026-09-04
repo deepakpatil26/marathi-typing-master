@@ -140,7 +140,7 @@ export const CourseHub: React.FC<CourseHubProps> = ({
               : 'bg-white border-teal-200 text-teal-800 shadow-sm'
           }`}>
             <Sparkles className={`w-3.5 h-3.5 ${isDark ? 'text-cyan-400' : 'text-teal-600'}`} />
-            <span>अक्षरे → शब्द → वाक्ये → परिच्छेद</span>
+            <span>{language === 'mr' ? 'अक्षरे → शब्द → वाक्ये → परिच्छेद' : 'Keys → Words → Sentences → Passages'}</span>
           </div>
         </div>
       </div>
@@ -175,7 +175,7 @@ export const CourseHub: React.FC<CourseHubProps> = ({
                       : 'text-slate-600 hover:text-teal-800 hover:bg-white'
                   }`}
                 >
-                  <span>टप्पा {chap.id}</span>
+                  <span>{language === 'mr' ? `टप्पा ${chap.id}` : `Stage ${chap.id}`}</span>
                   {isAllCompleted && (
                     <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 bg-cyan-400 rounded-full ring-2 ${
                       isDark ? 'ring-[#051C27]' : 'ring-white'

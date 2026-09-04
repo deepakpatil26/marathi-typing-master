@@ -20,13 +20,41 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 import { StudentProfileModal } from './components/StudentProfileModal';
 import { getActiveProfile, updateActiveProfileProgress } from './utils/studentProfiles';
 import { StudentProfile } from './types';
-import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon, Users } from 'lucide-react';
+import { SoftwareWebsiteView } from './components/SoftwareWebsiteView';
+import { OfficialWebsite } from './components/OfficialWebsite';
+import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon, Users, Download } from 'lucide-react';
 
 export default function App() {
   const { theme, isDark, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<SidebarTab>('course');
   const [language, setLanguage] = useState<'mr' | 'en'>('mr');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+
+  // View Mode: 'website' by default when visitors visit the site, 'software' when launched from desktop shortcut or ?app=true
+  const [viewMode, setViewMode] = useState<'website' | 'software'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app') {
+        return 'software';
+      }
+    }
+    return 'website';
+  });
+
+  useEffect(() => {
+    const checkLocation = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app') {
+        setViewMode('software');
+      }
+    };
+    window.addEventListener('popstate', checkLocation);
+    window.addEventListener('hashchange', checkLocation);
+    return () => {
+      window.removeEventListener('popstate', checkLocation);
+      window.removeEventListener('hashchange', checkLocation);
+    };
+  }, []);
 
   // Student Profile state
   const [activeStudent, setActiveStudent] = useState<StudentProfile>(getActiveProfile);
@@ -119,6 +147,24 @@ export default function App() {
     setActiveTab('course');
   };
 
+  // If viewMode is 'website', display the official software product website
+  if (viewMode === 'website') {
+    return (
+      <OfficialWebsite
+        onLaunchSoftware={() => {
+          setViewMode('software');
+          if (typeof window !== 'undefined' && window.history && window.history.pushState) {
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('app', 'true');
+            window.history.pushState({}, '', newUrl.toString());
+          }
+        }}
+        language={language}
+        onToggleLanguage={handleToggleLanguage}
+      />
+    );
+  }
+
   return (
     <div className={`min-h-screen flex flex-col font-sans transition-colors duration-200 ${
       isDark 
@@ -177,8 +223,49 @@ export default function App() {
             </div>
           </button>
 
-          {/* PWA Install Button */}
-          <PWAInstallButton language={language} />
+          {/* Back to Official Website Button */}
+          <button
+            id="btn-back-to-website"
+            onClick={() => {
+              sound.playKeyClick();
+              setViewMode('website');
+              if (typeof window !== 'undefined' && window.history && window.history.pushState) {
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.delete('app');
+                newUrl.searchParams.delete('mode');
+                window.history.pushState({}, '', newUrl.pathname + (newUrl.search ? newUrl.search : ''));
+              }
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs border transition-all cursor-pointer shadow-sm ${
+              isDark
+                ? 'bg-[#0B2E3F] hover:bg-[#0E3549] border-teal-700/60 text-cyan-300'
+                : 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-900'
+            }`}
+            title={language === 'mr' ? 'अधिकृत वेबसाइटवर जा (Official Website)' : 'Back to Official Website'}
+          >
+            <Globe className="w-3.5 h-3.5 text-teal-500" />
+            <span className="hidden sm:inline">{language === 'mr' ? 'मुख्य वेबसाइट' : 'Website'}</span>
+          </button>
+
+          {/* Software Website & Download Setup Button */}
+          <button
+            id="btn-nav-software-website"
+            onClick={() => {
+              sound.playKeyClick();
+              setActiveTab('software-website');
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs border transition-all cursor-pointer shadow-sm ${
+              activeTab === 'software-website'
+                ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 border-teal-400 font-black shadow-teal-500/25'
+                : isDark
+                ? 'bg-[#0B2E3F] hover:bg-[#0E3549] border-teal-700/60 text-cyan-300'
+                : 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-900'
+            }`}
+            title={language === 'mr' ? 'सॉफ्टवेअर डाउनलोड व इन्स्टॉल' : 'Download Software'}
+          >
+            <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span className="hidden sm:inline">{language === 'mr' ? 'डाउनलोड' : 'Download'}</span>
+          </button>
 
           {/* Dark / Light Mode Toggle Button */}
           <button
@@ -318,6 +405,17 @@ export default function App() {
                 </div>
               )}
             </>
+          )}
+
+          {/* 1.1. Software Website & Setup Download Tab */}
+          {activeTab === 'software-website' && (
+            <SoftwareWebsiteView
+              onStartPracticing={() => {
+                setActiveTab('course');
+                setIsPracticing(false);
+              }}
+              language={language}
+            />
           )}
 
           {/* 1.5. AI Domain Passages Tab */}

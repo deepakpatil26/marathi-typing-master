@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Download, Smartphone, X, CheckCircle2 } from 'lucide-react';
 import { usePWAInstall } from '../utils/usePWAInstall';
 import { useTheme } from '../context/ThemeContext';
+import { DownloadModal } from './DownloadModal';
 
 interface PWAInstallButtonProps {
   language?: 'mr' | 'en';
@@ -11,46 +12,32 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({ language = '
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const { isDark } = useTheme();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
-  const [justInstalled, setJustInstalled] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
-  // If already running as an installed PWA, render a clean badge or hide
+  // If already running as an installed PWA, render a clean badge that also opens the modal info
   if (isInstalled) {
     return (
-      <div 
-        id="pwa-installed-badge"
-        className={`hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold border transition-colors ${
-          isDark 
-            ? 'bg-emerald-950/40 border-emerald-800/40 text-emerald-400' 
-            : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-        }`}
-        title={language === 'mr' ? 'ॲप इन्स्टॉल केले आहे' : 'App installed on device'}
-      >
-        <CheckCircle2 className="w-3.5 h-3.5" />
-        <span>{language === 'mr' ? 'इन्स्टॉल केले आहे' : 'Desktop App'}</span>
-      </div>
-    );
-  }
+      <>
+        <button 
+          id="pwa-installed-badge"
+          onClick={() => setShowDownloadModal(true)}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer shadow-sm ${
+            isDark 
+              ? 'bg-emerald-950/40 hover:bg-emerald-900/50 border-emerald-800/40 text-emerald-400' 
+              : 'bg-emerald-50 hover:bg-emerald-100 border-emerald-200 text-emerald-700'
+          }`}
+          title={language === 'mr' ? 'ॲप इन्स्टॉल केले आहे (तपशील पहा)' : 'App installed on device (View details)'}
+        >
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          <span>{language === 'mr' ? 'डेस्कटॉप ॲप' : 'Desktop App'}</span>
+        </button>
 
-  const handleInstallClick = async () => {
-    const success = await install();
-    if (success) {
-      setJustInstalled(true);
-      setTimeout(() => setJustInstalled(false), 4000);
-    }
-  };
-
-  // Chromium / Android / Edge / Desktop flow
-  if (isInstallable) {
-    return (
-      <button
-        id="btn-install-pwa"
-        onClick={handleInstallClick}
-        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 shadow-md shadow-teal-500/20 active:scale-95 transition-all cursor-pointer"
-        title={language === 'mr' ? 'डेस्कटॉप किंवा मोबाईलवर ॲप इन्स्टॉल करा' : 'Install App on Desktop or Mobile'}
-      >
-        <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-        <span>{language === 'mr' ? 'ॲप इन्स्टॉल करा' : 'Install App'}</span>
-      </button>
+        <DownloadModal
+          isOpen={showDownloadModal}
+          onClose={() => setShowDownloadModal(false)}
+          language={language}
+        />
+      </>
     );
   }
 
@@ -131,5 +118,24 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({ language = '
     );
   }
 
-  return null;
+  // Universal button: Always visible so users know they can download/install software just like TypingMaster!
+  return (
+    <>
+      <button
+        id="btn-install-pwa"
+        onClick={() => setShowDownloadModal(true)}
+        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 shadow-md shadow-teal-500/20 active:scale-95 transition-all cursor-pointer"
+        title={language === 'mr' ? 'संगणकावर सॉफ्टवेअर डाउनलोड व इन्स्टॉल करा' : 'Download & Install Desktop Software'}
+      >
+        <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+        <span>{language === 'mr' ? 'ॲप डाउनलोड करा' : 'Download App'}</span>
+      </button>
+
+      <DownloadModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        language={language}
+      />
+    </>
+  );
 };
