@@ -212,7 +212,7 @@ exit
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 p-0.5 shadow-md shadow-teal-500/20 flex items-center justify-center">
             <div className={`w-full h-full rounded-[14px] flex items-center justify-center font-black text-lg ${
-              isDark ? 'bg-[#03151E] text-cyan-300' : 'bg-white text-teal-600'
+              isDark ? 'bg-[#03151E] text-cyan-300' : 'bg-white text-teal-800'
             }`}>
               म
             </div>
@@ -222,7 +222,7 @@ exit
               <span className="text-base sm:text-lg font-black tracking-tight leading-none">
                 {language === 'mr' ? 'मराठी टायपिंग मास्टर' : 'Marathi Typing Master'}
               </span>
-              <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-600 dark:text-cyan-400 border border-teal-500/30">
+              <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-800 dark:text-cyan-400 border border-teal-500/30">
                 Official
               </span>
             </div>
@@ -234,19 +234,19 @@ exit
 
         {/* Center Navigation Links (Desktop) */}
         <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-slate-600 dark:text-slate-300">
-          <a href="#features" className="hover:text-teal-600 dark:hover:text-cyan-300 transition-colors">
+          <a href="#features" className="hover:text-teal-800 dark:hover:text-cyan-300 transition-colors">
             {language === 'mr' ? 'वैशिष्ट्ये' : 'Features'}
           </a>
-          <a href="#how-to-install" className="hover:text-teal-600 dark:hover:text-cyan-300 transition-colors">
+          <a href="#how-to-install" className="hover:text-teal-800 dark:hover:text-cyan-300 transition-colors">
             {language === 'mr' ? 'इन्स्टॉलेशन' : 'Installation'}
           </a>
-          <a href="#curriculum" className="hover:text-teal-600 dark:hover:text-cyan-300 transition-colors">
+          <a href="#curriculum" className="hover:text-teal-800 dark:hover:text-cyan-300 transition-colors">
             {language === 'mr' ? 'अभ्यासक्रम' : 'Curriculum'}
           </a>
-          <a href="#testimonials" className="hover:text-teal-600 dark:hover:text-cyan-300 transition-colors">
+          <a href="#testimonials" className="hover:text-teal-800 dark:hover:text-cyan-300 transition-colors">
             {language === 'mr' ? 'अभिप्राय' : 'Testimonials'}
           </a>
-          <a href="#faq" className="hover:text-teal-600 dark:hover:text-cyan-300 transition-colors">
+          <a href="#faq" className="hover:text-teal-800 dark:hover:text-cyan-300 transition-colors">
             {language === 'mr' ? 'प्रश्नोत्तरे' : 'FAQ'}
           </a>
         </nav>
@@ -257,11 +257,11 @@ exit
           <button
             onClick={handleShareLink}
             className={`hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-              isDark ? 'bg-[#061F2C] border-teal-900/60 text-slate-300 hover:text-cyan-300' : 'bg-white border-teal-200 text-slate-700 hover:text-teal-700'
+              isDark ? 'bg-[#061F2C] border-teal-900/60 text-slate-300 hover:text-cyan-300' : 'bg-white border-teal-200 text-slate-700 hover:text-teal-900'
             }`}
             title={language === 'mr' ? 'वेबसाइट लिंक कॉपी करा' : 'Copy website link to open on PC'}
           >
-            <Share2 className="w-3.5 h-3.5 text-teal-500" />
+            <Share2 className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
             <span>{copiedLink ? (language === 'mr' ? 'कॉपी झाली!' : 'Copied!') : (language === 'mr' ? 'शेअर' : 'Share')}</span>
           </button>
 
@@ -270,11 +270,11 @@ exit
             onClick={onToggleLanguage}
             id="btn-website-language-toggle"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-              isDark ? 'bg-[#061F2C] border-teal-900/60 text-cyan-300 hover:bg-[#092B3C]' : 'bg-white border-teal-200 text-teal-800 hover:bg-teal-50'
+              isDark ? 'bg-[#061F2C] border-teal-900/60 text-cyan-300 hover:bg-[#092B3C]' : 'bg-white border-teal-200 text-teal-900 hover:bg-teal-50'
             }`}
             title={language === 'mr' ? 'इंग्रजीमध्ये बदला (Switch to English)' : 'मराठीत बदला (Switch to Marathi)'}
           >
-            <Globe className="w-3.5 h-3.5 text-teal-500" />
+            <Globe className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
             <span>{language === 'mr' ? 'English' : 'मराठी'}</span>
           </button>
 
@@ -282,11 +282,11 @@ exit
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-xl border text-xs transition-all cursor-pointer ${
-              isDark ? 'bg-[#061F2C] border-teal-900/60 text-amber-300 hover:text-amber-200' : 'bg-white border-teal-200 text-slate-600 hover:text-teal-700'
+              isDark ? 'bg-[#061F2C] border-teal-900/60 text-amber-300 hover:text-amber-200' : 'bg-white border-teal-200 text-slate-600 hover:text-teal-900'
             }`}
             title="Toggle theme"
           >
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-teal-600" />}
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-teal-800" />}
           </button>
 
           {/* Primary Download CTA Button (No Launch button) */}
@@ -307,8 +307,8 @@ exit
         {/* HERO SECTION */}
         <section className="relative flex flex-col lg:flex-row items-center justify-between gap-10">
           <div className="max-w-2xl space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold border shadow-sm bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30">
-              <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold border shadow-sm bg-teal-500/10 text-teal-900 dark:text-teal-300 border-teal-500/30">
+              <Sparkles className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
               <span>{language === 'mr' ? 'Windows 11, 10, 8, 7 साठी अधिकृत डेस्कटॉप सॉफ्टवेअर' : 'Official Windows Desktop Edition v10.4'}</span>
             </div>
 
@@ -333,9 +333,9 @@ exit
             {/* Badges / Guarantees */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs">
               <span className={`px-3 py-1.5 rounded-xl border font-bold flex items-center gap-1.5 ${
-                isDark ? 'bg-[#03151E] border-teal-900 text-cyan-300' : 'bg-white border-teal-200 text-teal-800 shadow-sm'
+                isDark ? 'bg-[#03151E] border-teal-900 text-cyan-300' : 'bg-white border-teal-200 text-teal-900 shadow-sm'
               }`}>
-                <HardDrive className="w-4 h-4 text-teal-500" />
+                <HardDrive className="w-4 h-4 text-teal-700 dark:text-teal-400" />
                 C:\MarathiTypingMaster
               </span>
               <span className={`px-3 py-1.5 rounded-xl border font-bold flex items-center gap-1.5 ${
@@ -377,10 +377,10 @@ exit
                 className={`w-full sm:w-auto px-6 py-4 rounded-2xl font-bold text-sm border transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   isDark 
                     ? 'bg-[#072B3B] hover:bg-[#0A3D52] border-cyan-500/40 text-cyan-300' 
-                    : 'bg-white hover:bg-teal-50 border-teal-300 text-teal-800 shadow-sm'
+                    : 'bg-white hover:bg-teal-50 border-teal-300 text-teal-900 shadow-sm'
                 }`}
               >
-                <Monitor className="w-4 h-4 text-teal-500" />
+                <Monitor className="w-4 h-4 text-teal-700 dark:text-teal-400" />
                 <span>{language === 'mr' ? 'इन्स्टॉलेशन विझार्ड पाहा' : 'Preview Setup Wizard'}</span>
               </button>
             </div>
@@ -411,7 +411,7 @@ exit
                   <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
                   <span className="text-xs font-bold ml-1">MarathiTypingMaster.exe</span>
                 </div>
-                <span className="text-[11px] font-mono font-bold text-teal-600 dark:text-cyan-400">
+                <span className="text-[11px] font-mono font-bold text-teal-800 dark:text-cyan-400">
                   C:\MarathiTypingMaster
                 </span>
               </div>
@@ -421,7 +421,7 @@ exit
                 isDark ? 'bg-[#02131C] border-teal-900/60' : 'bg-slate-50 border-slate-200'
               }`}>
                 <div className="flex items-center justify-between text-xs font-bold">
-                  <span className="text-teal-600 dark:text-cyan-300">
+                  <span className="text-teal-900 dark:text-cyan-300">
                     {language === 'mr' ? 'धडा १.१: होम रो प्रॅक्टिस' : 'Lesson 1.1: Home Row Practice'}
                   </span>
                   <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500 text-[10px]">
@@ -435,23 +435,23 @@ exit
 
                 <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
                   <div className="p-2 rounded-xl bg-teal-500/10">
-                    <span className="block text-slate-400">{language === 'mr' ? 'गती' : 'Speed'}</span>
-                    <span className="font-black text-xs text-teal-500">35 WPM</span>
+                    <span className="block text-slate-500 dark:text-slate-400">{language === 'mr' ? 'गती' : 'Speed'}</span>
+                    <span className="font-black text-xs text-teal-800 dark:text-teal-400">35 WPM</span>
                   </div>
                   <div className="p-2 rounded-xl bg-cyan-500/10">
-                    <span className="block text-slate-400">{language === 'mr' ? 'अचूकता' : 'Accuracy'}</span>
-                    <span className="font-black text-xs text-cyan-500">98.4%</span>
+                    <span className="block text-slate-500 dark:text-slate-400">{language === 'mr' ? 'अचूकता' : 'Accuracy'}</span>
+                    <span className="font-black text-xs text-cyan-800 dark:text-cyan-400">98.4%</span>
                   </div>
                   <div className="p-2 rounded-xl bg-emerald-500/10">
-                    <span className="block text-slate-400">{language === 'mr' ? 'वेळ' : 'Time'}</span>
-                    <span className="font-black text-xs text-emerald-500">05:00</span>
+                    <span className="block text-slate-500 dark:text-slate-400">{language === 'mr' ? 'वेळ' : 'Time'}</span>
+                    <span className="font-black text-xs text-emerald-800 dark:text-emerald-400">05:00</span>
                   </div>
                 </div>
               </div>
 
               {/* Guarantee banner & Download CTA inside Card */}
               <div className="space-y-3">
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-700 dark:text-cyan-300 text-[11px] font-semibold">
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-900 dark:text-cyan-300 text-[11px] font-semibold">
                   <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
                   <span>
                     {language === 'mr' 
@@ -477,7 +477,7 @@ exit
           isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80'
         }`}>
           <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 dark:text-cyan-400 border border-teal-500/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-900 dark:text-cyan-400 border border-teal-500/30">
               <FolderCheck className="w-3.5 h-3.5" />
               <span>{language === 'mr' ? 'अचूक इन्स्टॉलेशन प्रक्रिया' : 'Simple 4-Step Installation'}</span>
             </div>
@@ -497,7 +497,7 @@ exit
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center font-black text-base border border-teal-500/30">
+                <div className="w-10 h-10 rounded-2xl bg-teal-500/15 text-teal-900 dark:text-teal-400 flex items-center justify-center font-black text-base border border-teal-500/30">
                   1
                 </div>
                 <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -509,7 +509,7 @@ exit
                     : 'Click Free Download to save the official MarathiTypingMaster-Setup.bat installer file to your computer.'}
                 </p>
               </div>
-              <div className="p-2 rounded-lg bg-teal-500/10 text-[11px] font-mono text-teal-600 dark:text-cyan-400 font-bold truncate">
+              <div className="p-2 rounded-lg bg-teal-500/10 text-[11px] font-mono text-teal-900 dark:text-cyan-400 font-bold truncate">
                 MarathiTypingMaster-Setup.bat
               </div>
             </div>
@@ -519,7 +519,7 @@ exit
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-black text-base border border-cyan-500/30">
+                <div className="w-10 h-10 rounded-2xl bg-cyan-500/15 text-cyan-900 dark:text-cyan-400 flex items-center justify-center font-black text-base border border-cyan-500/30">
                   2
                 </div>
                 <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -531,7 +531,7 @@ exit
                     : 'Double-click the downloaded setup file. It unpacks the Remington typing engine into C:\\MarathiTypingMaster.'}
                 </p>
               </div>
-              <div className="p-2 rounded-lg bg-cyan-500/10 text-[11px] font-mono text-cyan-600 dark:text-cyan-400 font-bold truncate">
+              <div className="p-2 rounded-lg bg-cyan-500/10 text-[11px] font-mono text-cyan-900 dark:text-cyan-400 font-bold truncate">
                 Target: C:\MarathiTypingMaster
               </div>
             </div>
@@ -541,7 +541,7 @@ exit
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-base border border-emerald-500/30">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 text-emerald-900 dark:text-emerald-400 flex items-center justify-center font-black text-base border border-emerald-500/30">
                   3
                 </div>
                 <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -553,7 +553,7 @@ exit
                     : 'When installation completes, the official "Installation Complete" window shows with shortcut creation options.'}
                 </p>
               </div>
-              <div className="p-2 rounded-lg bg-emerald-500/10 text-[11px] font-mono text-emerald-600 dark:text-cyan-400 font-bold truncate">
+              <div className="p-2 rounded-lg bg-emerald-500/10 text-[11px] font-mono text-emerald-900 dark:text-cyan-400 font-bold truncate">
                 Status: 100% Complete
               </div>
             </div>
@@ -563,7 +563,7 @@ exit
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-black text-base border border-amber-500/30">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-900 dark:text-amber-400 flex items-center justify-center font-black text-base border border-amber-500/30">
                   4
                 </div>
                 <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -575,7 +575,7 @@ exit
                     : 'Leave "Create shortcut to desktop" enabled. A direct 1-click launcher is placed on your Windows Desktop.'}
                 </p>
               </div>
-              <div className="p-2 rounded-lg bg-amber-500/10 text-[11px] font-mono text-amber-600 dark:text-amber-400 font-bold truncate">
+              <div className="p-2 rounded-lg bg-amber-500/10 text-[11px] font-mono text-amber-900 dark:text-amber-400 font-bold truncate">
                 Desktop Shortcut: [✓] ON
               </div>
             </div>
@@ -600,7 +600,7 @@ exit
             <div className={`p-6 rounded-3xl border transition-colors space-y-3.5 ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80 shadow-sm'
             }`}>
-              <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/30 w-fit">
+              <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-900 dark:text-teal-400 border border-teal-500/30 w-fit">
                 <Keyboard className="w-6 h-6" />
               </div>
               <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -617,7 +617,7 @@ exit
             <div className={`p-6 rounded-3xl border transition-colors space-y-3.5 ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80 shadow-sm'
             }`}>
-              <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 w-fit">
+              <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-900 dark:text-cyan-400 border border-cyan-500/30 w-fit">
                 <Award className="w-6 h-6" />
               </div>
               <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -634,7 +634,7 @@ exit
             <div className={`p-6 rounded-3xl border transition-colors space-y-3.5 ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80 shadow-sm'
             }`}>
-              <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 w-fit">
+              <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-900 dark:text-emerald-400 border border-emerald-500/30 w-fit">
                 <Cpu className="w-6 h-6" />
               </div>
               <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -651,7 +651,7 @@ exit
             <div className={`p-6 rounded-3xl border transition-colors space-y-3.5 ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80 shadow-sm'
             }`}>
-              <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 w-fit">
+              <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-900 dark:text-amber-400 border border-amber-500/30 w-fit">
                 <Users className="w-6 h-6" />
               </div>
               <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -668,7 +668,7 @@ exit
             <div className={`p-6 rounded-3xl border transition-colors space-y-3.5 ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80 shadow-sm'
             }`}>
-              <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/30 w-fit">
+              <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-900 dark:text-purple-400 border border-purple-500/30 w-fit">
                 <Sparkles className="w-6 h-6" />
               </div>
               <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -685,7 +685,7 @@ exit
             <div className={`p-6 rounded-3xl border transition-colors space-y-3.5 ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80 shadow-sm'
             }`}>
-              <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 w-fit">
+              <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-900 dark:text-rose-400 border border-rose-500/30 w-fit">
                 <FileText className="w-6 h-6" />
               </div>
               <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -720,7 +720,7 @@ exit
             <div className={`p-4 rounded-2xl border space-y-2 ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
-              <div className="font-bold text-teal-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <div className="font-bold text-teal-900 dark:text-cyan-400 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{language === 'mr' ? 'धडा १: होम रो कीज (Home Row)' : 'Stage 1: Home Row Keys'}</span>
               </div>
@@ -735,7 +735,7 @@ exit
             <div className={`p-4 rounded-2xl border space-y-2 ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
-              <div className="font-bold text-teal-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <div className="font-bold text-teal-900 dark:text-cyan-400 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{language === 'mr' ? 'धडा २: अप्पर रो कीज (Upper Row)' : 'Stage 2: Upper Row Keys'}</span>
               </div>
@@ -750,7 +750,7 @@ exit
             <div className={`p-4 rounded-2xl border space-y-2 ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
-              <div className="font-bold text-teal-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <div className="font-bold text-teal-900 dark:text-cyan-400 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{language === 'mr' ? 'धडा ३: बॉटम रो कीज (Bottom Row)' : 'Stage 3: Bottom Row Keys'}</span>
               </div>
@@ -765,7 +765,7 @@ exit
             <div className={`p-4 rounded-2xl border space-y-2 ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
-              <div className="font-bold text-teal-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <div className="font-bold text-teal-900 dark:text-cyan-400 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{language === 'mr' ? 'धडा ४: शिफ्ट कीज व जोडाक्षरे' : 'Stage 4: Shift Keys & Conjuncts'}</span>
               </div>
@@ -780,7 +780,7 @@ exit
             <div className={`p-4 rounded-2xl border space-y-2 ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
-              <div className="font-bold text-teal-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <div className="font-bold text-teal-900 dark:text-cyan-400 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{language === 'mr' ? 'धडा ५: अंक व विरामचिन्हे' : 'Stage 5: Numerals & Punctuation'}</span>
               </div>
@@ -795,7 +795,7 @@ exit
             <div className={`p-4 rounded-2xl border space-y-2 ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
             }`}>
-              <div className="font-bold text-teal-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <div className="font-bold text-teal-900 dark:text-cyan-400 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{language === 'mr' ? 'धडा ६: GCC-TBC स्पीड ड्रिल्स' : 'Stage 6: GCC-TBC Speed Drills'}</span>
               </div>
@@ -840,7 +840,7 @@ exit
                 <span className="font-bold text-sm block text-slate-900 dark:text-white">
                   {language === 'mr' ? 'श्री. विठ्ठलराव देशमुख' : 'Mr. Vitthalrao Deshmukh'}
                 </span>
-                <span className="text-[11px] text-teal-600 dark:text-cyan-400 block">
+                <span className="text-[11px] text-teal-900 dark:text-cyan-400 block">
                   {language === 'mr' ? 'संचालक, श्री दत्त कॉम्प्युटर व टायपिंग, पुणे' : 'Director, Shree Datta Typing Institute, Pune'}
                 </span>
               </div>
@@ -864,7 +864,7 @@ exit
                 <span className="font-bold text-sm block text-slate-900 dark:text-white">
                   {language === 'mr' ? 'सौ. अनघा कुलकर्णी' : 'Mrs. Anagha Kulkarni'}
                 </span>
-                <span className="text-[11px] text-teal-600 dark:text-cyan-400 block">
+                <span className="text-[11px] text-teal-900 dark:text-cyan-400 block">
                   {language === 'mr' ? 'प्रशिक्षिका, आदर्श करिअर अकॅडमी, छत्रपती संभाजीनगर' : 'Instructor, Adarsh Career Academy, Chhatrapati Sambhajinagar'}
                 </span>
               </div>
@@ -888,7 +888,7 @@ exit
                 <span className="font-bold text-sm block text-slate-900 dark:text-white">
                   {language === 'mr' ? 'श्री. सचिन पाटील' : 'Sachin Patil'}
                 </span>
-                <span className="text-[11px] text-teal-600 dark:text-cyan-400 block">
+                <span className="text-[11px] text-teal-900 dark:text-cyan-400 block">
                   {language === 'mr' ? 'विद्यार्थी (कोर्ट भरती उत्तीर्ण), कोल्हापूर' : 'Selected Candidate, Court Clerk Exam, Kolhapur'}
                 </span>
               </div>
@@ -901,7 +901,7 @@ exit
           isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white/95 border-teal-200/80'
         }`}>
           <div className="flex items-center gap-2.5 pb-5 border-b border-teal-900/40">
-            <Laptop className="w-6 h-6 text-teal-600 dark:text-cyan-400" />
+            <Laptop className="w-6 h-6 text-teal-900 dark:text-cyan-400" />
             <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {language === 'mr' ? 'संगणक प्रणाली आवश्यकता (System Requirements)' : 'Windows System Requirements'}
             </h2>
@@ -913,7 +913,7 @@ exit
             }`}>
               <span className="text-[11px] text-slate-500 block">{language === 'mr' ? 'ऑपरेटिंग सिस्टम (OS)' : 'Operating System'}</span>
               <span className="font-bold text-sm block mt-1">Windows 11 / 10 / 8 / 7</span>
-              <span className="text-[11px] text-teal-600 dark:text-cyan-400">{language === 'mr' ? '३२ व ६४ बिट सपोर्ट' : '32-bit & 64-bit Compatible'}</span>
+              <span className="text-[11px] text-teal-900 dark:text-cyan-400">{language === 'mr' ? '३२ व ६४ बिट सपोर्ट' : '32-bit & 64-bit Compatible'}</span>
             </div>
 
             <div className={`p-4 rounded-2xl border ${
@@ -921,7 +921,7 @@ exit
             }`}>
               <span className="text-[11px] text-slate-500 block">{language === 'mr' ? 'रॅम (RAM)' : 'System Memory (RAM)'}</span>
               <span className="font-bold text-sm block mt-1">{language === 'mr' ? '512 MB किमान' : '512 MB Minimum'}</span>
-              <span className="text-[11px] text-teal-600 dark:text-cyan-400">{language === 'mr' ? '1 GB शिफारस केलेले' : '1 GB Recommended'}</span>
+              <span className="text-[11px] text-teal-900 dark:text-cyan-400">{language === 'mr' ? '1 GB शिफारस केलेले' : '1 GB Recommended'}</span>
             </div>
 
             <div className={`p-4 rounded-2xl border ${
@@ -929,7 +929,7 @@ exit
             }`}>
               <span className="text-[11px] text-slate-500 block">{language === 'mr' ? 'हार्ड डिस्क जागा (Storage)' : 'Disk Space'}</span>
               <span className="font-bold text-sm block mt-1">50 MB</span>
-              <span className="text-[11px] text-teal-600 dark:text-cyan-400">C:\MarathiTypingMaster</span>
+              <span className="text-[11px] text-teal-900 dark:text-cyan-400">C:\MarathiTypingMaster</span>
             </div>
 
             <div className={`p-4 rounded-2xl border ${
@@ -937,7 +937,7 @@ exit
             }`}>
               <span className="text-[11px] text-slate-500 block">{language === 'mr' ? 'कीबोर्ड (Keyboard)' : 'Keyboard Hardware'}</span>
               <span className="font-bold text-sm block mt-1">Standard 104-Key</span>
-              <span className="text-[11px] text-teal-600 dark:text-cyan-400">QWERTY Hardware Keypad</span>
+              <span className="text-[11px] text-teal-900 dark:text-cyan-400">QWERTY Hardware Keypad</span>
             </div>
           </div>
         </section>
@@ -957,7 +957,7 @@ exit
             <div className={`p-4 rounded-2xl border ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white border-teal-200/80 shadow-sm'
             }`}>
-              <h4 className="font-bold text-sm text-teal-600 dark:text-cyan-300 mb-1">
+              <h4 className="font-bold text-sm text-teal-950 dark:text-cyan-300 mb-1">
                 {language === 'mr' ? '१. इन्स्टॉल झाल्यानंतर इंटरनेट आवश्यक आहे का?' : '1. Do I need an active internet connection after installing?'}
               </h4>
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -970,7 +970,7 @@ exit
             <div className={`p-4 rounded-2xl border ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white border-teal-200/80 shadow-sm'
             }`}>
-              <h4 className="font-bold text-sm text-teal-600 dark:text-cyan-300 mb-1">
+              <h4 className="font-bold text-sm text-teal-950 dark:text-cyan-300 mb-1">
                 {language === 'mr' ? '२. डेस्कटॉप शॉर्टकट कसा तयार होतो?' : '2. How does the Desktop Shortcut work?'}
               </h4>
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -983,7 +983,7 @@ exit
             <div className={`p-4 rounded-2xl border ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white border-teal-200/80 shadow-sm'
             }`}>
-              <h4 className="font-bold text-sm text-teal-600 dark:text-cyan-300 mb-1">
+              <h4 className="font-bold text-sm text-teal-950 dark:text-cyan-300 mb-1">
                 {language === 'mr' ? '३. हे सॉफ्टवेअर GCC-TBC शासकीय परीक्षेसाठी उपयुक्त आहे का?' : '3. Is it compliant with Maharashtra GCC-TBC examination standards?'}
               </h4>
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -996,7 +996,7 @@ exit
             <div className={`p-4 rounded-2xl border ${
               isDark ? 'bg-[#072431]/95 border-teal-800/40' : 'bg-white border-teal-200/80 shadow-sm'
             }`}>
-              <h4 className="font-bold text-sm text-teal-600 dark:text-cyan-300 mb-1">
+              <h4 className="font-bold text-sm text-teal-950 dark:text-cyan-300 mb-1">
                 {language === 'mr' ? '४. विंडोज डिफेंडर अथवा अँटीव्हायरस सुरक्षित आहे का?' : '4. Is the setup file safe and virus-free?'}
               </h4>
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -1053,7 +1053,7 @@ exit
       }`}>
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
-            <span className="font-bold text-teal-600 dark:text-cyan-400">
+            <span className="font-bold text-teal-900 dark:text-cyan-400">
               {language === 'mr' ? 'मराठी टायपिंग मास्टर' : 'Marathi Typing Master'}
             </span>
             <span>•</span>
@@ -1063,18 +1063,18 @@ exit
           </div>
 
           <div className="flex items-center gap-6 flex-wrap justify-center">
-            <a href="#features" className="hover:text-teal-500 transition-colors">
+            <a href="#features" className="hover:text-teal-900 dark:hover:text-cyan-300 transition-colors">
               {language === 'mr' ? 'वैशिष्ट्ये' : 'Features'}
             </a>
-            <a href="#how-to-install" className="hover:text-teal-500 transition-colors">
+            <a href="#how-to-install" className="hover:text-teal-900 dark:hover:text-cyan-300 transition-colors">
               {language === 'mr' ? 'इन्स्टॉलेशन' : 'Installation'}
             </a>
-            <a href="#curriculum" className="hover:text-teal-500 transition-colors">
+            <a href="#curriculum" className="hover:text-teal-900 dark:hover:text-cyan-300 transition-colors">
               {language === 'mr' ? 'अभ्यासक्रम' : 'Curriculum'}
             </a>
             <button 
               onClick={handleDownloadSetup}
-              className="font-bold text-teal-600 dark:text-cyan-400 hover:underline cursor-pointer"
+              className="font-bold text-teal-900 dark:text-cyan-400 hover:underline cursor-pointer"
             >
               {language === 'mr' ? 'डाउनलोड' : 'Download'}
             </button>
@@ -1092,7 +1092,7 @@ exit
           className={`fixed bottom-6 right-6 z-50 p-3.5 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer border ${
             isDark
               ? 'bg-[#0B2E3F]/90 hover:bg-[#0E3549] text-cyan-300 border-teal-500/50 shadow-cyan-950/80 backdrop-blur-md'
-              : 'bg-white/95 hover:bg-teal-50 text-teal-700 border-teal-300 shadow-teal-900/20 backdrop-blur-md'
+              : 'bg-white/95 hover:bg-teal-50 text-teal-900 border-teal-300 shadow-teal-900/20 backdrop-blur-md'
           }`}
         >
           <ArrowUp className="w-5 h-5 stroke-[2.5]" />

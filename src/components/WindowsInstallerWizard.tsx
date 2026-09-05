@@ -272,15 +272,15 @@ Categories=Education;Utility;
               </div>
 
               <div className={`p-3.5 rounded-xl border text-xs space-y-1 ${
-                isDark ? 'bg-[#03151E]/60 border-teal-950 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'
+                isDark ? 'bg-[#03151E]/60 border-teal-950 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700 font-medium'
               }`}>
                 <div className="flex justify-between">
                   <span>{language === 'mr' ? 'आवश्यक जागा:' : 'Space required:'}</span>
-                  <span className="font-mono font-bold text-teal-600 dark:text-cyan-400">48.6 MB</span>
+                  <span className="font-mono font-bold text-teal-950 dark:text-cyan-400">48.6 MB</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{language === 'mr' ? 'C:\\ ड्राईव्हवर उपलब्ध जागा:' : 'Space available on drive C:\\:'}</span>
-                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">124.8 GB</span>
+                  <span className="font-mono font-bold text-emerald-950 dark:text-emerald-400">124.8 GB</span>
                 </div>
               </div>
             </div>
@@ -290,10 +290,10 @@ Categories=Education;Utility;
           {step === 'installing' && (
             <div className="space-y-6 my-auto animate-fadeIn">
               <div className="text-center space-y-1">
-                <h3 className="text-base sm:text-lg font-black text-teal-600 dark:text-cyan-300">
+                <h3 className="text-base sm:text-lg font-black text-teal-950 dark:text-cyan-300">
                   {language === 'mr' ? 'मराठी टायपिंग मास्टर इन्स्टॉल होत आहे...' : 'Installing Marathi Typing Master...'}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-400 font-medium">
                   {language === 'mr' ? 'कृपया प्रतीक्षा करा, फाइल्स C:\\ ड्राईव्हवर कॉपी केल्या जात आहेत.' : 'Please wait while Setup copies files to your C: drive.'}
                 </p>
               </div>
@@ -301,10 +301,10 @@ Categories=Education;Utility;
               {/* Progress Bar Container */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs font-mono font-bold">
-                  <span className="truncate max-w-[320px] text-[11px] text-slate-500 dark:text-slate-400">
+                  <span className="truncate max-w-[320px] text-[11px] text-slate-700 dark:text-slate-400 font-medium">
                     {installationFiles[currentFileIndex]}
                   </span>
-                  <span className="text-teal-600 dark:text-cyan-400">{progress}%</span>
+                  <span className="text-teal-950 dark:text-cyan-400 font-bold">{progress}%</span>
                 </div>
 
                 <div className={`w-full h-4 rounded-full overflow-hidden p-0.5 border ${
@@ -318,9 +318,9 @@ Categories=Education;Utility;
               </div>
 
               <div className={`p-3 rounded-xl border text-[11px] flex items-center justify-center gap-2 ${
-                isDark ? 'bg-[#03151E]/80 border-teal-900/60 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'
+                isDark ? 'bg-[#03151E]/80 border-teal-900/60 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700 font-medium'
               }`}>
-                <RotateCw className="w-3.5 h-3.5 animate-spin text-teal-500" />
+                <RotateCw className="w-3.5 h-3.5 animate-spin text-teal-600 dark:text-teal-500" />
                 <span>{language === 'mr' ? 'गंतव्य स्थान: C:\\MarathiTypingMaster' : 'Destination: C:\\MarathiTypingMaster'}</span>
               </div>
             </div>
@@ -330,14 +330,14 @@ Categories=Education;Utility;
           {step === 'complete' && (
             <div className="space-y-5 animate-fadeIn">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border-2 border-emerald-500 text-emerald-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border-2 border-emerald-500 text-emerald-600 dark:text-emerald-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20">
                   <CheckCircle2 className="w-8 h-8 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400">
+                  <h3 className="text-lg sm:text-xl font-black text-emerald-950 dark:text-emerald-400">
                     {language === 'mr' ? 'इन्स्टॉलेशन यशस्वीरित्या पूर्ण झाले!' : 'Installation Complete!'}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <p className="text-xs text-slate-700 dark:text-slate-400 mt-1 font-medium">
                     {language === 'mr' 
                       ? `सॉफ्टवेअर यशस्वीरीत्या ${installPath} मध्ये इन्स्टॉल झाले आहे.`
                       : `Marathi Typing Master has been successfully installed in ${installPath}.`}
@@ -358,13 +358,13 @@ Categories=Education;Utility;
                       sound.playKeyClick();
                       setCreateDesktopShortcut(e.target.checked);
                     }}
-                    className="mt-0.5 w-4 h-4 rounded border-teal-500 text-teal-500 focus:ring-teal-400 accent-teal-500 cursor-pointer"
+                    className="mt-0.5 w-4 h-4 rounded border-teal-500 text-teal-600 focus:ring-teal-400 accent-teal-600 cursor-pointer"
                   />
                   <div>
-                    <span className="text-xs font-bold block group-hover:text-teal-600 dark:group-hover:text-cyan-300 transition-colors">
+                    <span className="text-xs font-bold block text-slate-900 dark:text-slate-100 group-hover:text-teal-950 dark:group-hover:text-cyan-300 transition-colors">
                       {language === 'mr' ? 'डेस्कटॉपवर ॲप्लिकेशनचा शॉर्टकट तयार करा (Create Desktop Shortcut)' : 'Create shortcut of application to desktop'}
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
+                    <span className="text-[11px] text-slate-700 dark:text-slate-400 block font-medium">
                       {language === 'mr' 
                         ? 'संगणकाच्या मुख्य स्क्रीनवरून (Desktop) १-क्लिकमध्ये थेट ॲप सुरू करा.' 
                         : 'Places a quick launcher icon directly onto your Windows Desktop.'}
@@ -381,13 +381,13 @@ Categories=Education;Utility;
                       sound.playKeyClick();
                       setDownloadSetupScript(e.target.checked);
                     }}
-                    className="mt-0.5 w-4 h-4 rounded border-teal-500 text-teal-500 focus:ring-teal-400 accent-teal-500 cursor-pointer"
+                    className="mt-0.5 w-4 h-4 rounded border-teal-500 text-teal-600 focus:ring-teal-400 accent-teal-600 cursor-pointer"
                   />
                   <div>
-                    <span className="text-xs font-bold block group-hover:text-teal-600 dark:group-hover:text-cyan-300 transition-colors">
+                    <span className="text-xs font-bold block text-slate-900 dark:text-slate-100 group-hover:text-teal-950 dark:group-hover:text-cyan-300 transition-colors">
                       {language === 'mr' ? 'ऑफलाइन इन्स्टॉलर (Setup.bat) देखील डाउनलोड करा' : 'Download Windows Offline Installer (Setup.bat)'}
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
+                    <span className="text-[11px] text-slate-700 dark:text-slate-400 block font-medium">
                       {language === 'mr' 
                         ? 'C:\\MarathiTypingMaster मध्ये फाइल्स इन्स्टॉल करण्यासाठी सेट-अप फाइल सेव्ह करा.' 
                         : 'Saves the offline installer script to install files into C:\\MarathiTypingMaster.'}

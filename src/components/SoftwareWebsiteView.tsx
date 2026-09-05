@@ -245,15 +245,15 @@ exit
                   sound.playKeyClick();
                   onStartPracticing();
                 }}
-                className="px-4 py-3.5 text-xs font-bold text-slate-500 hover:text-teal-600 dark:hover:text-cyan-300 underline underline-offset-4 cursor-pointer transition-colors"
+                className="px-4 py-3.5 text-xs font-bold text-slate-700 hover:text-teal-950 dark:text-slate-400 dark:hover:text-cyan-300 underline underline-offset-4 cursor-pointer transition-colors"
               >
                 {language === 'mr' ? 'किंवा ऑनलाइन वेब व्हर्जन वापरा →' : 'Or practice online in browser →'}
               </button>
             </div>
 
             {downloadSuccess && (
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-950 dark:text-emerald-400 text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
                 <span>
                   {language === 'mr'
                     ? 'डाउनलोड सुरू झाले! डाउनलोड झालेली "MarathiTypingMaster-Setup.bat" फाइल उघडून C:\ ड्राईव्हवर इन्स्टॉल करा.'
@@ -276,32 +276,32 @@ exit
                   <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
                   <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
                 </div>
-                <span className="text-[11px] font-mono font-bold text-teal-600 dark:text-cyan-400">
+                <span className="text-[11px] font-mono font-bold text-teal-950 dark:text-cyan-400">
                   C:\MarathiTypingMaster
                 </span>
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-300 font-bold">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-teal-500/10 text-teal-950 dark:text-teal-300 font-bold">
                   <div className="flex items-center gap-2">
-                    <FileCheck className="w-4 h-4 text-emerald-500" />
+                    <FileCheck className="w-4 h-4 text-emerald-600" />
                     <span>Setup Package</span>
                   </div>
                   <span>1.8 MB (Instant)</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-teal-500/5 text-slate-500 dark:text-slate-400">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-teal-500/5 text-slate-700 dark:text-slate-400 font-medium">
                   <div className="flex items-center gap-2">
-                    <FolderCheck className="w-4 h-4 text-amber-500" />
+                    <FolderCheck className="w-4 h-4 text-amber-600" />
                     <span>Install Path</span>
                   </div>
-                  <span className="font-mono">C:\MarathiTypingMaster</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-slate-300">C:\MarathiTypingMaster</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-teal-500/5 text-slate-500 dark:text-slate-400">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-teal-500/5 text-slate-700 dark:text-slate-400 font-medium">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-cyan-500" />
+                    <CheckCircle2 className="w-4 h-4 text-teal-600" />
                     <span>Desktop Shortcut</span>
                   </div>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">होय / Enabled</span>
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">होय / Enabled</span>
                 </div>
               </div>
 
@@ -327,7 +327,7 @@ exit
           <h2 className={`text-xl sm:text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
             {language === 'mr' ? 'सॉफ्टवेअर इन्स्टॉलेशन कसे होते? (४ सोप्या पायऱ्या)' : 'How Software Installation Works (4 Easy Steps)'}
           </h2>
-          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
             {language === 'mr' 
               ? 'टायपिंग मास्टर प्रमाणेच तुमच्या संगणकावर प्रत्यक्ष सॉफ्टवेअर इन्स्टॉल करण्याची सोपी पद्धत.' 
               : 'The simple, authentic software installation flow directly to your Windows PC.'}
@@ -340,19 +340,19 @@ exit
             isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
           }`}>
             <div className="space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-black text-sm border border-teal-500/30">
+              <div className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-950 dark:text-teal-400 flex items-center justify-center font-black text-sm border border-teal-500/30">
                 1
               </div>
               <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {language === 'mr' ? '१. ॲप्लिकेशन डाउनलोड करा' : '1. Download Application'}
               </h3>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
                 {language === 'mr'
                   ? 'वरील डाउनलोड बटनावर क्लिक करून MarathiTypingMaster-Setup.bat ही इन्स्टॉलर फाइल संगणकावर सेव्ह करा.'
                   : 'Click the Download button to save MarathiTypingMaster-Setup.bat installer onto your PC.'}
               </p>
             </div>
-            <span className="text-[11px] font-mono text-teal-600 dark:text-cyan-400">
+            <span className="text-[11px] font-mono font-bold text-teal-950 dark:text-cyan-400">
               MarathiTypingMaster-Setup.bat
             </span>
           </div>
@@ -362,19 +362,19 @@ exit
             isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
           }`}>
             <div className="space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-black text-sm border border-cyan-500/30">
+              <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-950 dark:text-cyan-400 flex items-center justify-center font-black text-sm border border-cyan-500/30">
                 2
               </div>
               <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {language === 'mr' ? '२. C:\ ड्राईव्हवर इन्स्टॉल करा' : '2. Install to C: Drive'}
               </h3>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
                 {language === 'mr'
                   ? 'डाउनलोड केलेल्या फाइलवर क्लिक करताच ती C:\\MarathiTypingMaster फोल्डरमध्ये सर्व फाइल्स इन्स्टॉल करते.'
                   : 'Run the setup file. It unpacks the typing tutor engine directly into C:\\MarathiTypingMaster.'}
               </p>
             </div>
-            <span className="text-[11px] font-mono text-cyan-600 dark:text-cyan-400">
+            <span className="text-[11px] font-mono font-bold text-cyan-950 dark:text-cyan-400">
               Target: C:\MarathiTypingMaster
             </span>
           </div>
@@ -384,19 +384,19 @@ exit
             isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
           }`}>
             <div className="space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm border border-emerald-500/30">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-950 dark:text-emerald-400 flex items-center justify-center font-black text-sm border border-emerald-500/30">
                 3
               </div>
               <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {language === 'mr' ? '३. इन्स्टॉलेशन कम्प्लीट विंडो' : '3. Complete Window'}
               </h3>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
                 {language === 'mr'
                   ? 'इन्स्टॉलेशन पूर्ण झाल्यावर "Installation Complete" विंडो दिसेल. यात डेस्कटॉप शॉर्टकटचा पर्याय असेल.'
                   : 'When installation completes, the "Installation Complete" window shows with desktop shortcut option.'}
               </p>
             </div>
-            <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
+            <span className="text-[11px] font-mono font-bold text-emerald-950 dark:text-emerald-400">
               Status: 100% Complete
             </span>
           </div>
@@ -406,19 +406,19 @@ exit
             isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-50 border-slate-200'
           }`}>
             <div className="space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-black text-sm border border-amber-500/30">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-950 dark:text-amber-400 flex items-center justify-center font-black text-sm border border-amber-500/30">
                 4
               </div>
               <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {language === 'mr' ? '४. डेस्कटॉप शॉर्टकट तयार करा' : '4. Desktop Shortcut'}
               </h3>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
                 {language === 'mr'
                   ? '"Create shortcut of application to desktop" चालू ठेवा. संगणकाच्या डेस्कटॉपवर थेट शॉर्टकट तयार होतो.'
                   : 'Toggle ON "Create shortcut to desktop". A direct desktop shortcut is placed on your Windows Desktop.'}
               </p>
             </div>
-            <span className="text-[11px] font-mono text-amber-600 dark:text-amber-400">
+            <span className="text-[11px] font-mono font-bold text-amber-950 dark:text-amber-400">
               Desktop Shortcut: Enabled
             </span>
           </div>

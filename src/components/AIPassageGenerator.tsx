@@ -143,8 +143,10 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
 
           {/* Quick AI Options */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-[#051C27] p-1 rounded-xl border border-teal-900/60">
-              <span className="text-[11px] text-slate-400 font-bold px-2">{language === 'mr' ? 'गती:' : 'Speed:'}</span>
+            <div className={`flex items-center gap-1.5 p-1 rounded-xl border ${
+              isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-100 border-slate-300'
+            }`}>
+              <span className={`text-[11px] font-bold px-2 ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>{language === 'mr' ? 'गती:' : 'Speed:'}</span>
               {[30, 40].map(spd => (
                 <button
                   key={spd}
@@ -152,7 +154,7 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
                   className={`px-3 py-1 text-xs font-black rounded-lg cursor-pointer transition-all ${
                     targetSpeed === spd
                       ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 shadow-md'
-                      : 'text-slate-300 hover:text-white'
+                      : isDark ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-slate-950'
                   }`}
                 >
                   {spd} WPM
@@ -160,15 +162,19 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
               ))}
             </div>
 
-            <div className="flex items-center gap-1.5 bg-[#051C27] p-1 rounded-xl border border-teal-900/60">
+            <div className={`flex items-center gap-1.5 p-1 rounded-xl border ${
+              isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-100 border-slate-300'
+            }`}>
               {(['easy', 'medium', 'hard'] as const).map(lvl => (
                 <button
                   key={lvl}
                   onClick={() => { sound.playKeyClick(); setDifficulty(lvl); }}
                   className={`px-3 py-1 text-xs font-bold rounded-lg cursor-pointer transition-all ${
                     difficulty === lvl
-                      ? 'bg-teal-500/20 text-cyan-300 border border-teal-500/40'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? isDark 
+                        ? 'bg-teal-500/20 text-cyan-300 border border-teal-500/40' 
+                        : 'bg-white text-teal-950 font-bold border border-teal-300 shadow-sm'
+                      : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {lvl === 'easy' ? (language === 'mr' ? 'सोपे' : 'Easy') : lvl === 'medium' ? (language === 'mr' ? 'मध्यम' : 'Med') : (language === 'mr' ? 'कठीण' : 'Hard')}
@@ -203,7 +209,11 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
             value={customPrompt}
             onChange={e => setCustomPrompt(e.target.value)}
             placeholder={language === 'mr' ? 'उदा. डॉ. बाबासाहेब आंबेडकर, इस्रो मोहीम, पर्यावरण संवर्धन किंवा कोणताही विषय...' : 'Optional custom prompt: e.g. ISRO missions, Chhatrapati Shivaji Maharaj, Climate change...'}
-            className="flex-1 w-full bg-[#051C27] border border-teal-900/70 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-sans"
+            className={`flex-1 w-full rounded-xl px-4 py-2.5 text-xs sm:text-sm border focus:outline-none font-sans ${
+              isDark 
+                ? 'bg-[#051C27] border-teal-900/70 text-slate-200 placeholder-slate-500 focus:border-cyan-400' 
+                : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500'
+            }`}
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           />
           {customPrompt && (
@@ -291,15 +301,19 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1 bg-[#051C27] p-1 rounded-xl border border-teal-900/60 text-xs">
+            <div className={`flex items-center gap-1 p-1 rounded-xl border text-xs ${
+              isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-100 border-slate-300'
+            }`}>
               {(['all', '30', '40'] as const).map(s => (
                 <button
                   key={s}
                   onClick={() => { sound.playKeyClick(); setSpeedFilter(s); }}
                   className={`px-3 py-1 rounded-lg font-bold cursor-pointer transition-all ${
                     speedFilter === s
-                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? isDark 
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' 
+                        : 'bg-white text-teal-950 font-black border border-teal-300 shadow-sm'
+                      : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 hover:text-slate-950'
                   }`}
                 >
                   {s === 'all' ? (language === 'mr' ? 'सर्व गती' : 'All') : `${s} WPM`}
@@ -318,7 +332,9 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer transition-all border ${
                 selectedTopic === t.id
                   ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 font-black border-cyan-300 shadow-md shadow-teal-500/20'
-                  : 'bg-[#051C27] text-slate-300 border-teal-900/60 hover:border-teal-700/60 hover:bg-[#082837]'
+                  : isDark 
+                    ? 'bg-[#051C27] text-slate-300 border-teal-900/60 hover:border-teal-700/60 hover:bg-[#082837]' 
+                    : 'bg-slate-100 text-slate-800 border-slate-300 hover:border-teal-400 hover:bg-white font-bold'
               }`}
             >
               {language === 'mr' ? t.nameMr : t.nameEn}
