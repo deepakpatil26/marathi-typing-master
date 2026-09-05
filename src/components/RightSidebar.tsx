@@ -10,8 +10,7 @@ import {
   Info, 
   ChevronLeft,
   Keyboard,
-  Sparkles,
-  Download
+  Sparkles
 } from 'lucide-react';
 import { sound } from '../utils/audio';
 import { useTheme } from '../context/ThemeContext';
@@ -31,7 +30,6 @@ export const RightSidebar: React.FC<RightSidebarProps> = ({
 
   const tabs: { id: SidebarTab; labelEn: string; labelMr: string; icon: React.ReactNode }[] = [
     { id: 'course', labelEn: 'Course', labelMr: 'कोर्स (Course)', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'software-website', labelEn: 'Download Setup', labelMr: 'सॉफ्टवेअर डाउनलोड', icon: <Download className="w-4 h-4" /> },
     { id: 'ai-passage', labelEn: 'AI Passages', labelMr: 'AI विषय परिच्छेद', icon: <Sparkles className="w-4 h-4" /> },
     { id: 'review', labelEn: 'Review & AI', labelMr: 'पुनरावलोकन व AI', icon: <RotateCcw className="w-4 h-4" /> },
     { id: 'exam', labelEn: 'GCC-TBC Exam', labelMr: 'शासकीय परीक्षा (Exam)', icon: <Award className="w-4 h-4" /> },

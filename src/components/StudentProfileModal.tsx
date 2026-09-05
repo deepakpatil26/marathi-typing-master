@@ -151,7 +151,9 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-teal-900/40 shrink-0">
+        <div className={`flex items-center justify-between pb-4 border-b shrink-0 ${
+          isDark ? 'border-teal-900/40' : 'border-teal-100'
+        }`}>
           <div className="flex items-center gap-3">
             <div className={`p-2.5 rounded-2xl border ${
               isDark 
@@ -186,8 +188,12 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
 
         {/* Notification Toast */}
         {feedbackMsg && (
-          <div className="mt-3 px-4 py-2 rounded-xl bg-teal-500/20 border border-teal-400/40 text-teal-300 text-xs font-bold flex items-center gap-2 animate-in fade-in duration-200">
-            <Sparkles className="w-4 h-4 text-teal-400 shrink-0" />
+          <div className={`mt-3 px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 animate-in fade-in duration-200 ${
+            isDark 
+              ? 'bg-teal-500/20 border-teal-400/40 text-teal-300' 
+              : 'bg-teal-50 border-teal-300 text-teal-800'
+          }`}>
+            <Sparkles className={`w-4 h-4 shrink-0 ${isDark ? 'text-teal-400' : 'text-teal-600'}`} />
             <span>{feedbackMsg}</span>
           </div>
         )}
@@ -265,16 +271,22 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                       </div>
 
                       {/* Stats row */}
-                      <div className="mt-3 pt-2.5 border-t border-teal-900/30 flex items-center justify-between text-[11px] font-mono">
+                      <div className={`mt-3 pt-2.5 border-t flex items-center justify-between text-[11px] font-mono ${
+                        isDark ? 'border-teal-900/30' : 'border-teal-100'
+                      }`}>
                         <span className={`flex items-center gap-1 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                          <Award className="w-3.5 h-3.5 text-amber-400" />
+                          <Award className="w-3.5 h-3.5 text-amber-500" />
                           <span>{completedLessonsCount} {language === 'mr' ? 'धडे पूर्ण' : 'lessons'}</span>
                         </span>
                         <span className={`flex items-center gap-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                           <Clock className="w-3 h-3" />
                           <span>{practiceMins} {language === 'mr' ? 'मि.' : 'mins'}</span>
                         </span>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                          isDark 
+                            ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' 
+                            : 'bg-teal-100/60 text-teal-700 border-teal-200'
+                        }`}>
                           {profile.targetSpeed} WPM
                         </span>
                       </div>
@@ -285,22 +297,24 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
             </>
           ) : (
             /* Add Profile Form */
-            <form onSubmit={handleCreateProfile} className="space-y-4 p-4 rounded-2xl border border-teal-800/40 bg-[#051C27]/60">
+            <form onSubmit={handleCreateProfile} className={`space-y-4 p-4 rounded-2xl border ${
+              isDark ? 'border-teal-800/40 bg-[#051C27]/60' : 'border-teal-200 bg-teal-50/40'
+            }`}>
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-teal-300">
+                <h4 className={`text-sm font-bold ${isDark ? 'text-teal-300' : 'text-teal-800'}`}>
                   {language === 'mr' ? 'नवीन विद्यार्थ्याची माहिती भरा' : 'New Student Details'}
                 </h4>
                 <button
                   type="button"
                   onClick={() => setIsAdding(false)}
-                  className="text-xs text-slate-400 hover:text-slate-200 cursor-pointer"
+                  className={`text-xs cursor-pointer ${isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-800'}`}
                 >
                   {language === 'mr' ? 'रद्द करा' : 'Cancel'}
                 </button>
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-slate-300">
+                <label className={`block text-xs font-bold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   {language === 'mr' ? 'विद्यार्थ्याचे नाव (Student Full Name)' : 'Student Full Name'} *
                 </label>
                 <input
@@ -309,12 +323,16 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                   value={nameInput}
                   onChange={e => setNameInput(e.target.value)}
                   placeholder={language === 'mr' ? 'उदा. राहुल रमेश पाटील' : 'e.g. Rahul Patil'}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#03151e] border border-teal-800/60 text-slate-100 text-xs focus:border-cyan-400 focus:outline-none"
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none transition-colors ${
+                    isDark 
+                      ? 'bg-[#03151e] border-teal-800/60 text-slate-100 focus:border-cyan-400' 
+                      : 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-slate-300">
+                <label className={`block text-xs font-bold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   {language === 'mr' ? 'तुकडी / बॅच / रोल नंबर (Batch / Roll No.)' : 'Batch / Roll No.'}
                 </label>
                 <input
@@ -322,12 +340,16 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                   value={batchInput}
                   onChange={e => setBatchInput(e.target.value)}
                   placeholder={language === 'mr' ? 'उदा. सकाळी ९:०० बॅच - रोल ०७' : 'e.g. Morning 9:00 AM - Roll 07'}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#03151e] border border-teal-800/60 text-slate-100 text-xs focus:border-cyan-400 focus:outline-none"
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none transition-colors ${
+                    isDark 
+                      ? 'bg-[#03151e] border-teal-800/60 text-slate-100 focus:border-cyan-400' 
+                      : 'bg-white border-slate-300 text-slate-900 focus:border-teal-500'
+                  }`}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-slate-300">
+                <label className={`block text-xs font-bold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   {language === 'mr' ? 'लक्ष्य गती (Target Exam Speed)' : 'Target Speed'}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -337,7 +359,9 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                     className={`py-2 px-3 rounded-xl font-bold text-xs border cursor-pointer transition-all ${
                       targetSpeed === 30 
                         ? 'bg-teal-500 text-slate-950 border-teal-400' 
-                        : 'bg-[#03151e] text-slate-300 border-teal-900/60 hover:border-teal-700'
+                        : isDark
+                          ? 'bg-[#03151e] text-slate-300 border-teal-900/60 hover:border-teal-700'
+                          : 'bg-white text-slate-700 border-slate-300 hover:border-teal-400'
                     }`}
                   >
                     ३० WPM (GCC-TBC)
@@ -348,7 +372,9 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                     className={`py-2 px-3 rounded-xl font-bold text-xs border cursor-pointer transition-all ${
                       targetSpeed === 40 
                         ? 'bg-teal-500 text-slate-950 border-teal-400' 
-                        : 'bg-[#03151e] text-slate-300 border-teal-900/60 hover:border-teal-700'
+                        : isDark
+                          ? 'bg-[#03151e] text-slate-300 border-teal-900/60 hover:border-teal-700'
+                          : 'bg-white text-slate-700 border-slate-300 hover:border-teal-400'
                     }`}
                   >
                     ४० WPM (Advanced)
@@ -360,7 +386,11 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAdding(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold border border-slate-700 text-slate-300 hover:bg-slate-800 cursor-pointer"
+                  className={`px-4 py-2 rounded-xl text-xs font-bold border cursor-pointer transition-colors ${
+                    isDark 
+                      ? 'border-slate-700 text-slate-300 hover:bg-slate-800' 
+                      : 'border-slate-300 text-slate-600 hover:bg-slate-100'
+                  }`}
                 >
                   {language === 'mr' ? 'मागे' : 'Back'}
                 </button>
@@ -375,11 +405,15 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
           )}
 
           {/* Backup / Export / Pendrive Sync Section */}
-          <div className="pt-3 border-t border-teal-900/40">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 p-3 rounded-2xl bg-teal-950/20 border border-teal-800/30 text-xs">
+          <div className={`pt-3 border-t ${isDark ? 'border-teal-900/40' : 'border-teal-100'}`}>
+            <div className={`flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 p-3 rounded-2xl border text-xs ${
+              isDark 
+                ? 'bg-teal-950/20 border-teal-800/30' 
+                : 'bg-teal-50/60 border-teal-200'
+            }`}>
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
-                <span className={isDark ? 'text-slate-300' : 'text-slate-600'}>
+                <ShieldCheck className={`w-4 h-4 shrink-0 ${isDark ? 'text-teal-400' : 'text-teal-600'}`} />
+                <span className={isDark ? 'text-slate-300' : 'text-slate-700 font-medium'}>
                   {language === 'mr' 
                     ? 'पेन ड्राईव्ह किंवा कॉम्प्युटर बॅकअप (१००% मोफत व ऑफलाइन)' 
                     : 'Local Pen Drive Backup & Restore (100% Free & Offline)'}
@@ -390,7 +424,11 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                 <button
                   id="btn-export-backup"
                   onClick={handleExportBackup}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-700/50 bg-[#0B2E3F] hover:bg-[#0E3549] text-cyan-300 text-[11px] font-bold cursor-pointer transition-colors"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-colors ${
+                    isDark 
+                      ? 'border-teal-700/50 bg-[#0B2E3F] hover:bg-[#0E3549] text-cyan-300' 
+                      : 'border-teal-300 bg-white hover:bg-teal-50 text-teal-800 shadow-sm'
+                  }`}
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>{language === 'mr' ? 'बॅकअप डाऊनलोड' : 'Export JSON'}</span>
@@ -399,7 +437,11 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
                 <button
                   id="btn-import-backup"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-700/50 bg-[#0B2E3F] hover:bg-[#0E3549] text-teal-300 text-[11px] font-bold cursor-pointer transition-colors"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-colors ${
+                    isDark 
+                      ? 'border-teal-700/50 bg-[#0B2E3F] hover:bg-[#0E3549] text-teal-300' 
+                      : 'border-teal-300 bg-white hover:bg-teal-50 text-teal-800 shadow-sm'
+                  }`}
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>{language === 'mr' ? 'इम्पोर्ट करा' : 'Import JSON'}</span>
@@ -417,11 +459,17 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
         </div>
 
         {/* Footer info */}
-        <div className="mt-4 pt-3 border-t border-teal-900/40 flex items-center justify-between text-[11px] text-slate-400">
+        <div className={`mt-4 pt-3 border-t flex items-center justify-between text-[11px] ${
+          isDark ? 'border-teal-900/40 text-slate-400' : 'border-teal-100 text-slate-600'
+        }`}>
           <span>{language === 'mr' ? '१००% मोफत • खाजगी • इंटरनेटची गरज नाही' : '100% Free • Private • Zero Cloud Fees'}</span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer"
+            className={`px-4 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition-colors ${
+              isDark 
+                ? 'bg-slate-800 hover:bg-slate-700 text-slate-200' 
+                : 'bg-slate-200 hover:bg-slate-300 text-slate-800'
+            }`}
           >
             {language === 'mr' ? 'बंद करा' : 'Close'}
           </button>

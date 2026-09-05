@@ -41,7 +41,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   return (
     <div 
       id="settings-view" 
-      className={`w-full rounded-3xl p-6 sm:p-8 backdrop-blur-md flex flex-col gap-6 max-w-3xl mx-auto transition-all duration-200 ${
+      className={`w-full min-w-0 max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 backdrop-blur-md flex flex-col gap-6 transition-all duration-200 ${
         isDark
           ? 'bg-[#072431]/95 border border-teal-800/40 shadow-2xl'
           : 'bg-white/95 border border-teal-200/80 shadow-xl shadow-teal-900/5'

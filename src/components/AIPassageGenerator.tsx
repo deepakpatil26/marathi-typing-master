@@ -113,23 +113,23 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
   };
 
   return (
-    <div id="ai-passage-generator-container" className="w-full flex flex-col gap-6">
+    <div id="ai-passage-generator-container" className="w-full min-w-0 max-w-full flex flex-col gap-6">
       {/* Top Banner / Generator Controls */}
-      <div className={`w-full rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md border transition-colors ${
+      <div className={`w-full min-w-0 max-w-full overflow-hidden rounded-3xl p-5 sm:p-7 shadow-2xl backdrop-blur-md border transition-colors ${
         isDark 
           ? 'bg-[#072431]/95 border-teal-800/40 text-slate-100' 
           : 'bg-white/95 border-teal-200/80 text-slate-900 shadow-teal-900/5'
       }`}>
-        <div className={`flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-6 border-b ${
+        <div className={`flex flex-col xl:flex-row items-start xl:items-center justify-between gap-5 pb-5 border-b ${
           isDark ? 'border-teal-900/50' : 'border-teal-100'
         }`}>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2.5">
-              <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-400 text-slate-950 shadow-md">
+              <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-400 text-slate-950 shadow-md shrink-0">
                 <Sparkles className="w-5 h-5 fill-slate-950" />
               </div>
-              <div>
-                <h2 className={`text-xl sm:text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <div className="min-w-0">
+                <h2 className={`text-lg sm:text-2xl font-black truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   {language === 'mr' ? 'विषयानुसार AI परिच्छेद जनरेटर' : 'AI Topic Passage Generator'}
                 </h2>
                 <p className={`text-xs sm:text-sm mt-0.5 ${isDark ? 'text-cyan-200/70' : 'text-slate-600'}`}>
@@ -142,7 +142,7 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
           </div>
 
           {/* Quick AI Options */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
             <div className={`flex items-center gap-1.5 p-1 rounded-xl border ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-100 border-slate-300'
             }`}>
@@ -185,7 +185,7 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
             <button
               onClick={() => handleGenerateAiPassage()}
               disabled={isGenerating}
-              className="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-teal-500/25 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
+              className="w-full sm:w-auto px-5 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-teal-500/25 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isGenerating ? (
                 <>
@@ -203,13 +203,13 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
         </div>
 
         {/* Optional Custom Topic Prompt Input */}
-        <div className="mt-4 flex flex-col sm:flex-row items-center gap-2">
+        <div className="mt-4 flex flex-col sm:flex-row items-center gap-2 min-w-0">
           <input
             type="text"
             value={customPrompt}
             onChange={e => setCustomPrompt(e.target.value)}
             placeholder={language === 'mr' ? 'उदा. डॉ. बाबासाहेब आंबेडकर, इस्रो मोहीम, पर्यावरण संवर्धन किंवा कोणताही विषय...' : 'Optional custom prompt: e.g. ISRO missions, Chhatrapati Shivaji Maharaj, Climate change...'}
-            className={`flex-1 w-full rounded-xl px-4 py-2.5 text-xs sm:text-sm border focus:outline-none font-sans ${
+            className={`flex-1 w-full min-w-0 rounded-xl px-4 py-2.5 text-xs sm:text-sm border focus:outline-none font-sans ${
               isDark 
                 ? 'bg-[#051C27] border-teal-900/70 text-slate-200 placeholder-slate-500 focus:border-cyan-400' 
                 : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-500'
@@ -219,7 +219,7 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
           {customPrompt && (
             <button
               onClick={() => setCustomPrompt('')}
-              className="px-3 py-2 text-xs text-slate-400 hover:text-rose-400 cursor-pointer font-bold"
+              className="px-3 py-2 text-xs text-slate-400 hover:text-rose-400 cursor-pointer font-bold shrink-0"
             >
               {language === 'mr' ? 'साफ करा' : 'Clear'}
             </button>
@@ -228,21 +228,21 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
 
         {/* Live AI Generated Preview Box */}
         {generatedPassage && (
-          <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-[#072E3F] to-[#041A25] border-2 border-cyan-400/50 shadow-2xl space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-cyan-900/40 pb-3">
-              <div className="flex items-center gap-2.5">
-                <span className="p-1.5 rounded-lg bg-cyan-400/20 text-cyan-300">
+          <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#072E3F] to-[#041A25] border-2 border-cyan-400/50 shadow-2xl space-y-4 min-w-0 overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-cyan-900/40 pb-3 min-w-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="p-1.5 rounded-lg bg-cyan-400/20 text-cyan-300 shrink-0">
                   <Sparkles className="w-4 h-4" />
                 </span>
-                <div>
-                  <h3 className="text-base font-bold text-white font-sans" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-white font-sans truncate" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
                     {generatedPassage.titleMr}
                   </h3>
-                  <p className="text-xs text-cyan-200/70">{generatedPassage.titleEn}</p>
+                  <p className="text-xs text-cyan-200/70 truncate">{generatedPassage.titleEn}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <span className="text-[11px] px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30">
                   {targetSpeed} WPM Standard
                 </span>
@@ -257,14 +257,14 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
               </div>
             </div>
 
-            <p className="text-sm sm:text-base text-slate-100 leading-relaxed p-4 rounded-xl bg-[#02131C] border border-teal-900/60 font-sans" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
+            <p className="text-sm sm:text-base text-slate-100 leading-relaxed p-4 rounded-xl bg-[#02131C] border border-teal-900/60 font-sans break-words" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
               {generatedPassage.text}
             </p>
 
             <div className="flex justify-end pt-1">
               <button
                 onClick={handleLaunchGenerated}
-                className="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-teal-500/25 transition-all cursor-pointer flex items-center gap-2"
+                className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-teal-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Play className="w-4 h-4 fill-slate-950" />
                 <span>{language === 'mr' ? 'हा AI परिच्छेद टंकलेखनासाठी सुरू करा' : 'Start Typing This AI Passage'}</span>
@@ -275,32 +275,32 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
       </div>
 
       {/* Domain Topics Library & Pre-Stored Passages Catalog */}
-      <div className={`w-full rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6 border transition-colors ${
+      <div className={`w-full min-w-0 max-w-full overflow-hidden rounded-3xl p-5 sm:p-7 shadow-2xl backdrop-blur-md space-y-6 border transition-colors ${
         isDark 
           ? 'bg-[#072431]/95 border-teal-800/40 text-slate-100' 
           : 'bg-white/95 border-teal-200/80 text-slate-900 shadow-teal-900/5'
       }`}>
         {/* Filter Headers */}
-        <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b ${
+        <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b min-w-0 ${
           isDark ? 'border-teal-900/50' : 'border-teal-100'
         }`}>
-          <div className="flex items-center gap-2">
-            <div className={`p-2 rounded-xl border ${
+          <div className="flex items-center gap-2 min-w-0">
+            <div className={`p-2 rounded-xl border shrink-0 ${
               isDark ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400' : 'bg-cyan-50 border-cyan-200 text-cyan-700'
             }`}>
               <BookOpen className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <div className="min-w-0">
+              <h3 className={`text-base sm:text-lg font-bold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {language === 'mr' ? 'अधिकृत विषय संग्रह (Official Topics Catalog)' : 'Official Domain Topics Catalog'}
               </h3>
-              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <p className={`text-xs truncate ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 {language === 'mr' ? 'परीक्षेसाठी आवश्यक असलेले सर्व विषयानुसार परिच्छेद' : 'Pre-curated exam passages categorized by official domain'}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <div className={`flex items-center gap-1 p-1 rounded-xl border text-xs ${
               isDark ? 'bg-[#051C27] border-teal-900/60' : 'bg-slate-100 border-slate-300'
             }`}>
@@ -323,57 +323,61 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
           </div>
         </div>
 
-        {/* Topic Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
-          {topicsList.map(t => (
-            <button
-              key={t.id}
-              onClick={() => { sound.playKeyClick(); setSelectedTopic(t.id); }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer transition-all border ${
-                selectedTopic === t.id
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 font-black border-cyan-300 shadow-md shadow-teal-500/20'
-                  : isDark 
-                    ? 'bg-[#051C27] text-slate-300 border-teal-900/60 hover:border-teal-700/60 hover:bg-[#082837]' 
-                    : 'bg-slate-100 text-slate-800 border-slate-300 hover:border-teal-400 hover:bg-white font-bold'
-              }`}
-            >
-              {language === 'mr' ? t.nameMr : t.nameEn}
-            </button>
-          ))}
+        {/* Topic Pills - wrapped safely with horizontal scroll inside bounded parent */}
+        <div className="w-full min-w-0 max-w-full overflow-hidden">
+          <div className="w-full overflow-x-auto pb-2 scrollbar-thin">
+            <div className="flex items-center gap-2 w-max pr-4">
+              {topicsList.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => { sound.playKeyClick(); setSelectedTopic(t.id); }}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer transition-all border shrink-0 ${
+                    selectedTopic === t.id
+                      ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 font-black border-cyan-300 shadow-md shadow-teal-500/20'
+                      : isDark 
+                        ? 'bg-[#051C27] text-slate-300 border-teal-900/60 hover:border-teal-700/60 hover:bg-[#082837]' 
+                        : 'bg-slate-100 text-slate-800 border-slate-300 hover:border-teal-400 hover:bg-white font-bold'
+                  }`}
+                >
+                  {language === 'mr' ? t.nameMr : t.nameEn}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Passage Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 min-w-0 w-full">
           {filteredPresetPassages.map(item => (
             <div
               key={item.id}
-              className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-3 shadow-lg group ${
+              className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-3 shadow-lg group min-w-0 overflow-hidden ${
                 isDark 
                   ? 'bg-[#051C27]/90 border-teal-900/60 hover:border-cyan-400/50 hover:bg-[#072837]' 
                   : 'bg-slate-50/90 border-teal-100 hover:border-teal-400 hover:bg-white shadow-teal-950/5'
               }`}
             >
-              <div className="space-y-2">
+              <div className="space-y-2 min-w-0">
                 <div className="flex items-center justify-between gap-2">
-                  <span className={`text-[10px] uppercase tracking-wider font-black px-2.5 py-0.5 rounded-full border ${
+                  <span className={`text-[10px] uppercase tracking-wider font-black px-2.5 py-0.5 rounded-full border truncate ${
                     isDark ? 'bg-teal-500/10 text-teal-300 border-teal-500/30' : 'bg-teal-100/80 text-teal-800 border-teal-200'
                   }`}>
                     {item.topicTitleMr}
                   </span>
-                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
                     isDark ? 'bg-cyan-950/80 text-cyan-300 border-cyan-800/60' : 'bg-cyan-100/80 text-cyan-800 border-cyan-200'
                   }`}>
                     {item.speed} WPM
                   </span>
                 </div>
 
-                <h4 className={`text-sm font-bold font-sans transition-colors ${
+                <h4 className={`text-sm font-bold font-sans transition-colors break-words ${
                   isDark ? 'text-white group-hover:text-cyan-300' : 'text-slate-900 group-hover:text-teal-700'
                 }`} style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
                   {item.titleMr}
                 </h4>
 
-                <p className={`text-xs line-clamp-3 leading-relaxed font-sans ${
+                <p className={`text-xs line-clamp-3 leading-relaxed font-sans break-words ${
                   isDark ? 'text-slate-300' : 'text-slate-600'
                 }`} style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
                   {item.text}

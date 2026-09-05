@@ -197,7 +197,7 @@ export const CustomTextPractice: React.FC<CustomTextPracticeProps> = ({
   };
 
   return (
-    <div id="custom-practice-container" className="w-full flex flex-col gap-6">
+    <div id="custom-practice-container" className="w-full min-w-0 max-w-full flex flex-col gap-6">
       {/* Top Card */}
       <div className={`rounded-3xl p-6 sm:p-7 shadow-2xl backdrop-blur-md border transition-colors ${
         isDark 

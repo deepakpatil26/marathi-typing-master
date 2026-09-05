@@ -98,7 +98,7 @@ export interface TypingStats {
 }
 
 export type AppMode = 'lessons' | 'words' | 'exam' | 'custom' | 'analytics' | 'ai-passage';
-export type SidebarTab = 'course' | 'software-website' | 'ai-passage' | 'review' | 'exam' | 'custom' | 'analytics' | 'settings' | 'info';
+export type SidebarTab = 'course' | 'ai-passage' | 'review' | 'exam' | 'custom' | 'analytics' | 'settings' | 'info';
 
 export interface ExamConfig {
   targetSpeed: 30 | 40; // 30 WPM (GCC-TBC standard) or 40 WPM

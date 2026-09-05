@@ -107,7 +107,7 @@ export const CourseHub: React.FC<CourseHubProps> = ({
   return (
     <div 
       id="course-hub-card" 
-      className={`w-full rounded-3xl border shadow-2xl backdrop-blur-md overflow-hidden flex flex-col justify-between transition-all duration-200 ${
+      className={`w-full min-w-0 max-w-full rounded-3xl border shadow-2xl backdrop-blur-md overflow-hidden flex flex-col justify-between transition-all duration-200 ${
         isDark
           ? 'bg-[#072431]/95 text-slate-100 border-teal-800/40'
           : 'bg-white/95 text-slate-800 border-teal-200/80 shadow-teal-900/5'

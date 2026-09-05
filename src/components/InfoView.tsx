@@ -12,7 +12,7 @@ export const InfoView: React.FC<InfoViewProps> = ({ language }) => {
   return (
     <div 
       id="info-view" 
-      className={`w-full rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md flex flex-col gap-6 max-w-4xl mx-auto border transition-colors ${
+      className={`w-full min-w-0 max-w-4xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md flex flex-col gap-6 border transition-colors ${
         isDark 
           ? 'bg-[#072431]/95 border-teal-800/40 text-slate-100' 
           : 'bg-white/95 border-teal-200/80 text-slate-900 shadow-teal-900/5'

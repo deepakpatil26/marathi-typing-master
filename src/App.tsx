@@ -20,9 +20,8 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 import { StudentProfileModal } from './components/StudentProfileModal';
 import { getActiveProfile, updateActiveProfileProgress } from './utils/studentProfiles';
 import { StudentProfile } from './types';
-import { SoftwareWebsiteView } from './components/SoftwareWebsiteView';
 import { OfficialWebsite } from './components/OfficialWebsite';
-import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon, Users, Download } from 'lucide-react';
+import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon, Users } from 'lucide-react';
 
 export default function App() {
   const { theme, isDark, toggleTheme } = useTheme();
@@ -30,15 +29,16 @@ export default function App() {
   const [language, setLanguage] = useState<'mr' | 'en'>('mr');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
-  // View Mode: 'website' by default when visitors visit the site, 'software' when launched from desktop shortcut or ?app=true
+  // View Mode: 'software' by default since user has software installed; 'website' if explicitly requested via ?mode=website
   const [viewMode, setViewMode] = useState<'website' | 'software'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app') {
-        return 'software';
+      if (params.get('mode') === 'website') {
+        return 'website';
       }
+      return 'software';
     }
-    return 'website';
+    return 'software';
   });
 
   useEffect(() => {
@@ -203,7 +203,7 @@ export default function App() {
 
         {/* Header Right Action Buttons: Student Profile + PWA Install + Theme Toggle + Sound + Language */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-          {/* Active Student Profile Selector Button */}
+            {/* Active Student Profile Selector Button */}
           <button
             id="btn-student-profile-switcher"
             onClick={() => setIsStudentModalOpen(true)}
@@ -221,50 +221,6 @@ export default function App() {
               <span className="block text-[11px] font-black truncate max-w-[110px]">{activeStudent.name}</span>
               <span className="block text-[9px] opacity-75 font-mono truncate max-w-[110px]">{activeStudent.batchOrRoll || 'तुकडी अ'}</span>
             </div>
-          </button>
-
-          {/* Back to Official Website Button */}
-          <button
-            id="btn-back-to-website"
-            onClick={() => {
-              sound.playKeyClick();
-              setViewMode('website');
-              if (typeof window !== 'undefined' && window.history && window.history.pushState) {
-                const newUrl = new URL(window.location.href);
-                newUrl.searchParams.delete('app');
-                newUrl.searchParams.delete('mode');
-                window.history.pushState({}, '', newUrl.pathname + (newUrl.search ? newUrl.search : ''));
-              }
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs border transition-all cursor-pointer shadow-sm ${
-              isDark
-                ? 'bg-[#0B2E3F] hover:bg-[#0E3549] border-teal-700/60 text-cyan-300'
-                : 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-900'
-            }`}
-            title={language === 'mr' ? 'अधिकृत वेबसाइटवर जा (Official Website)' : 'Back to Official Website'}
-          >
-            <Globe className="w-3.5 h-3.5 text-teal-500" />
-            <span className="hidden sm:inline">{language === 'mr' ? 'मुख्य वेबसाइट' : 'Website'}</span>
-          </button>
-
-          {/* Software Website & Download Setup Button */}
-          <button
-            id="btn-nav-software-website"
-            onClick={() => {
-              sound.playKeyClick();
-              setActiveTab('software-website');
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs border transition-all cursor-pointer shadow-sm ${
-              activeTab === 'software-website'
-                ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 border-teal-400 font-black shadow-teal-500/25'
-                : isDark
-                ? 'bg-[#0B2E3F] hover:bg-[#0E3549] border-teal-700/60 text-cyan-300'
-                : 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-900'
-            }`}
-            title={language === 'mr' ? 'सॉफ्टवेअर डाउनलोड व इन्स्टॉल' : 'Download Software'}
-          >
-            <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span className="hidden sm:inline">{language === 'mr' ? 'डाउनलोड' : 'Download'}</span>
           </button>
 
           {/* Dark / Light Mode Toggle Button */}
@@ -328,9 +284,9 @@ export default function App() {
       </header>
 
       {/* Main Content Area with Right Sidebar Layout */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-6 items-stretch">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-6 items-start">
         {/* Left/Center Stage */}
-        <div className="flex-1 w-full flex flex-col justify-center">
+        <div className="flex-1 w-full min-w-0 flex flex-col justify-start">
           {/* 1. Course Tab */}
           {activeTab === 'course' && (
             <>
@@ -405,17 +361,6 @@ export default function App() {
                 </div>
               )}
             </>
-          )}
-
-          {/* 1.1. Software Website & Setup Download Tab */}
-          {activeTab === 'software-website' && (
-            <SoftwareWebsiteView
-              onStartPracticing={() => {
-                setActiveTab('course');
-                setIsPracticing(false);
-              }}
-              language={language}
-            />
           )}
 
           {/* 1.5. AI Domain Passages Tab */}

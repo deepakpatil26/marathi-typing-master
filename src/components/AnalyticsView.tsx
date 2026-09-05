@@ -94,7 +94,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
   };
 
   return (
-    <div id="analytics-view-container" className="w-full flex flex-col gap-6">
+    <div id="analytics-view-container" className="w-full min-w-0 max-w-full flex flex-col gap-6">
       {/* Top Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={`rounded-2xl p-5 shadow-lg flex items-center gap-4 border transition-colors ${
