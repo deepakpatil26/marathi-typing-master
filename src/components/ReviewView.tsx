@@ -3,6 +3,7 @@ import { LessonStep, UserProgress } from '../types';
 import { RotateCcw, Play, CheckCircle2, Sparkles, Loader2, Target, BrainCircuit } from 'lucide-react';
 import { sound } from '../utils/audio';
 import { useTheme } from '../context/ThemeContext';
+import { getApiEndpoint } from '../utils/apiConfig';
 
 interface ReviewViewProps {
   userProgress: UserProgress;
@@ -68,7 +69,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
     setIsGeneratingAi(true);
 
     try {
-      const res = await fetch('/api/ai/weak-key-drill', {
+      const res = await fetch(getApiEndpoint('/api/ai/weak-key-drill'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

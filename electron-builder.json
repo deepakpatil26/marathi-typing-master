@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.marathitypingmaster.app",
+  "productName": "Marathi Typing Master",
+  "copyright": "Copyright © 2026 Marathi Typing Master",
+  "directories": {
+    "output": "release",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "package.json"
+  ],
+  "extraMetadata": {
+    "main": "dist-electron/main.cjs"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "icon": "public/pwa-512x512.png",
+    "legalTrademarks": "Marathi Typing Master"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Marathi Typing Master",
+    "uninstallDisplayName": "Marathi Typing Master",
+    "installerIcon": "public/pwa-512x512.png",
+    "uninstallerIcon": "public/pwa-512x512.png",
+    "runAfterFinish": true,
+    "artifactName": "MarathiTypingMasterSetup.${ext}"
+  }
+}

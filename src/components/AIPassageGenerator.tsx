@@ -4,6 +4,7 @@ import { TOPIC_PASSAGES, TopicPassageItem } from '../data/curriculum';
 import { LessonStep } from '../types';
 import { sound } from '../utils/audio';
 import { useTheme } from '../context/ThemeContext';
+import { getApiEndpoint } from '../utils/apiConfig';
 
 interface AIPassageGeneratorProps {
   language: 'mr' | 'en';
@@ -66,7 +67,7 @@ export const AIPassageGenerator: React.FC<AIPassageGeneratorProps> = ({
     const chosenTopic = topicIdToUse || (selectedTopic === 'all' ? 'admin' : selectedTopic);
 
     try {
-      const res = await fetch('/api/ai/generate-passage', {
+      const res = await fetch(getApiEndpoint('/api/ai/generate-passage'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
