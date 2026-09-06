@@ -164,8 +164,8 @@ Categories=Education;Utility;
             : 'bg-slate-100 border-slate-200 text-slate-700'
         }`}>
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-md bg-gradient-to-tr from-teal-500 to-cyan-400 flex items-center justify-center text-[10px] font-black text-slate-950 shadow-sm">
-              म
+            <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm flex items-center justify-center bg-[#072431] flex-shrink-0">
+              <img src="./logo.png" alt="Logo" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/logo.png'; }} />
             </div>
             <span className="text-xs font-semibold tracking-wide">
               {language === 'mr' ? 'मराठी टायपिंग मास्टर - सेटअप विझार्ड v10.4' : 'Marathi Typing Master - Setup Wizard v10.4'}
@@ -190,12 +190,8 @@ Categories=Education;Utility;
           {step === 'welcome' && (
             <div className="space-y-5 animate-fadeIn">
               <div className="flex items-start gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-400 p-0.5 shadow-xl shrink-0">
-                  <div className={`w-full h-full rounded-[14px] flex items-center justify-center text-2xl font-black ${
-                    isDark ? 'bg-[#03151E] text-cyan-300' : 'bg-white text-teal-600'
-                  }`}>
-                    म
-                  </div>
+                <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-xl ring-2 ring-teal-500/30 shrink-0 bg-[#072431]">
+                  <img src="./logo.png" alt="Marathi Typing Master" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/logo.png'; }} />
                 </div>
                 <div>
                   <h3 className="text-lg sm:text-xl font-black">

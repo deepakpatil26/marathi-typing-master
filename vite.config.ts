@@ -14,7 +14,7 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['icon.svg', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
+        includeAssets: ['logo.png', 'icon.ico', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png', 'favicon-32.png'],
         manifest: {
           id: '/',
           name: 'मराठी टायपिंग मास्टर - Marathi Typing Master',

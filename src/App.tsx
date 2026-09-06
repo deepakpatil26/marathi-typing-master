@@ -178,12 +178,16 @@ export default function App() {
           : 'bg-white/90 border-b border-teal-200/80 shadow-sm'
       }`}>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 p-0.5 shadow-md shadow-teal-500/10 flex items-center justify-center">
-            <div className={`w-full h-full rounded-[10px] flex items-center justify-center font-black text-base ${
-              isDark ? 'bg-[#03151E] text-cyan-300' : 'bg-white text-teal-600'
-            }`}>
-              <Keyboard className={`w-5 h-5 ${isDark ? 'text-cyan-300' : 'text-teal-600'}`} />
-            </div>
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-teal-500/20 ring-2 ring-teal-500/30 flex items-center justify-center bg-[#072431] flex-shrink-0">
+            <img 
+              src="./logo.png" 
+              alt="Marathi Typing Master Logo" 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback if image path differs
+                (e.target as HTMLImageElement).src = '/logo.png';
+              }}
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">

@@ -276,9 +276,14 @@ exit
                   <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
                   <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
                 </div>
-                <span className="text-[11px] font-mono font-bold text-teal-950 dark:text-cyan-400">
-                  C:\MarathiTypingMaster
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-4 rounded overflow-hidden shadow-xs bg-[#072431] flex-shrink-0">
+                    <img src="./logo.png" alt="Logo" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/logo.png'; }} />
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-teal-950 dark:text-cyan-400">
+                    Marathi Typing Master
+                  </span>
+                </div>
               </div>
 
               <div className="space-y-2 text-xs">

@@ -23,9 +23,15 @@ function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
 
-  const iconDist = path.join(__dirname, '../dist/pwa-512x512.png');
-  const iconPublic = path.join(__dirname, '../public/pwa-512x512.png');
-  const appIcon = fs.existsSync(iconDist) ? iconDist : (fs.existsSync(iconPublic) ? iconPublic : undefined);
+  const possibleIcons = [
+    path.join(__dirname, '../dist/icon.ico'),
+    path.join(__dirname, '../public/icon.ico'),
+    path.join(__dirname, '../dist/logo.png'),
+    path.join(__dirname, '../public/logo.png'),
+    path.join(__dirname, '../dist/pwa-512x512.png'),
+    path.join(__dirname, '../public/pwa-512x512.png'),
+  ];
+  const appIcon = possibleIcons.find(p => fs.existsSync(p));
 
   mainWindow = new BrowserWindow({
     width: Math.min(1280, width),
