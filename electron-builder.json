@@ -5,7 +5,7 @@
   "copyright": "Copyright © 2026 Marathi Typing Master",
   "directories": {
     "output": "release",
-    "buildResources": "build"
+    "buildResources": "public"
   },
   "publish": null,
   "files": [
@@ -25,7 +25,7 @@
         ]
       }
     ],
-    "icon": "build/icon.ico",
+    "icon": "public/icon.ico",
     "legalTrademarks": "Marathi Typing Master"
   },
   "nsis": {
@@ -35,8 +35,8 @@
     "createStartMenuShortcut": true,
     "shortcutName": "Marathi Typing Master",
     "uninstallDisplayName": "Marathi Typing Master",
-    "installerIcon": "build/icon.ico",
-    "uninstallerIcon": "build/icon.ico",
+    "installerIcon": "public/icon.ico",
+    "uninstallerIcon": "public/icon.ico",
     "runAfterFinish": true,
     "artifactName": "MarathiTypingMasterSetup.${ext}"
   }
