@@ -19,13 +19,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Dependencies
-        run: npm install --legacy-peer-deps
+        run: |
+          npm install --include=optional
+          npm install --no-save @rollup/rollup-win32-x64-msvc@4.62.5 lightningcss-win32-x64-msvc@1.32.0
 
       - name: Build Windows Installer (.exe)
         run: npm run dist:win
