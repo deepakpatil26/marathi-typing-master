@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, shell, screen } from 'electron';
 import path from 'path';
+import fs from 'fs';
 
 // Ensure single instance lock so student profile files / localStorage don't corrupt
 const gotTheLock = app.requestSingleInstanceLock();
@@ -22,6 +23,10 @@ function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
 
+  const iconDist = path.join(__dirname, '../dist/pwa-512x512.png');
+  const iconPublic = path.join(__dirname, '../public/pwa-512x512.png');
+  const appIcon = fs.existsSync(iconDist) ? iconDist : (fs.existsSync(iconPublic) ? iconPublic : undefined);
+
   mainWindow = new BrowserWindow({
     width: Math.min(1280, width),
     height: Math.min(860, height),
@@ -29,7 +34,7 @@ function createWindow() {
     minHeight: 680,
     title: 'मराठी टायपिंग मास्टर (Marathi Typing Master)',
     backgroundColor: '#03151e',
-    icon: path.join(__dirname, '../public/pwa-512x512.png'),
+    icon: appIcon,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
