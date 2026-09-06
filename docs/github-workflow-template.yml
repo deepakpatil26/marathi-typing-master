@@ -30,11 +30,14 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
+        shell: bash
         run: |
-          npm install --include=optional
-          npm install --no-save @rollup/rollup-win32-x64-msvc@4.62.5 lightningcss-win32-x64-msvc@1.32.0
+          rm -f package-lock.json
+          npm install
+          npm install --no-save @tailwindcss/oxide-win32-x64-msvc @rollup/rollup-win32-x64-msvc lightningcss-win32-x64-msvc
 
       - name: Build Windows Installer (.exe)
+        shell: bash
         run: npm run dist:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
