@@ -24,7 +24,7 @@
         ]
       }
     ],
-    "icon": "public/pwa-512x512.png",
+    "icon": "build/icon.ico",
     "legalTrademarks": "Marathi Typing Master"
   },
   "nsis": {
@@ -34,8 +34,8 @@
     "createStartMenuShortcut": true,
     "shortcutName": "Marathi Typing Master",
     "uninstallDisplayName": "Marathi Typing Master",
-    "installerIcon": "public/pwa-512x512.png",
-    "uninstallerIcon": "public/pwa-512x512.png",
+    "installerIcon": "build/icon.ico",
+    "uninstallerIcon": "build/icon.ico",
     "runAfterFinish": true,
     "artifactName": "MarathiTypingMasterSetup.${ext}"
   }
