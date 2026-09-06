@@ -46,25 +46,38 @@ The following commands are configured in `package.json`:
 
 ## 3. How to Build the Windows Installer (`.exe`)
 
-### Requirements
-- Node.js 18+ or 20+
-- A Windows computer (or Windows VM / GitHub Actions Windows runner)
+### Option A: Build Locally on a Windows PC (Fastest & Simplest)
 
-### Step 1: Clone and Install
+#### Requirements
+- Node.js 18+ or 20+
+- A Windows computer
+
+#### Step 1: Clone and Install
 ```bash
 git clone <your-repo-url>
 cd marathi-typing-master
 npm install
 ```
 
-### Step 2: Build the Installer
+#### Step 2: Build the Installer
 ```bash
 npm run dist:win
 ```
 
-### Output
-The build output will be located in the `release/` folder:
-- **`release/MarathiTypingMasterSetup.exe`**: The standalone Windows installer.
+#### Output
+The installer will be generated in the `release/` folder:
+- **`release/MarathiTypingMasterSetup.exe`**: The complete standalone Windows installer.
+
+---
+
+### Option B: Cloud Build via GitHub Actions (Optional)
+
+If you wish to have GitHub compile the `.exe` in the cloud:
+1. On GitHub.com, go to your repository.
+2. Click **Add file** → **Create new file**.
+3. Name it `.github/workflows/build-windows.yml`.
+4. Copy and paste the contents from `docs/github-workflow-template.yml`.
+5. Commit the file. You can now trigger the build from the **Actions** tab on GitHub!
 
 ---
 

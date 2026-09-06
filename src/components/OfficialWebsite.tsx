@@ -82,7 +82,7 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
   };
 
   // Generate and download the official Windows Setup script (MarathiTypingMaster-Setup.bat)
-  const handleDownloadSetup = () => {
+  const handleDownloadSetup = async () => {
     sound.playKeyClick();
     const targetUrl = getProductionLaunchUrl();
 
@@ -177,6 +177,27 @@ echo Installation finished. Press any key to exit.
 pause >nul
 exit
 `;
+
+    // Check if the standalone Windows installer executable is hosted in /downloads/
+    try {
+      const exeResponse = await fetch('/downloads/MarathiTypingMasterSetup.exe', { method: 'HEAD' });
+      if (exeResponse.ok) {
+        const link = document.createElement('a');
+        link.href = '/downloads/MarathiTypingMasterSetup.exe';
+        link.download = 'MarathiTypingMasterSetup.exe';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setDownloadSuccess(true);
+        sound.playSuccessSound();
+        setTimeout(() => {
+          setIsWizardOpen(true);
+        }, 400);
+        return;
+      }
+    } catch {
+      // If .exe not found on static server, fallback to standard setup bundle
+    }
 
     const blob = new Blob([batScript], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);

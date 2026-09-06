@@ -1,0 +1,63 @@
+# Optional GitHub Actions Workflow for Building Windows Installer
+# If you wish to enable cloud builds on GitHub Actions:
+# In your GitHub repository, create a new file at: .github/workflows/build-windows.yml
+# and paste the content below:
+
+name: Build Windows Installer
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Marathi Typing Master Setup (.exe)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Windows Installer (.exe)
+        run: npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows Installer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MarathiTypingMasterSetup-Windows
+          path: release/*.exe
+          retention-days: 30
+
+      - name: Create GitHub Release (on version tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.exe
+          name: Marathi Typing Master ${{ github.ref_name }}
+          body: |
+            ## Marathi Typing Master — Official Windows Desktop Release
+            
+            ### Included in this release:
+            - **MarathiTypingMasterSetup.exe**: Standalone Windows installer with automatic Desktop & Start Menu shortcuts.
+            - 100% Offline Practice: ISM DVBW Remington Marathi layout, GCC-TBC 30 & 40 WPM curriculum, and multi-student profiles.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
