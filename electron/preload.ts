@@ -1,5 +1,12 @@
 import { contextBridge, ipcRenderer, shell } from 'electron';
 
+const ALLOWED_EXTERNAL_HOSTS = new Set([
+  'marathitypingmaster.com',
+  'www.marathitypingmaster.com',
+  'mscepune.in',
+  'www.mscepune.in',
+]);
+
 // Expose protected methods that allow the renderer process to use
 // safe desktop functionality without exposing raw Node APIs.
 contextBridge.exposeInMainWorld('electron', {
@@ -8,8 +15,8 @@ contextBridge.exposeInMainWorld('electron', {
   openExternal: (url: string) => {
     try {
       const parsed = new URL(url);
-      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-        shell.openExternal(url);
+      if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && ALLOWED_EXTERNAL_HOSTS.has(parsed.hostname)) {
+        void shell.openExternal(parsed.toString());
       }
     } catch {
       // Invalid URL rejected

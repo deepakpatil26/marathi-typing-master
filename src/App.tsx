@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { SidebarTab, Finger, LessonStep, UserProgress } from './types';
 import { CURRICULUM_CHAPTERS } from './data/curriculum';
 import { getStoredUserProgress } from './utils/telemetry';
@@ -8,11 +8,7 @@ import { RightSidebar } from './components/RightSidebar';
 import { CourseHub } from './components/CourseHub';
 import { TypingArea } from './components/TypingArea';
 import { VisualKeyboard } from './components/VisualKeyboard';
-import { ExamMode } from './components/ExamMode';
 import { CustomTextPractice } from './components/CustomTextPractice';
-import { AIPassageGenerator } from './components/AIPassageGenerator';
-import { AnalyticsView } from './components/AnalyticsView';
-import { ReviewView } from './components/ReviewView';
 import { SettingsView } from './components/SettingsView';
 import { InfoView } from './components/InfoView';
 import { PWAInstallButton } from './components/PWAInstallButton';
@@ -20,8 +16,19 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 import { StudentProfileModal } from './components/StudentProfileModal';
 import { getActiveProfile, updateActiveProfileProgress } from './utils/studentProfiles';
 import { StudentProfile } from './types';
-import { OfficialWebsite } from './components/OfficialWebsite';
 import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon, Users } from 'lucide-react';
+
+const AIPassageGenerator = lazy(() => import('./components/AIPassageGenerator').then(module => ({ default: module.AIPassageGenerator })));
+const AnalyticsView = lazy(() => import('./components/AnalyticsView').then(module => ({ default: module.AnalyticsView })));
+const ExamMode = lazy(() => import('./components/ExamMode').then(module => ({ default: module.ExamMode })));
+const OfficialWebsite = lazy(() => import('./components/OfficialWebsite').then(module => ({ default: module.OfficialWebsite })));
+const ReviewView = lazy(() => import('./components/ReviewView').then(module => ({ default: module.ReviewView })));
+
+const LazyViewFallback = () => (
+  <div className="min-h-32 flex items-center justify-center text-sm text-teal-500" role="status" aria-live="polite">
+    Loading…
+  </div>
+);
 
 export default function App() {
   const { theme, isDark, toggleTheme } = useTheme();
@@ -150,7 +157,8 @@ export default function App() {
   // If viewMode is 'website', display the official software product website
   if (viewMode === 'website') {
     return (
-      <OfficialWebsite
+      <Suspense fallback={<LazyViewFallback />}>
+        <OfficialWebsite
         onLaunchSoftware={() => {
           setViewMode('software');
           if (typeof window !== 'undefined' && window.history && window.history.pushState) {
@@ -161,7 +169,8 @@ export default function App() {
         }}
         language={language}
         onToggleLanguage={handleToggleLanguage}
-      />
+        />
+      </Suspense>
     );
   }
 
@@ -369,28 +378,33 @@ export default function App() {
 
           {/* 1.5. AI Domain Passages Tab */}
           {activeTab === 'ai-passage' && (
-            <AIPassageGenerator
+            <Suspense fallback={<LazyViewFallback />}>
+              <AIPassageGenerator
               language={language}
               onStartPractice={(drillLesson) => {
                 setActiveLesson(drillLesson);
                 setIsPracticing(true);
                 setActiveTab('course');
               }}
-            />
+              />
+            </Suspense>
           )}
 
           {/* 2. Review Tab */}
           {activeTab === 'review' && (
-            <ReviewView
+            <Suspense fallback={<LazyViewFallback />}>
+              <ReviewView
               userProgress={userProgress}
               language={language}
               onStartCustomDrill={handleStartWeakDrill}
-            />
+              />
+            </Suspense>
           )}
 
           {/* 3. Exam Mode Tab */}
           {activeTab === 'exam' && (
-            <div className="flex flex-col gap-5">
+            <Suspense fallback={<LazyViewFallback />}>
+              <div className="flex flex-col gap-5">
               <ExamMode
                 language={language}
                 onActiveTargetChange={setActiveTargetKeyInfo}
@@ -403,7 +417,8 @@ export default function App() {
                 pressedKeys={pressedKeys}
                 language={language}
               />
-            </div>
+              </div>
+            </Suspense>
           )}
 
           {/* 4. Custom Practice Tab */}
@@ -428,12 +443,14 @@ export default function App() {
 
           {/* 5. Statistics / Analytics Tab */}
           {activeTab === 'analytics' && (
-            <AnalyticsView
+            <Suspense fallback={<LazyViewFallback />}>
+              <AnalyticsView
               userProgress={userProgress}
               setUserProgress={setUserProgress}
               language={language}
               onStartWeakDrill={handleStartWeakDrill}
-            />
+              />
+            </Suspense>
           )}
 
           {/* 6. Settings Tab */}
@@ -493,4 +510,3 @@ export default function App() {
     </div>
   );
 }
-

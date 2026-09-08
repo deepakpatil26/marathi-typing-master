@@ -30,8 +30,12 @@
   },
   "nsis": {
     "oneClick": false,
+    "perMachine": true,
+    "selectPerMachineByDefault": true,
+    "allowElevation": true,
     "allowToChangeInstallationDirectory": true,
-    "createDesktopShortcut": true,
+    "createDesktopShortcut": false,
+    "include": "build/installer.nsh",
     "createStartMenuShortcut": true,
     "shortcutName": "Marathi Typing Master",
     "uninstallDisplayName": "Marathi Typing Master",

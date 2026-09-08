@@ -47,17 +47,39 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   // Close on Escape key
   React.useEffect(() => {
     if (!isOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusable = Array.from(modalRef.current.querySelectorAll(
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+        )).filter((element): element is HTMLElement => element instanceof HTMLElement);
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    requestAnimationFrame(() => modalRef.current?.querySelector<HTMLElement>('button, input, select, textarea')?.focus());
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus();
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -157,6 +179,7 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
     >
       <div 
         id="student-profile-modal"
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="student-profile-title"
@@ -193,6 +216,7 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
 
           <button
             onClick={onClose}
+            aria-label={language === 'mr' ? 'बंद करा' : 'Close'}
             className={`p-2 rounded-xl transition-colors cursor-pointer ${
               isDark 
                 ? 'hover:bg-slate-800 text-slate-400 hover:text-white' 

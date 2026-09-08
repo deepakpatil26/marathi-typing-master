@@ -2,6 +2,24 @@ import { app, BrowserWindow, Menu, shell, screen, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
 
+const ALLOWED_EXTERNAL_HOSTS = new Set([
+  'marathitypingmaster.com',
+  'www.marathitypingmaster.com',
+  'mscepune.in',
+  'www.mscepune.in',
+]);
+
+function openAllowedExternalUrl(url: string): void {
+  try {
+    const parsed = new URL(url);
+    if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && ALLOWED_EXTERNAL_HOSTS.has(parsed.hostname)) {
+      void shell.openExternal(parsed.toString());
+    }
+  } catch {
+    // Invalid or untrusted URLs are rejected.
+  }
+}
+
 // Ensure single instance lock so student profile files / localStorage don't corrupt
 const gotTheLock = app.requestSingleInstanceLock();
 let mainWindow: BrowserWindow | null = null;
@@ -114,13 +132,13 @@ function createWindow() {
         {
           label: 'Official Website (अधिकृत संकेतस्थळ)',
           click: () => {
-            shell.openExternal('https://marathitypingmaster.com');
+            openAllowedExternalUrl('https://marathitypingmaster.com');
           }
         },
         {
           label: 'GCC-TBC Typing Exam Guidelines',
           click: () => {
-            shell.openExternal('https://mscepune.in');
+            openAllowedExternalUrl('https://mscepune.in');
           }
         },
         { type: 'separator' },
@@ -148,10 +166,7 @@ function createWindow() {
   // Open external URLs strictly in default system browser with valid URL scheme
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     try {
-      const parsed = new URL(url);
-      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-        shell.openExternal(url);
-      }
+      openAllowedExternalUrl(url);
     } catch {
       // ignore invalid URLs
     }

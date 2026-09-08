@@ -9,13 +9,12 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   build-windows:
     name: Build Marathi Typing Master Setup (.exe)
     runs-on: windows-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -29,27 +28,61 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Clean previous packaging output
+        shell: pwsh
+        run: |
+          if (Test-Path release) {
+            Remove-Item release -Recurse -Force
+          }
+
       - name: Package Windows Installer
         run: npm run dist:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_ENV: production
 
+      - name: Generate installer checksum
+        shell: pwsh
+        run: |
+          $installer = "release\MarathiTypingMasterSetup.exe"
+          if (-not (Test-Path $installer)) {
+            throw "Installer was not created: $installer"
+          }
+          (Get-FileHash $installer -Algorithm SHA256).Hash.ToLower() |
+            Out-File "release\MarathiTypingMasterSetup.exe.sha256" -Encoding ascii -NoNewline
+
       - name: Upload Windows Installer (.exe) Artifact
         uses: actions/upload-artifact@v4
         with:
           name: MarathiTypingMasterSetup-Windows
-          path: release/*.exe
+          path: |
+            release/MarathiTypingMasterSetup.exe
+            release/MarathiTypingMasterSetup.exe.sha256
           retention-days: 30
 
-      - name: Create GitHub Release (Direct .exe Download)
-        uses: softprops/action-gh-release@v2
-        if: (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name != 'pull_request'
+  release:
+    name: Publish tagged Windows installer
+    needs: build-windows
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows Installer artifact
+        uses: actions/download-artifact@v4
         with:
-          tag_name: v1.0.0
-          name: "Marathi Typing Master Desktop v1.0.0"
+          name: MarathiTypingMasterSetup-Windows
+          path: release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Marathi Typing Master Desktop ${{ github.ref_name }}"
           body: "Official standalone offline desktop installer (.exe) for Marathi Typing Master (GCC-TBC 30/40 WPM)."
-          files: release/MarathiTypingMasterSetup.exe
+          files: |
+            release/MarathiTypingMasterSetup.exe
+            release/MarathiTypingMasterSetup.exe.sha256
           draft: false
           prerelease: false
         env:
