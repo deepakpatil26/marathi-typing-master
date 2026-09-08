@@ -32,11 +32,9 @@ FunctionEnd
   ${EndIf}
 !macroend
 
-!macro customUnInstallSection
-  Section "Remove desktop shortcut"
-    SetShellVarContext all
-    Delete "$DESKTOP\Marathi Typing Master.lnk"
-    SetShellVarContext current
-    Delete "$DESKTOP\Marathi Typing Master.lnk"
-  SectionEnd
+!macro customUnInstall
+  SetShellVarContext all
+  Delete "$DESKTOP\Marathi Typing Master.lnk"
+  SetShellVarContext current
+  Delete "$DESKTOP\Marathi Typing Master.lnk"
 !macroend
