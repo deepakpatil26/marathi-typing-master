@@ -32,7 +32,7 @@ import {
 import { sound } from '../utils/audio';
 import { useTheme } from '../context/ThemeContext';
 import { WindowsInstallerWizard } from './WindowsInstallerWizard';
-import { getProductionLaunchUrl } from '../utils/downloadHelper';
+import { WINDOWS_INSTALLER_URL } from '../utils/downloadHelper';
 
 interface OfficialWebsiteProps {
   onLaunchSoftware?: () => void;
@@ -81,136 +81,18 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
     }
   };
 
-  // Generate and download the official Windows Setup script (MarathiTypingMaster-Setup.bat)
-  const handleDownloadSetup = async () => {
-    sound.playKeyClick();
-    const targetUrl = getProductionLaunchUrl();
+ const handleDownloadSetup = () => {
+   sound.playKeyClick();
+   const link = document.createElement('a');
+   link.href = WINDOWS_INSTALLER_URL;
+   link.target = '_blank';
+   link.rel = 'noopener noreferrer';
+   document.body.appendChild(link);
+   link.click();
+   document.body.removeChild(link);
 
-    const batScript = `@echo off
-setlocal enabledelayedexpansion
-title Marathi Typing Master - Windows Setup Wizard
-color 0b
-
-echo.
-echo ====================================================================
-echo        MARATHI TYPING MASTER - WINDOWS INSTALLATION WIZARD
-echo        महाराष्ट्र शासन GCC-TBC ३० व ४० WPM रेमिंग्टन सॉफ्टवेअर
-echo ====================================================================
-echo.
-echo Setup will install Marathi Typing Master onto your local C: Drive.
-echo Default target path: C:\\MarathiTypingMaster
-echo.
-echo Press any key to begin installation...
-pause >nul
-echo.
-echo [1/4] Creating installation directory: C:\\MarathiTypingMaster ...
-mkdir "C:\\MarathiTypingMaster" 2>nul
-if not exist "C:\\MarathiTypingMaster" (
-    set "TARGET_DIR=%LOCALAPPDATA%\\MarathiTypingMaster"
-    mkdir "!TARGET_DIR!" 2>nul
-) else (
-    set "TARGET_DIR=C:\\MarathiTypingMaster"
-)
-
-echo [2/4] Installing core typing engine and Remington layout files...
-echo Target: !TARGET_DIR!
-
-:: Write offline launcher script
-(
-echo @echo off
-echo title Marathi Typing Master Desktop
-echo where msedge >nul 2>&1
-echo if %%errorlevel%% equ 0 (
-echo     start msedge --app="${targetUrl}"
-echo     exit
-echo ^)
-echo where chrome >nul 2>&1
-echo if %%errorlevel%% equ 0 (
-echo     start chrome --app="${targetUrl}"
-echo     exit
-echo ^)
-echo start "" "${targetUrl}"
-echo exit
-) > "!TARGET_DIR!\\run.bat"
-
-:: Write application URL shortcut
-(
-echo [InternetShortcut]
-echo URL=${targetUrl}
-echo IconIndex=0
-echo IconFile=${targetUrl.replace('/?app=true', '')}/icon.svg
-echo HotKey=0
-) > "!TARGET_DIR!\\MarathiTypingMaster.url"
-
-echo [3/4] Registering Devanagari fonts and GCC-TBC curriculum databases...
-timeout /t 1 >nul
-
-echo [4/4] Installation Complete!
-echo.
-echo ====================================================================
-echo                      INSTALLATION COMPLETE!
-echo ====================================================================
-echo Marathi Typing Master has been successfully installed in:
-echo !TARGET_DIR!
-echo.
-
-:: Checkbox equivalent: Prompt user for Desktop Shortcut
-set /p CREATEDESKTOPSHORTCUT="Create shortcut of application to desktop? (Y/N) [Default: Y]: "
-if /i "!CREATEDESKTOPSHORTCUT!"=="" set CREATEDESKTOPSHORTCUT=Y
-if /i "!CREATEDESKTOPSHORTCUT!"=="Y" (
-    echo Creating Desktop Shortcut on your Windows Desktop...
-    copy /y "!TARGET_DIR!\\MarathiTypingMaster.url" "%USERPROFILE%\\Desktop\\Marathi Typing Master.url" >nul 2>&1
-    echo [OK] Desktop Shortcut "Marathi Typing Master" created successfully on your Desktop!
-)
-
-echo.
-set /p LAUNCH="Launch Marathi Typing Master now? (Y/N) [Default: Y]: "
-if /i "!LAUNCH!"=="" set LAUNCH=Y
-if /i "!LAUNCH!"=="Y" (
-    echo Launching Marathi Typing Master in dedicated App Mode...
-    start msedge --app="${targetUrl}" 2>nul || start chrome --app="${targetUrl}" 2>nul || start "" "${targetUrl}"
-)
-
-echo.
-echo Thank you for using Marathi Typing Master!
-echo Installation finished. Press any key to exit.
-pause >nul
-exit
-`;
-
-    // Check if the standalone Windows installer executable is hosted in /downloads/
-    try {
-      const exeResponse = await fetch('/downloads/MarathiTypingMasterSetup.exe', { method: 'HEAD' });
-      if (exeResponse.ok) {
-        const link = document.createElement('a');
-        link.href = '/downloads/MarathiTypingMasterSetup.exe';
-        link.download = 'MarathiTypingMasterSetup.exe';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setDownloadSuccess(true);
-        sound.playSuccessSound();
-        setTimeout(() => {
-          setIsWizardOpen(true);
-        }, 400);
-        return;
-      }
-    } catch {
-      // If .exe not found on static server, fallback to standard setup bundle
-    }
-
-    const blob = new Blob([batScript], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'MarathiTypingMaster-Setup.bat';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    setDownloadSuccess(true);
-    sound.playSuccessSound();
+   setDownloadSuccess(true);
+   sound.playSuccessSound();
 
     // Trigger the interactive Windows installer wizard preview
     setTimeout(() => {
@@ -387,7 +269,7 @@ exit
                 <Download className="w-5 h-5 stroke-[2.5]" />
                 <div className="text-left leading-tight">
                   <span className="block">{language === 'mr' ? 'सॉफ्टवेअर डाउनलोड करा' : 'Download Free for Windows'}</span>
-                  <span className="block text-[11px] font-bold opacity-85">Setup.bat • 48 MB • C:\ Drive</span>
+                  <span className="block text-[11px] font-bold opacity-85">Windows .exe • 129 MB • Program Files</span>
                 </div>
               </button>
 
@@ -414,8 +296,8 @@ exit
                 <CheckCircle2 className="w-5 h-5 shrink-0" />
                 <span>
                   {language === 'mr'
-                    ? 'डाउनलोड यशस्वी! डाउनलोड झालेली "MarathiTypingMaster-Setup.bat" फाइल उघडा आणि C:\\ ड्राईव्हवर इन्स्टॉल करा.'
-                    : 'Download initiated! Double-click "MarathiTypingMaster-Setup.bat" in your Downloads folder to install to your C:\\ drive.'}
+                    ? 'डाउनलोड यशस्वी! डाउनलोड झालेली MarathiTypingMasterSetup.exe फाइल उघडा आणि Program Files मध्ये इन्स्टॉल करा.'
+                    : 'Download initiated! Open MarathiTypingMasterSetup.exe from your Downloads folder to install into Program Files.'}
                 </span>
               </div>
             )}
@@ -489,7 +371,7 @@ exit
                   className="w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4 stroke-[2.5]" />
-                  <span>{language === 'mr' ? 'संगणकावर डाउनलोड करा (Setup.bat)' : 'Download Windows Installer (Setup.bat)'}</span>
+                  <span>{language === 'mr' ? 'विंडोज इंस्टॉलर डाउनलोड करा (.exe)' : 'Download Windows Installer (.exe)'}</span>
                 </button>
               </div>
             </div>
@@ -529,12 +411,12 @@ exit
                 </h3>
                 <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   {language === 'mr'
-                    ? 'वेबसाइटवरील "मोफत डाउनलोड" बटनावर क्लिक करून MarathiTypingMaster-Setup.bat ही फाइल संगणकावर सेव्ह करा.'
-                    : 'Click Free Download to save the official MarathiTypingMaster-Setup.bat installer file to your computer.'}
+                    ? 'वेबसाइटवरील "मोफत डाउनलोड" बटनावर क्लिक करून अधिकृत Windows .exe फाइल संगणकावर सेव्ह करा.'
+                    : 'Click Free Download to save the official Windows .exe installer to your computer.'}
                 </p>
               </div>
               <div className="p-2 rounded-lg bg-teal-500/10 text-[11px] font-mono text-teal-900 dark:text-cyan-400 font-bold truncate">
-                MarathiTypingMaster-Setup.bat
+                MarathiTypingMasterSetup.exe
               </div>
             </div>
 
@@ -1053,7 +935,7 @@ exit
                 className="px-8 py-4 rounded-2xl bg-white text-teal-900 hover:bg-teal-50 font-black text-sm shadow-xl active:scale-95 transition-all cursor-pointer flex items-center gap-2.5"
               >
                 <Download className="w-4 h-4 stroke-[2.5]" />
-                <span>{language === 'mr' ? 'सॉफ्टवेअर डाउनलोड करा (Setup.bat)' : 'Download Free Setup (Setup.bat)'}</span>
+                <span>{language === 'mr' ? 'सॉफ्टवेअर डाउनलोड करा (.exe)' : 'Download Free Installer (.exe)'}</span>
               </button>
               <button
                 onClick={() => {

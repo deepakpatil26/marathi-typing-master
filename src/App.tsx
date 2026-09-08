@@ -36,16 +36,15 @@ export default function App() {
   const [language, setLanguage] = useState<'mr' | 'en'>('mr');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
-  // View Mode: 'software' by default since user has software installed; 'website' if explicitly requested via ?mode=website
+  // The public URL is the product landing page; the app is explicitly opened with ?app=true.
   const [viewMode, setViewMode] = useState<'website' | 'software'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('mode') === 'website') {
-        return 'website';
-      }
-      return 'software';
+      return params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app'
+        ? 'software'
+        : 'website';
     }
-    return 'software';
+    return 'website';
   });
 
   useEffect(() => {

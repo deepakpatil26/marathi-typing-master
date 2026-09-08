@@ -13,3 +13,6 @@ export const getProductionLaunchUrl = (): string => {
   }
   return 'https://marathi-typing-master.vercel.app/?app=true';
 };
+
+export const WINDOWS_INSTALLER_URL =
+  'https://github.com/deepakpatil26/marathi-typing-master/releases/latest/download/MarathiTypingMasterSetup.exe';
