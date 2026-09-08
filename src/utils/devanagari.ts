@@ -31,6 +31,20 @@ export interface DevanagariWordGroup {
   hasNewlineAfter?: boolean;
 }
 
+interface SegmentData {
+  segment: string;
+  index: number;
+  input: string;
+}
+
+interface IntlSegmenterInstance {
+  segment(input: string): Iterable<SegmentData>;
+}
+
+interface IntlWithSegmenter {
+  Segmenter?: new (locale: string, options: { granularity: 'grapheme' | 'word' | 'sentence' }) => IntlSegmenterInstance;
+}
+
 /**
  * Segments an individual word into Devanagari aksharas (grapheme clusters).
  */
@@ -38,11 +52,12 @@ export function segmentWordIntoAksharas(wordText: string, wordOffset: number): D
   if (!wordText) return [];
 
   // Preferred modern API: Intl.Segmenter with Marathi locale
-  if (typeof Intl !== 'undefined' && (Intl as any).Segmenter) {
+  const globalIntl = (typeof Intl !== 'undefined' ? Intl : undefined) as IntlWithSegmenter | undefined;
+  if (globalIntl?.Segmenter) {
     try {
-      const segmenter = new (Intl as any).Segmenter('mr', { granularity: 'grapheme' });
-      const segments = [...segmenter.segment(wordText)];
-      return segments.map((s: any) => ({
+      const segmenter = new globalIntl.Segmenter('mr', { granularity: 'grapheme' });
+      const segments = Array.from(segmenter.segment(wordText));
+      return segments.map((s: SegmentData) => ({
         text: s.segment,
         startIndex: wordOffset + s.index,
         endIndex: wordOffset + s.index + s.segment.length,

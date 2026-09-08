@@ -47,7 +47,7 @@ export const REMINGTON_KEYBOARD_LAYOUT: KeyMapping[][] = [
   ],
   // Home Row (Row 3)
   [
-    { code: 'KeyA', key: 'a', normalChar: '.', shiftChar: '।', normalNameMr: 'अनुस्वार / टिंब (.)', shiftNameMr: 'पूर्णविराम / दंड (।)', finger: 'left-pinky', hand: 'left', row: 'home' },
+    { code: 'KeyA', key: 'a', normalChar: 'ं', shiftChar: '।', normalNameMr: 'अनुस्वार / टिंब (ं)', shiftNameMr: 'पूर्णविराम / दंड (।)', finger: 'left-pinky', hand: 'left', row: 'home' },
     { code: 'KeyS', key: 's', normalChar: 'े', shiftChar: 'ै', normalNameMr: 'ए-कार मात्रा (े)', shiftNameMr: 'ऐ-कार दोन मात्रा (ै)', finger: 'left-ring', hand: 'left', row: 'home' },
     { code: 'KeyD', key: 'd', normalChar: 'क', shiftChar: 'क्', normalNameMr: 'क', shiftNameMr: 'अर्धा क्', finger: 'left-middle', hand: 'left', row: 'home' },
     { code: 'KeyF', key: 'f', normalChar: 'ि', shiftChar: 'थ्', normalNameMr: 'पहिली वेलांटी (ि)', shiftNameMr: 'अर्धा थ्', finger: 'left-index', hand: 'left', row: 'home' },
@@ -148,4 +148,39 @@ export function remingtonKeyToDevanagari(key: string, isShift: boolean, code?: s
 
   if (!mapping) return null;
   return isShift ? mapping.shiftChar : mapping.normalChar;
+}
+
+/**
+ * Checks if the typed Remington Devanagari output matches the target text at currentIndex.
+ * Correctly handles multi-codepoint conjuncts (e.g. 'म्' = \u092E\u094D, 'क्ष', 'त्र', 'ज्ञ'),
+ * composite symbols, punctuation aliases, and Unicode normalization.
+ */
+export function checkDevanagariMatch(
+  typed: string,
+  targetText: string,
+  currentIndex: number
+): { isMatch: boolean; advanceCount: number; matchedLength: number } {
+  if (currentIndex >= targetText.length) {
+    return { isMatch: false, advanceCount: 1, matchedLength: 1 };
+  }
+
+  const typedNorm = typed.normalize('NFC');
+
+  // 1. Direct multi-character or single-character slice match
+  for (let len = typedNorm.length; len >= 1; len--) {
+    const targetSlice = targetText.slice(currentIndex, currentIndex + len).normalize('NFC');
+    if (targetSlice === typedNorm) {
+      return { isMatch: true, advanceCount: len, matchedLength: len };
+    }
+  }
+
+  // 2. Character alias match (e.g. । and .)
+  const singleTarget = targetText[currentIndex];
+  if (DEV_CHAR_ALIAS[singleTarget] === typedNorm || DEV_CHAR_ALIAS[typedNorm] === singleTarget) {
+    return { isMatch: true, advanceCount: 1, matchedLength: 1 };
+  }
+
+  // 3. Fallback: single char compare
+  const isMatch = singleTarget.normalize('NFC') === typedNorm;
+  return { isMatch, advanceCount: isMatch ? Math.max(1, typedNorm.length) : 1, matchedLength: 1 };
 }

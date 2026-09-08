@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Finger, LessonStep, TypingStats, UserProgress } from '../types';
-import { getRemingtonKeyForChar, remingtonKeyToDevanagari, FINGER_COLORS } from '../data/remingtonMap';
+import { getRemingtonKeyForChar, remingtonKeyToDevanagari, checkDevanagariMatch, FINGER_COLORS } from '../data/remingtonMap';
 import { calculateTypingStats, saveUserProgress } from '../utils/telemetry';
 import { sound } from '../utils/audio';
 import { buildDevanagariWordGroups } from '../utils/devanagari';
@@ -332,21 +332,27 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   }, [startTime, isPaused, isCompleted, currentIndex, mistakeIndexes.size, backspaceCount, errorCharMap]);
 
   // Handle lesson completion
-  const handleComplete = useCallback(() => {
+  const handleComplete = useCallback((
+    explicitErrors?: number,
+    explicitErrorMap?: Record<string, number>,
+    explicitBackspaces?: number
+  ) => {
     setIsCompleted(true);
     if (timerRef.current) clearInterval(timerRef.current);
 
-    const finalSeconds = startTime ? Math.max(1, Math.floor((Date.now() - startTime) / 1000)) : elapsedSeconds;
+    const finalSeconds = startTime ? Math.max(1, Math.floor((Date.now() - startTime) / 1000)) : Math.max(1, elapsedSeconds);
     const finalTotal = activeTargetText.length;
-    const finalErrors = mistakeIndexes.size;
+    const finalErrors = explicitErrors !== undefined ? explicitErrors : mistakeIndexes.size;
     const finalCorrect = Math.max(0, finalTotal - finalErrors);
+    const finalErrMap = explicitErrorMap || errorCharMap;
+    const finalBackspaces = explicitBackspaces !== undefined ? explicitBackspaces : backspaceCount;
 
     const finalStats = calculateTypingStats(
       finalCorrect,
       finalErrors,
-      backspaceCount,
+      finalBackspaces,
       finalSeconds,
-      errorCharMap
+      finalErrMap
     );
 
     setLiveStats(finalStats);
@@ -378,7 +384,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       const bestStars = Math.max(prevLesson?.stars || 0, stars);
 
       const updatedWeak = { ...prev.weakCharacters };
-      Object.entries(errorCharMap).forEach(([ch, count]) => {
+      Object.entries(finalErrMap).forEach(([ch, count]) => {
         updatedWeak[ch] = (updatedWeak[ch] || 0) + count;
       });
 
@@ -403,6 +409,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
   // Core Keystroke Engine: Listen and map ISM Remington keys in real time
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Ignore key repeats to eliminate ghost keystrokes
+    if (e.repeat) {
+      e.preventDefault();
+      return;
+    }
+
     // Ignore meta keys
     if (e.key === 'Tab' || e.key === 'Alt' || e.key === 'Control' || e.key === 'Meta' || e.key === 'CapsLock') {
       return;
@@ -418,9 +430,19 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       e.preventDefault();
       sound.playKeyClick();
       if (currentIndex > 0) {
+        const prevIdx = currentIndex - 1;
         setBackspaceCount(prev => prev + 1);
-        setCurrentIndex(prev => prev - 1);
+        setCurrentIndex(prevIdx);
         setTypedText(prev => prev.slice(0, -1));
+        // Clean error at previous index if present so backspace doesn't corrupt error accounting
+        setMistakeIndexes(prev => {
+          if (prev.has(prevIdx)) {
+            const next = new Set(prev);
+            next.delete(prevIdx);
+            return next;
+          }
+          return prev;
+        });
       }
       return;
     }
@@ -451,32 +473,37 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
     if (!devanagariChar) return;
 
-    // Check against expected character
-    const expected = activeTargetText[currentIndex];
-    const isMatch = devanagariChar === expected;
+    // Check against expected character or conjunct sequence using checkDevanagariMatch
+    const matchResult = checkDevanagariMatch(devanagariChar, activeTargetText, currentIndex);
+    const isMatch = matchResult.isMatch;
+    const advance = matchResult.advanceCount;
 
     if (isMatch) {
       sound.playKeyClick();
       setTypedText(prev => prev + devanagariChar);
-      const nextIdx = currentIndex + 1;
+      const nextIdx = currentIndex + advance;
       setCurrentIndex(nextIdx);
 
       if (nextIdx >= activeTargetText.length) {
-        handleComplete();
+        handleComplete(mistakeIndexes.size, errorCharMap, backspaceCount);
       }
     } else {
       sound.playErrorSound();
-      setMistakeIndexes(prev => new Set(prev).add(currentIndex));
-      setErrorCharMap(prev => ({
-        ...prev,
-        [expected]: (prev[expected] || 0) + 1
-      }));
+      const expectedChar = activeTargetText[currentIndex] || '?';
+      const updatedMistakes = new Set(mistakeIndexes).add(currentIndex);
+      const updatedErrorMap = {
+        ...errorCharMap,
+        [expectedChar]: (errorCharMap[expectedChar] || 0) + 1
+      };
+
+      setMistakeIndexes(updatedMistakes);
+      setErrorCharMap(updatedErrorMap);
       setTypedText(prev => prev + devanagariChar);
-      const nextIdx = currentIndex + 1;
+      const nextIdx = currentIndex + advance;
       setCurrentIndex(nextIdx);
 
       if (nextIdx >= activeTargetText.length) {
-        handleComplete();
+        handleComplete(updatedMistakes.size, updatedErrorMap, backspaceCount);
       }
     }
   };

@@ -6,9 +6,13 @@ contextBridge.exposeInMainWorld('electron', {
   isElectron: true,
   platform: process.platform,
   openExternal: (url: string) => {
-    // Only allow http and https protocols for security
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      shell.openExternal(url);
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        shell.openExternal(url);
+      }
+    } catch {
+      // Invalid URL rejected
     }
   },
   send: (channel: string, data: unknown) => {
@@ -20,7 +24,12 @@ contextBridge.exposeInMainWorld('electron', {
   receive: (channel: string, func: (...args: unknown[]) => void) => {
     const validChannels = ['fromMain'];
     if (validChannels.includes(channel)) {
-      ipcRenderer.on(channel, (_event, ...args) => func(...args));
+      const subscription = (_event: Electron.IpcRendererEvent, ...args: unknown[]) => func(...args);
+      ipcRenderer.on(channel, subscription);
+      return () => {
+        ipcRenderer.removeListener(channel, subscription);
+      };
     }
+    return () => {};
   }
 });

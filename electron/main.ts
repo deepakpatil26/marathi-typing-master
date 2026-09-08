@@ -36,8 +36,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: Math.min(1280, width),
     height: Math.min(860, height),
-    minWidth: 960,
-    minHeight: 680,
+    minWidth: 800,
+    minHeight: 560,
     title: 'मराठी टायपिंग मास्टर (Marathi Typing Master)',
     backgroundColor: '#03151e',
     icon: appIcon,

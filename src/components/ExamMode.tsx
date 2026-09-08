@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ExamResult, Finger } from '../types';
 import { EXAM_PASSAGES } from '../data/curriculum';
-import { remingtonKeyToDevanagari, getRemingtonKeyForChar } from '../data/remingtonMap';
+import { remingtonKeyToDevanagari, getRemingtonKeyForChar, checkDevanagariMatch } from '../data/remingtonMap';
 import { evaluateGccTbcExam } from '../utils/telemetry';
 import { sound } from '../utils/audio';
 import { buildDevanagariWordGroups } from '../utils/devanagari';
@@ -81,7 +81,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     }, 100);
   };
 
-  const finishExam = useCallback(() => {
+  const finishExam = useCallback((explicitCurrentIndex?: number, explicitMistakes?: Set<number>) => {
     setIsExamRunning(false);
     if (timerRef.current) clearInterval(timerRef.current);
 
@@ -89,14 +89,17 @@ export const ExamMode: React.FC<ExamModeProps> = ({
       ? Math.max(1, Math.floor((Date.now() - startTimeRef.current) / 1000))
       : timeLimitMinutes * 60;
 
-    const correctCount = currentIndex - mistakeIndexes.size;
+    const actualTyped = explicitCurrentIndex !== undefined ? explicitCurrentIndex : currentIndex;
+    const actualMistakes = explicitMistakes !== undefined ? explicitMistakes.size : mistakeIndexes.size;
+    const correctCount = actualTyped - actualMistakes;
+
     const result = evaluateGccTbcExam(
       candidateName,
       targetSpeed,
       timeLimitMinutes,
-      currentIndex,
+      actualTyped,
       Math.max(0, correctCount),
-      mistakeIndexes.size,
+      actualMistakes,
       timeSpent
     );
 
@@ -118,27 +121,35 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     }
   }, [candidateName, targetSpeed, timeLimitMinutes, currentIndex, mistakeIndexes.size]);
 
-  // Exam Countdown Timer
+  // Exam Countdown Timer (Authoritative timing with Date.now check)
   useEffect(() => {
     if (isExamRunning) {
       timerRef.current = setInterval(() => {
-        setRemainingSeconds(prev => {
-          if (prev <= 1) {
-            finishExam();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+        if (!startTimeRef.current) return;
+        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        const totalDuration = timeLimitMinutes * 60;
+        const left = Math.max(0, totalDuration - elapsed);
+        setRemainingSeconds(left);
+
+        if (left <= 0) {
+          finishExam();
+        }
+      }, 500);
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isExamRunning, finishExam]);
+  }, [isExamRunning, finishExam, timeLimitMinutes]);
 
   // Handle Keystrokes during exam
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!isExamRunning) return;
+
+    // Ignore key repeat to eliminate ghost errors
+    if (e.repeat) {
+      e.preventDefault();
+      return;
+    }
 
     pressedKeysRef.current.add(e.code);
     pressedKeysRef.current.add(e.key.toLowerCase());
@@ -147,18 +158,28 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     if (e.key === 'Backspace') {
       e.preventDefault();
       if (!strictMode && currentIndex > 0) {
+        const prevIdx = currentIndex - 1;
         sound.playKeyClick();
         setBackspaces(prev => prev + 1);
-        setCurrentIndex(prev => prev - 1);
+        setCurrentIndex(prevIdx);
         setTypedText(prev => prev.slice(0, -1));
-      } else {
+        // Remove from mistakes if previous position had an error
+        setMistakeIndexes(prev => {
+          if (prev.has(prevIdx)) {
+            const next = new Set(prev);
+            next.delete(prevIdx);
+            return next;
+          }
+          return prev;
+        });
+      } else if (strictMode) {
         // Strict mode penalization
         sound.playErrorSound();
       }
       return;
     }
 
-    if (e.key === 'Tab' || e.key === 'Alt' || e.key === 'Control' || e.key === 'Meta') {
+    if (e.key === 'Tab' || e.key === 'Alt' || e.key === 'Control' || e.key === 'Meta' || e.key === 'CapsLock') {
       return;
     }
 
@@ -176,27 +197,29 @@ export const ExamMode: React.FC<ExamModeProps> = ({
 
     if (!devanagariChar) return;
 
-    const expected = targetText[currentIndex];
-    const isMatch = devanagariChar === expected;
+    const matchResult = checkDevanagariMatch(devanagariChar, targetText, currentIndex);
+    const isMatch = matchResult.isMatch;
+    const advance = matchResult.advanceCount;
 
     if (isMatch) {
       sound.playKeyClick();
       setTypedText(prev => prev + devanagariChar);
-      const nextIdx = currentIndex + 1;
+      const nextIdx = currentIndex + advance;
       setCurrentIndex(nextIdx);
 
       if (nextIdx >= targetText.length) {
-        finishExam();
+        finishExam(nextIdx, mistakeIndexes);
       }
     } else {
       sound.playErrorSound();
-      setMistakeIndexes(prev => new Set(prev).add(currentIndex));
+      const updatedMistakes = new Set(mistakeIndexes).add(currentIndex);
+      setMistakeIndexes(updatedMistakes);
       setTypedText(prev => prev + devanagariChar);
-      const nextIdx = currentIndex + 1;
+      const nextIdx = currentIndex + advance;
       setCurrentIndex(nextIdx);
 
       if (nextIdx >= targetText.length) {
-        finishExam();
+        finishExam(nextIdx, updatedMistakes);
       }
     }
   };
