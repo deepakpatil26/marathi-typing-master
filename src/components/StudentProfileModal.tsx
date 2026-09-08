@@ -48,6 +48,18 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Close on Escape key
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const showToast = (msg: string) => {
@@ -141,9 +153,14 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
     <div 
       id="student-profile-modal-overlay"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-200"
+      onClick={onClose}
     >
       <div 
         id="student-profile-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="student-profile-title"
+        onClick={(e) => e.stopPropagation()}
         className={`w-full max-w-2xl rounded-3xl p-6 sm:p-7 shadow-2xl border max-h-[90vh] flex flex-col transition-colors ${
           isDark 
             ? 'bg-[#072431] border-teal-700/50 text-slate-100 shadow-teal-950/50' 
@@ -163,7 +180,7 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
               <Users className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold">
+              <h3 id="student-profile-title" className="text-base sm:text-lg font-bold">
                 {language === 'mr' ? 'विद्यार्थी प्रोफाइल्स (Student Profiles)' : 'Multi-Student Profiles'}
               </h3>
               <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>

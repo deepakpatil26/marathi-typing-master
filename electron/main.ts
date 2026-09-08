@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, screen } from 'electron';
+import { app, BrowserWindow, Menu, shell, screen, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
 
@@ -128,9 +128,13 @@ function createWindow() {
           label: 'About Marathi Typing Master (माहिती)',
           click: () => {
             if (mainWindow) {
-              mainWindow.webContents.executeJavaScript(`
-                alert("मराठी टायपिंग मास्टर v1.0.0\\nISM DVBW Remington Layout\\nGCC-TBC 30 & 40 WPM Exam Prep\\n100% Offline & Private");
-              `);
+              dialog.showMessageBox(mainWindow, {
+                type: 'info',
+                title: 'मराठी टायपिंग मास्टर (Marathi Typing Master)',
+                message: 'मराठी टायपिंग मास्टर v1.0.0',
+                detail: 'ISM DVBW Remington Layout Tutor\nGCC-TBC 30 & 40 WPM Exam Simulator\n100% Offline & Private Desktop Application',
+                buttons: ['OK']
+              });
             }
           }
         }
@@ -141,10 +145,15 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 
-  // Open external URLs in default system browser, not in the Electron window
+  // Open external URLs strictly in default system browser with valid URL scheme
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('http:') || url.startsWith('https:')) {
-      shell.openExternal(url);
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        shell.openExternal(url);
+      }
+    } catch {
+      // ignore invalid URLs
     }
     return { action: 'deny' };
   });

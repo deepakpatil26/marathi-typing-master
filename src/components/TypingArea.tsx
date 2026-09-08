@@ -117,6 +117,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const pressedKeysRef = useRef<Set<string>>(new Set());
+  const typedHistoryRef = useRef<{ typedChar: string; advanceCount: number; isError: boolean; expectedToken: string; charIndex: number }[]>([]);
 
   // Determine current expected character
   const currentChar = activeTargetText[currentIndex] || '';
@@ -224,6 +225,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     setIsPaused(false);
     setIsCompleted(false);
     setBackspaceCount(0);
+    typedHistoryRef.current = [];
     pressedKeysRef.current.clear();
     onKeyPressedChange(new Set());
     if (timerRef.current) clearInterval(timerRef.current);
@@ -429,20 +431,34 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     if (e.key === 'Backspace') {
       e.preventDefault();
       sound.playKeyClick();
-      if (currentIndex > 0) {
-        const prevIdx = currentIndex - 1;
+      if (typedHistoryRef.current.length > 0) {
+        const lastToken = typedHistoryRef.current.pop()!;
         setBackspaceCount(prev => prev + 1);
-        setCurrentIndex(prevIdx);
-        setTypedText(prev => prev.slice(0, -1));
-        // Clean error at previous index if present so backspace doesn't corrupt error accounting
-        setMistakeIndexes(prev => {
-          if (prev.has(prevIdx)) {
+        setCurrentIndex(prev => Math.max(0, prev - lastToken.advanceCount));
+        setTypedText(prev => prev.slice(0, -lastToken.typedChar.length));
+
+        // Clean error from mistakeIndexes and decrement from errorCharMap
+        if (lastToken.isError) {
+          setMistakeIndexes(prev => {
             const next = new Set(prev);
-            next.delete(prevIdx);
+            next.delete(lastToken.charIndex);
             return next;
-          }
-          return prev;
-        });
+          });
+          setErrorCharMap(prev => {
+            const next = { ...prev };
+            const ch = lastToken.expectedToken;
+            if (next[ch] && next[ch] > 1) {
+              next[ch] -= 1;
+            } else {
+              delete next[ch];
+            }
+            return next;
+          });
+        }
+      } else if (currentIndex > 0) {
+        setBackspaceCount(prev => prev + 1);
+        setCurrentIndex(prev => prev - 1);
+        setTypedText(prev => prev.slice(0, -1));
       }
       return;
     }
@@ -477,6 +493,16 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     const matchResult = checkDevanagariMatch(devanagariChar, activeTargetText, currentIndex);
     const isMatch = matchResult.isMatch;
     const advance = matchResult.advanceCount;
+    const expectedToken = matchResult.expectedToken || activeTargetText[currentIndex] || '';
+
+    // Push to token history for exact backspace rollback
+    typedHistoryRef.current.push({
+      typedChar: devanagariChar,
+      advanceCount: advance,
+      isError: !isMatch,
+      expectedToken,
+      charIndex: currentIndex
+    });
 
     if (isMatch) {
       sound.playKeyClick();
@@ -489,11 +515,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       }
     } else {
       sound.playErrorSound();
-      const expectedChar = activeTargetText[currentIndex] || '?';
       const updatedMistakes = new Set(mistakeIndexes).add(currentIndex);
       const updatedErrorMap = {
         ...errorCharMap,
-        [expectedChar]: (errorCharMap[expectedChar] || 0) + 1
+        [expectedToken]: (errorCharMap[expectedToken] || 0) + 1
       };
 
       setMistakeIndexes(updatedMistakes);
@@ -829,7 +854,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           />
         </div>
 
-        {/* Hidden Input capturing keyboard events */}
+        {/* Input capturing keyboard events */}
         <input
           ref={inputRef}
           type="text"
@@ -841,6 +866,8 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           onKeyUp={handleKeyUp}
           autoFocus
           tabIndex={0}
+          role="textbox"
+          aria-label={language === 'mr' ? 'मराठी टायपिंग इनपुट' : 'Marathi Typing Input'}
         />
 
         {/* Text Display with Natural Devanagari Word Grouping and Live Active Caret */}

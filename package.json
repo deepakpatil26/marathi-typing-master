@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist dist-electron release server.js",
     "lint": "tsc --noEmit",
+    "test": "tsx scripts/test-engine.ts",
     "electron:compile": "esbuild electron/main.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist-electron/main.cjs && esbuild electron/preload.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist-electron/preload.cjs",
     "electron:build": "cross-env ELECTRON_BUILD=true vite build && npm run electron:compile",
     "electron:dev": "npm run electron:compile && cross-env VITE_DEV_SERVER_URL=http://localhost:3000 electron .",

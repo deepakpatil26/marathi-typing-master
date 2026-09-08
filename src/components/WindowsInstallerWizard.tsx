@@ -95,6 +95,18 @@ export const WindowsInstallerWizard: React.FC<WindowsInstallerWizardProps> = ({
     return () => clearInterval(timer);
   }, [step]);
 
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleStartInstallation = () => {
@@ -148,9 +160,16 @@ Categories=Education;Utility;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn"
+      onClick={onClose}
+    >
       {/* Windows 11 / Modern Setup Window Shell */}
       <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="installer-wizard-title"
+        onClick={(e) => e.stopPropagation()}
         className={`w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border flex flex-col transition-all duration-200 ${
           isDark 
             ? 'bg-[#061F2C] border-teal-700/60 text-slate-100 shadow-teal-950/50' 
@@ -167,7 +186,7 @@ Categories=Education;Utility;
             <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm flex items-center justify-center bg-[#072431] flex-shrink-0">
               <img src="./logo.png" alt="Logo" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/logo.png'; }} />
             </div>
-            <span className="text-xs font-semibold tracking-wide">
+            <span id="installer-wizard-title" className="text-xs font-semibold tracking-wide">
               {language === 'mr' ? 'मराठी टायपिंग मास्टर - सेटअप विझार्ड v10.4' : 'Marathi Typing Master - Setup Wizard v10.4'}
             </span>
           </div>

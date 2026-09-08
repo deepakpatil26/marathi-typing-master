@@ -152,35 +152,66 @@ export function remingtonKeyToDevanagari(key: string, isShift: boolean, code?: s
 
 /**
  * Checks if the typed Remington Devanagari output matches the target text at currentIndex.
- * Correctly handles multi-codepoint conjuncts (e.g. 'म्' = \u092E\u094D, 'क्ष', 'त्र', 'ज्ञ'),
- * composite symbols, punctuation aliases, and Unicode normalization.
+ * Correctly handles:
+ * - Direct multi-codepoint conjuncts (e.g. 'म्' = \u092E\u094D, 'क्ष', 'त्र', 'ज्ञ', 'श्र', 'द्य', 'द्व')
+ * - Decomposed vs composed vowels & matras (e.g., 'ो' = 'ा' + 'े', 'ौ' = 'ा' + 'ै')
+ * - Halant conjuncts and subjoined ra ('्र', 'र्')
+ * - Unicode NFD / NFC equivalence
+ * - Punctuation and quotation aliases
  */
 export function checkDevanagariMatch(
   typed: string,
   targetText: string,
   currentIndex: number
-): { isMatch: boolean; advanceCount: number; matchedLength: number } {
+): { isMatch: boolean; advanceCount: number; matchedLength: number; expectedToken: string } {
   if (currentIndex >= targetText.length) {
-    return { isMatch: false, advanceCount: 1, matchedLength: 1 };
+    return { isMatch: false, advanceCount: 1, matchedLength: 1, expectedToken: '' };
   }
 
-  const typedNorm = typed.normalize('NFC');
+  const typedNFC = typed.normalize('NFC');
+  const typedNFD = typed.normalize('NFD');
+  const expectedChar = targetText[currentIndex] || '';
 
-  // 1. Direct multi-character or single-character slice match
-  for (let len = typedNorm.length; len >= 1; len--) {
-    const targetSlice = targetText.slice(currentIndex, currentIndex + len).normalize('NFC');
-    if (targetSlice === typedNorm) {
-      return { isMatch: true, advanceCount: len, matchedLength: len };
+  // 1. Direct multi-character slice match (up to 4 codepoints for complex conjuncts)
+  for (let len = Math.min(4, targetText.length - currentIndex); len >= 1; len--) {
+    const targetSlice = targetText.slice(currentIndex, currentIndex + len);
+    const targetNFC = targetSlice.normalize('NFC');
+    const targetNFD = targetSlice.normalize('NFD');
+
+    if (targetNFC === typedNFC || targetNFD === typedNFD || targetSlice === typed) {
+      return { isMatch: true, advanceCount: len, matchedLength: len, expectedToken: targetSlice };
     }
   }
 
-  // 2. Character alias match (e.g. । and .)
-  const singleTarget = targetText[currentIndex];
-  if (DEV_CHAR_ALIAS[singleTarget] === typedNorm || DEV_CHAR_ALIAS[typedNorm] === singleTarget) {
-    return { isMatch: true, advanceCount: 1, matchedLength: 1 };
+  // 2. Composed O-kar / Au-kar decompositions:
+  // Target 'ो' (\u094B) can be typed as 'ा' (\u093E) then 'े' (\u0947) or vice versa
+  // Target 'ौ' (\u094C) can be typed as 'ा' (\u093E) then 'ै' (\u0948)
+  const targetSlice2 = targetText.slice(currentIndex, currentIndex + 2);
+  if (targetSlice2 === '\u093E\u0947' && (typedNFC === '\u094B' || typedNFC === 'ो')) {
+    return { isMatch: true, advanceCount: 2, matchedLength: 2, expectedToken: targetSlice2 };
+  }
+  if (targetSlice2 === '\u093E\u0948' && (typedNFC === '\u094C' || typedNFC === 'ौ')) {
+    return { isMatch: true, advanceCount: 2, matchedLength: 2, expectedToken: targetSlice2 };
+  }
+  if ((expectedChar === 'ो' || expectedChar === '\u094B') && (typedNFC === '\u093E\u0947' || typedNFC === 'ाे' || typedNFC === 'ा' || typedNFC === 'े')) {
+    return { isMatch: true, advanceCount: 1, matchedLength: 1, expectedToken: expectedChar };
+  }
+  if ((expectedChar === 'ौ' || expectedChar === '\u094C') && (typedNFC === '\u093E\u0948' || typedNFC === 'ाै' || typedNFC === 'ा' || typedNFC === 'ै')) {
+    return { isMatch: true, advanceCount: 1, matchedLength: 1, expectedToken: expectedChar };
   }
 
-  // 3. Fallback: single char compare
-  const isMatch = singleTarget.normalize('NFC') === typedNorm;
-  return { isMatch, advanceCount: isMatch ? Math.max(1, typedNorm.length) : 1, matchedLength: 1 };
+  // Target 'ख' (\u0916) in ISM Remington is often typed as half-kh 'ख्' + kana 'ा'
+  if (expectedChar === 'ख' && (typedNFC === 'ख्' || typedNFC === '\u0916\u094D')) {
+    return { isMatch: true, advanceCount: 1, matchedLength: 1, expectedToken: expectedChar };
+  }
+
+  // 3. Punctuation and symbol aliases (e.g. । and .)
+  if (DEV_CHAR_ALIAS[expectedChar] === typedNFC || DEV_CHAR_ALIAS[typedNFC] === expectedChar) {
+    return { isMatch: true, advanceCount: 1, matchedLength: 1, expectedToken: expectedChar };
+  }
+
+  // 4. Single-character direct equivalence
+  const isMatch = expectedChar.normalize('NFC') === typedNFC || expectedChar === typed;
+  const advance = isMatch ? Math.max(1, typedNFC.length) : 1;
+  return { isMatch, advanceCount: advance, matchedLength: 1, expectedToken: expectedChar };
 }

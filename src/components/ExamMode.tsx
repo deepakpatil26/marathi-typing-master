@@ -54,7 +54,9 @@ export const ExamMode: React.FC<ExamModeProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
+  const finishedRef = useRef<boolean>(false);
   const pressedKeysRef = useRef<Set<string>>(new Set());
+  const typedHistoryRef = useRef<{ typedChar: string; advanceCount: number; isError: boolean; expectedToken: string; charIndex: number }[]>([]);
 
   // Current key prompt
   const currentChar = targetText[currentIndex] || '';
@@ -67,6 +69,8 @@ export const ExamMode: React.FC<ExamModeProps> = ({
   }, [currentChar, isExamRunning, onActiveTargetChange]);
 
   const startExam = () => {
+    finishedRef.current = false;
+    typedHistoryRef.current = [];
     setIsExamRunning(true);
     setTypedText('');
     setCurrentIndex(0);
@@ -82,6 +86,8 @@ export const ExamMode: React.FC<ExamModeProps> = ({
   };
 
   const finishExam = useCallback((explicitCurrentIndex?: number, explicitMistakes?: Set<number>) => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
     setIsExamRunning(false);
     if (timerRef.current) clearInterval(timerRef.current);
 
@@ -125,7 +131,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
   useEffect(() => {
     if (isExamRunning) {
       timerRef.current = setInterval(() => {
-        if (!startTimeRef.current) return;
+        if (!startTimeRef.current || finishedRef.current) return;
         const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
         const totalDuration = timeLimitMinutes * 60;
         const left = Math.max(0, totalDuration - elapsed);
@@ -143,7 +149,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
 
   // Handle Keystrokes during exam
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!isExamRunning) return;
+    if (!isExamRunning || finishedRef.current) return;
 
     // Ignore key repeat to eliminate ghost errors
     if (e.repeat) {
@@ -157,21 +163,26 @@ export const ExamMode: React.FC<ExamModeProps> = ({
 
     if (e.key === 'Backspace') {
       e.preventDefault();
-      if (!strictMode && currentIndex > 0) {
-        const prevIdx = currentIndex - 1;
+      if (!strictMode && (typedHistoryRef.current.length > 0 || currentIndex > 0)) {
         sound.playKeyClick();
         setBackspaces(prev => prev + 1);
-        setCurrentIndex(prevIdx);
-        setTypedText(prev => prev.slice(0, -1));
-        // Remove from mistakes if previous position had an error
-        setMistakeIndexes(prev => {
-          if (prev.has(prevIdx)) {
-            const next = new Set(prev);
-            next.delete(prevIdx);
-            return next;
+
+        if (typedHistoryRef.current.length > 0) {
+          const lastToken = typedHistoryRef.current.pop()!;
+          setCurrentIndex(prev => Math.max(0, prev - lastToken.advanceCount));
+          setTypedText(prev => prev.slice(0, -lastToken.typedChar.length));
+
+          if (lastToken.isError) {
+            setMistakeIndexes(prev => {
+              const next = new Set(prev);
+              next.delete(lastToken.charIndex);
+              return next;
+            });
           }
-          return prev;
-        });
+        } else {
+          setCurrentIndex(prev => Math.max(0, prev - 1));
+          setTypedText(prev => prev.slice(0, -1));
+        }
       } else if (strictMode) {
         // Strict mode penalization
         sound.playErrorSound();
@@ -200,6 +211,15 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     const matchResult = checkDevanagariMatch(devanagariChar, targetText, currentIndex);
     const isMatch = matchResult.isMatch;
     const advance = matchResult.advanceCount;
+    const expectedToken = matchResult.expectedToken || targetText[currentIndex] || '';
+
+    typedHistoryRef.current.push({
+      typedChar: devanagariChar,
+      advanceCount: advance,
+      isError: !isMatch,
+      expectedToken,
+      charIndex: currentIndex
+    });
 
     if (isMatch) {
       sound.playKeyClick();
@@ -534,6 +554,8 @@ export const ExamMode: React.FC<ExamModeProps> = ({
               onKeyDown={handleKeyDown}
               onKeyUp={handleKeyUp}
               autoFocus
+              role="textbox"
+              aria-label={language === 'mr' ? 'मराठी टंकलेखन परीक्षा इनपुट' : 'Marathi Exam Typing Input'}
             />
 
             <div
