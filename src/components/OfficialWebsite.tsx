@@ -158,7 +158,7 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
         </nav>
 
         {/* Right Header Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
           {/* Share Link button */}
           <button
             onClick={handleShareLink}
@@ -199,10 +199,11 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
           <button
             id="btn-header-download"
             onClick={handleDownloadSetup}
-            className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl font-black text-xs bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 shadow-md shadow-teal-500/20 active:scale-95 transition-all cursor-pointer"
+            aria-label={language === 'mr' ? 'मोफत डाउनलोड' : 'Free Download'}
+            className="hidden shrink-0 items-center gap-1.5 px-2.5 sm:flex sm:px-4 py-1.5 sm:py-2 rounded-xl font-black text-xs bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 shadow-md shadow-teal-500/20 active:scale-95 transition-all cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>{language === 'mr' ? 'मोफत डाउनलोड' : 'Free Download'}</span>
+            <span className="hidden sm:inline">{language === 'mr' ? 'मोफत डाउनलोड' : 'Free Download'}</span>
           </button>
         </div>
       </header>
@@ -242,7 +243,7 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
                 isDark ? 'bg-[#03151E] border-teal-900 text-cyan-300' : 'bg-white border-teal-200 text-teal-900 shadow-sm'
               }`}>
                 <HardDrive className="w-4 h-4 text-teal-700 dark:text-teal-400" />
-                C:\MarathiTypingMaster
+                C:\Program Files\Marathi Typing Master
               </span>
               <span className={`px-3 py-1.5 rounded-xl border font-bold flex items-center gap-1.5 ${
                 isDark ? 'bg-[#03151E] border-teal-900 text-emerald-300' : 'bg-white border-emerald-200 text-emerald-800 shadow-sm'
@@ -318,7 +319,7 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
                   <span className="text-xs font-bold ml-1">MarathiTypingMaster.exe</span>
                 </div>
                 <span className="text-[11px] font-mono font-bold text-teal-800 dark:text-cyan-400">
-                  C:\MarathiTypingMaster
+                  C:\Program Files\Marathi Typing Master
                 </span>
               </div>
 
@@ -438,7 +439,7 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
                 </p>
               </div>
               <div className="p-2 rounded-lg bg-cyan-500/10 text-[11px] font-mono text-cyan-900 dark:text-cyan-400 font-bold truncate">
-                Target: C:\MarathiTypingMaster
+                Target: C:\Program Files\Marathi Typing Master
               </div>
             </div>
 
@@ -531,8 +532,8 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
               </h3>
               <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 {language === 'mr'
-                  ? '५ मिनिटांचा अचूक टायमर, प्रति शब्द ५ अक्षरे मोजणी, चुकांसाठी दंड गुण आणि अधिकृत निकालपत्रक (Marksheet) व प्रिंट सर्टिफिकेट.'
-                  : 'Strict 5-minute timed test with 5-stroke word calculations, negative marking, and printable GCC-TBC marksheet certificate.'}
+                  ? '७ मिनिटांचा अधिकृत सराव टायमर, प्रति शब्द ५ अक्षरे मोजणी, चुकांसाठी दंड गुण आणि प्रिंट निकालपत्रक.'
+                  : 'Default 7-minute GCC-TBC practice test with 5-stroke word calculations, penalty evaluation, and printable results.'}
               </p>
             </div>
 
@@ -707,8 +708,8 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
               </div>
               <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
                 {language === 'mr'
-                  ? '३० व ४० WPM गतीसाठी ५ मिनिटांचे सराव परिच्छेद आणि अचूकता चाचणी.'
-                  : 'Official 5-minute timed test passages at 30 & 40 WPM with penalty evaluation.'}
+                  ? '३० व ४० WPM गतीसाठी ७ मिनिटांचे सराव परिच्छेद आणि अचूकता चाचणी.'
+                  : 'Default 7-minute practice passages at 30 & 40 WPM with penalty evaluation.'}
               </p>
             </div>
           </div>
@@ -787,8 +788,8 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-300 italic leading-relaxed">
                 {language === 'mr'
-                  ? '"जिल्हा न्यायालय व म्हाडा टंकलेखन भरती परीक्षेसाठी हे सॉफ्टवेअर अत्यंत उपयुक्त ठरले. ५ मिनिटांचा अचूक टायमर आणि वीक-की ड्रिल्समुळे माझी अचूकता ९८.५% झाली."'
-                  : '"Invaluable for District Court clerk typing recruitment exams. The strict 5-minute timer and targeted weak-key remediation drills elevated my accuracy to 98.5%."'}
+                  ? '"जिल्हा न्यायालय व म्हाडा टंकलेखन भरती परीक्षेसाठी हे सॉफ्टवेअर अत्यंत उपयुक्त ठरले. अचूक टायमर आणि वीक-की ड्रिल्समुळे माझी अचूकता ९८.५% झाली."'
+                  : '"Invaluable for typing recruitment practice. The timed mode and targeted weak-key drills helped improve my accuracy to 98.5%."'}
               </p>
               <div className="pt-2 border-t border-teal-900/30">
                 <span className="font-bold text-sm block text-slate-900 dark:text-white">
@@ -835,7 +836,7 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
             }`}>
               <span className="text-[11px] text-slate-500 block">{language === 'mr' ? 'हार्ड डिस्क जागा (Storage)' : 'Disk Space'}</span>
               <span className="font-bold text-sm block mt-1">50 MB</span>
-              <span className="text-[11px] text-teal-900 dark:text-cyan-400">C:\MarathiTypingMaster</span>
+              <span className="text-[11px] text-teal-900 dark:text-cyan-400">C:\Program Files\Marathi Typing Master</span>
             </div>
 
             <div className={`p-4 rounded-2xl border ${
@@ -894,8 +895,8 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
               </h4>
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 {language === 'mr'
-                  ? 'होय, यामध्ये महाराष्ट्र परीक्षा परिषदेचा अधिकृत ISM DVBW Remington कीबोर्ड, ५ मिनिटांचा टायमर, प्रति शब्द ५ अक्षरे मोजणी आणि अधिकृत गुणदान पद्धत समाविष्ट आहे.'
-                  : 'Yes! It follows the exact ISM DVBW Remington layout, 5-minute timed exam mode, 5-stroke word count calculations, and penalty grading.'}
+                  ? 'यामध्ये ISM DVBW Remington कीबोर्ड, ७ मिनिटांचा GCC-TBC सराव टायमर, प्रति शब्द ५ अक्षरे मोजणी आणि गुणदान पद्धत समाविष्ट आहे.'
+                  : 'It uses the ISM DVBW Remington layout, a 7-minute GCC-TBC practice timer, 5-stroke word calculations, and penalty grading.'}
               </p>
             </div>
 
@@ -908,7 +909,7 @@ export const OfficialWebsite: React.FC<OfficialWebsiteProps> = ({
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 {language === 'mr'
                   ? 'होय, हे सॉफ्टवेअर १००% सुरक्षित आणि स्वच्छ आहे. यात कोणतेही स्पायवेअर किंवा मालवेअर नसून सुरक्षित बॅच व स्थानिक कॉन्फिगरेशन फाइल्स वापरल्या जातात.'
-                  : 'Yes! It is 100% clean, verified, and safe from spyware. It operates with standard batch installer scripts into your local drive.'}
+                  : 'The installer is distributed as a standard Windows .exe. Verify the published SHA-256 checksum and review Windows security prompts before installation.'}
               </p>
             </div>
           </div>

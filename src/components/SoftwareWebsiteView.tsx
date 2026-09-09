@@ -184,8 +184,8 @@ exit
 
             <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
               {language === 'mr'
-                ? 'महाराष्ट्र शासन GCC-TBC ३० व ४० WPM संगणक टंकलेखन परीक्षा, न्यायालय व MPSC भरतीसाठी परिपूर्ण सॉफ्टवेअर. C:\ ड्राईव्हवर इन्स्टॉल करा आणि डेस्कटॉप शॉर्टकटसह १००% ऑफलाइन सराव करा.'
-                : 'The complete touch typing software for ISM DVBW Remington Marathi layout. Install to your C: drive and practice 100% offline with a direct Desktop Shortcut.'}
+                ? 'महाराष्ट्र शासन GCC-TBC ३० व ४० WPM संगणक टंकलेखन सराव, न्यायालय व MPSC भरतीसाठी परिपूर्ण सॉफ्टवेअर. Program Files मध्ये इन्स्टॉल करा आणि डेस्कटॉप शॉर्टकटसह ऑफलाइन सराव करा.'
+                : 'The complete touch-typing software for the ISM DVBW Remington Marathi layout. Install it in Windows Program Files and practise offline with a desktop shortcut.'}
             </p>
 
             {/* Badges */}
@@ -194,7 +194,7 @@ exit
                 isDark ? 'bg-[#03151E] border-teal-900 text-cyan-300' : 'bg-white border-teal-200 text-teal-800'
               }`}>
                 <HardDrive className="w-3.5 h-3.5" />
-                C:\MarathiTypingMaster
+                C:\Program Files\Marathi Typing Master
               </span>
               <span className={`px-2.5 py-1 rounded-lg border font-semibold flex items-center gap-1.5 ${
                 isDark ? 'bg-[#03151E] border-teal-900 text-emerald-300' : 'bg-white border-emerald-200 text-emerald-800'
@@ -206,7 +206,7 @@ exit
                 isDark ? 'bg-[#03151E] border-teal-900 text-amber-300' : 'bg-white border-amber-200 text-amber-800'
               }`}>
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
-                100% Safe & Free
+                Free & Offline
               </span>
             </div>
 
@@ -299,7 +299,7 @@ exit
                     <FolderCheck className="w-4 h-4 text-amber-600" />
                     <span>Install Path</span>
                   </div>
-                  <span className="font-mono font-bold text-slate-900 dark:text-slate-300">C:\MarathiTypingMaster</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-slate-300">C:\Program Files\Marathi Typing Master</span>
                 </div>
                 <div className="flex items-center justify-between p-2 rounded-lg bg-teal-500/5 text-slate-700 dark:text-slate-400 font-medium">
                   <div className="flex items-center gap-2">
@@ -380,7 +380,7 @@ exit
               </p>
             </div>
             <span className="text-[11px] font-mono font-bold text-cyan-950 dark:text-cyan-400">
-              Target: C:\MarathiTypingMaster
+              Target: C:\Program Files\Marathi Typing Master
             </span>
           </div>
 
@@ -459,8 +459,8 @@ exit
           </h3>
           <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             {language === 'mr'
-              ? '५ मिनिटांचा अचूक टायमर, प्रति शब्द ५ अक्षरे मोजणी, चुकांसाठी दंड गुण आणि अधिकृत ग्रेडसह निकालपत्रक (Marksheet).'
-              : 'Strict 5-minute timed test with 5-stroke word calculations, mistake penalization, and printable certificate.'}
+              ? '७ मिनिटांचा अधिकृत सराव टायमर, प्रति शब्द ५ अक्षरे मोजणी, चुकांसाठी दंड गुण आणि प्रिंट निकालपत्रक.'
+              : 'Default 7-minute practice test with 5-stroke word calculations, mistake penalties, and printable results.'}
           </p>
         </div>
 
@@ -514,7 +514,7 @@ exit
           }`}>
             <span className="text-[11px] text-slate-500 block">हार्ड डिस्क जागा (Storage)</span>
             <span className="font-bold text-sm block mt-0.5">50 MB C:\ ड्राईव्हवर</span>
-            <span className="text-[10px] text-teal-600 dark:text-cyan-400">C:\MarathiTypingMaster</span>
+            <span className="text-[10px] text-teal-600 dark:text-cyan-400">C:\Program Files\Marathi Typing Master</span>
           </div>
 
           <div className={`p-3.5 rounded-xl border ${

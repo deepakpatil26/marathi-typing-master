@@ -50,9 +50,11 @@ export default function App() {
   useEffect(() => {
     const checkLocation = () => {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app') {
-        setViewMode('software');
-      }
+      setViewMode(
+        params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app'
+          ? 'software'
+          : 'website'
+      );
     };
     window.addEventListener('popstate', checkLocation);
     window.addEventListener('hashchange', checkLocation);

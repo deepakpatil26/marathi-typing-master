@@ -28,15 +28,18 @@
 
 ---
 
-## 🌐 Deployment & Live Demo
+## 🌐 Deployment, Live Website & Desktop App
 
 You can easily deploy your own instance of Marathi Typing Master for free or access the live web app:
 
 | Resource                   | Link                                                                                                                                                   |
 | :------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **🚀 Deploy on Vercel**    | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/marathi-typing-master) |
-| **⚡ Live Production URL** | `https://marathi-typing-master.vercel.app/`                                                                                                            |
-| **📱 Desktop/Mobile App**  | Install directly via Chrome/Edge browser using the in-app **"Install App"** button                                                                     |
+| **🚀 Deploy on Vercel** | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/deepakpatil26/marathi-typing-master) |
+| **⚡ Public landing page** | `https://marathi-typing-master.vercel.app/` |
+| **🖥️ Web software UI** | `https://marathi-typing-master.vercel.app/?app=true` |
+| **🪟 Windows installer** | [Download the latest `.exe`](https://github.com/deepakpatil26/marathi-typing-master/releases/latest/download/MarathiTypingMasterSetup.exe) |
+
+The root URL is intentionally a product landing page. Use `?app=true` to open the browser version of the typing software. The Windows `.exe` is the recommended offline experience for students and institutes.
 
 ---
 
@@ -101,9 +104,9 @@ _Available Drill Types:_
 
 ### 7. 🎓 MSCE GCC-TBC Exam Simulator
 
-- **Official 7-Minute Timed Mode**: Replicates the exact Maharashtra State Council of Examination (MSCE) GCC-TBC examination pattern for 30 WPM and 40 WPM.
+- **Official 7-Minute Practice Mode**: Provides configurable 2, 5, 7, or 10-minute simulations, with 7 minutes as the default GCC-TBC practice duration for 30 WPM and 40 WPM.
 - **Real-Time Speed Calculation**: Gross WPM, Net WPM, Accuracy (%), and penalty deduction for mistakes.
-- **Pass/Fail Evaluation**: Applies the official ≥ 90% accuracy benchmark.
+- **Pass/Fail Evaluation**: Uses the configured target speed and a 90% accuracy benchmark. This is a practice simulator, not an official examination or certificate.
 - **Printable Certificate**: Generates an immediate downloadable/printable certificate upon passing.
 
 ### 8. 🤖 AI-Powered Practice (Google Gemini 2.5 Flash)
@@ -203,7 +206,7 @@ marathi-typing-master/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/marathi-typing-master.git
+git clone https://github.com/deepakpatil26/marathi-typing-master.git
 cd marathi-typing-master
 ```
 
@@ -236,6 +239,12 @@ npm run dev
 ```
 
 Open your browser and navigate to **`http://localhost:3000`**.
+
+### Windows desktop release
+
+Download `MarathiTypingMasterSetup.exe` from the GitHub Releases link above. The NSIS installer supports per-machine installation, defaults to the Windows Program Files location, creates Start Menu and desktop shortcuts, and includes an uninstaller. The packaged application is designed to run offline after installation. Windows x64 and administrator permission are required.
+
+Release assets include a `.sha256` checksum. Code signing is not currently configured, so Windows SmartScreen may display an additional publisher warning.
 
 ---
 

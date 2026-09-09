@@ -35,7 +35,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
   const [seatNumber, setSeatNumber] = useState<string>('MH-GCC-2026-8842');
   const [targetSpeed, setTargetSpeed] = useState<30 | 40>(30);
   const [selectedPassageIndex, setSelectedPassageIndex] = useState<number>(0);
-  const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(5);
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(7);
   const [strictMode, setStrictMode] = useState<boolean>(true);
 
   // Active exam session states

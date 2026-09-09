@@ -90,8 +90,8 @@ export const InfoView: React.FC<InfoViewProps> = ({ language }) => {
           </div>
           <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
             {language === 'mr'
-              ? '३० श.प्र.मि. (30 WPM) साठी १५० शब्द (७५० अक्षरे) ५ मिनिटांत अचूक टाईप करावे लागतात. प्रत्येक चुकीच्या शब्दासाठी १ शब्दाचा दंड (Penalization) केला जातो. उत्तीर्ण होण्यासाठी किमान ९०% अचूकता आवश्यक असते.'
-              : 'For 30 WPM, 150 words (750 keystrokes) must be typed in 5 minutes with at least 90% accuracy. One word is deducted for each mistake.'}
+              ? '३० श.प्र.मि. (30 WPM) साठी १५० शब्द (७५० अक्षरे) ७ मिनिटांच्या सराव परीक्षेत अचूक टाईप करण्याचा सराव करा. प्रत्येक चुकीच्या शब्दासाठी १ शब्दाचा दंड केला जातो आणि किमान ९०% अचूकता अपेक्षित आहे.'
+              : 'For 30 WPM, practise 150 words (750 keystrokes) in the default 7-minute simulation with at least 90% accuracy. One word is deducted for each mistake.'}
           </p>
         </div>
       </div>
