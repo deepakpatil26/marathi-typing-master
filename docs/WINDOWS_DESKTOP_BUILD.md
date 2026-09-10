@@ -70,14 +70,12 @@ The installer will be generated in the `release/` folder:
 
 ---
 
-### Option B: Cloud Build via GitHub Actions (Optional)
+### Option B: Cloud Build via GitHub Actions
 
-If you wish to have GitHub compile the `.exe` in the cloud:
-1. On GitHub.com, go to your repository.
-2. Click **Add file** → **Create new file**.
-3. Name it `.github/workflows/build-windows.yml`.
-4. Copy and paste the contents from `docs/github-workflow-template.yml`.
-5. Commit the file. You can now trigger the build from the **Actions** tab on GitHub!
+The repository already includes `.github/workflows/build-windows.yml`. Push to
+`main`, open a pull request, or push a `v*` tag to trigger the workflow. Normal
+builds upload an installer artifact; version tags additionally publish the
+installer and SHA-256 checksum to GitHub Releases.
 
 ---
 
