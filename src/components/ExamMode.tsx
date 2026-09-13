@@ -164,7 +164,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     if (e.key === 'Backspace') {
       e.preventDefault();
       if (!strictMode && (typedHistoryRef.current.length > 0 || currentIndex > 0)) {
-        sound.playKeyClick();
+        sound.playTypingFeedback();
         setBackspaces(prev => prev + 1);
 
         if (typedHistoryRef.current.length > 0) {
@@ -222,7 +222,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
     });
 
     if (isMatch) {
-      sound.playKeyClick();
+      sound.playTypingFeedback();
       setTypedText(prev => prev + devanagariChar);
       const nextIdx = currentIndex + advance;
       setCurrentIndex(nextIdx);

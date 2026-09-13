@@ -1,6 +1,7 @@
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private soundEnabled: boolean = true;
+  private typingFeedbackEnabled: boolean = true;
   private volume: number = 0.4;
   private metronomeTimer: number | null = null;
   private metronomeRunning: boolean = false;
@@ -28,6 +29,14 @@ class SoundEngine {
 
   public isEnabled(): boolean {
     return this.soundEnabled;
+  }
+
+  public setTypingFeedbackEnabled(enabled: boolean) {
+    this.typingFeedbackEnabled = enabled;
+  }
+
+  public isTypingFeedbackEnabled(): boolean {
+    return this.typingFeedbackEnabled;
   }
 
   public setVolume(vol: number) {
@@ -142,6 +151,11 @@ class SoundEngine {
     } catch {
       // AudioContext might be blocked until user gesture
     }
+  }
+
+  public playTypingFeedback() {
+    if (!this.typingFeedbackEnabled) return;
+    this.playKeyClick();
   }
 
   // Error thud sound

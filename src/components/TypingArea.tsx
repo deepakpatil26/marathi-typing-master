@@ -430,7 +430,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     // Handle Backspace
     if (e.key === 'Backspace') {
       e.preventDefault();
-      sound.playKeyClick();
+      sound.playTypingFeedback();
       if (typedHistoryRef.current.length > 0) {
         const lastToken = typedHistoryRef.current.pop()!;
         setBackspaceCount(prev => prev + 1);
@@ -505,7 +505,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     });
 
     if (isMatch) {
-      sound.playKeyClick();
+      sound.playTypingFeedback();
       setTypedText(prev => prev + devanagariChar);
       const nextIdx = currentIndex + advance;
       setCurrentIndex(nextIdx);

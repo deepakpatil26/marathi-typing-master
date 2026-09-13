@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Globe, Trash2, CheckCircle2, Moon, Sun } from 'lucide-react';
+import { Volume2, VolumeX, Globe, Trash2, CheckCircle2, Moon, Sun, Keyboard } from 'lucide-react';
 import { USER_PROGRESS_STORAGE_KEY } from '../utils/telemetry';
 import { UserProgress } from '../types';
 import { sound } from '../utils/audio';
@@ -10,6 +10,8 @@ interface SettingsViewProps {
   onToggleLanguage: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
+  typingFeedbackEnabled: boolean;
+  onToggleTypingFeedback: () => void;
   setUserProgress: React.Dispatch<React.SetStateAction<UserProgress>>;
 }
 
@@ -18,6 +20,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onToggleLanguage,
   soundEnabled,
   onToggleSound,
+  typingFeedbackEnabled,
+  onToggleTypingFeedback,
   setUserProgress
 }) => {
   const { theme, isDark, setTheme } = useTheme();
@@ -128,10 +132,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
             <div>
               <div className={`text-sm font-bold ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>
-                {language === 'mr' ? 'कीबोर्ड मेकॅनिकल आवाज (Keyboard Sound)' : 'Mechanical Typing Audio'}
+                {language === 'mr' ? 'ध्वनी प्रभाव (Sound Effects)' : 'Sound Effects'}
               </div>
               <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                {language === 'mr' ? 'प्रत्येक अचूक व चुकीच्या कीस्ट्रोकसाठी ध्वनी प्रभाव' : 'Keypress click feedback and error cues.'}
+                {language === 'mr' ? 'चुकीच्या की, यश आणि मेट्रोनोमसाठी ध्वनी' : 'Error cues, completion sounds and metronome.'}
               </p>
             </div>
           </div>
@@ -147,6 +151,50 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             }`}
           >
             {soundEnabled ? (language === 'mr' ? 'सुरू (On)' : 'Enabled') : (language === 'mr' ? 'बंद (Off)' : 'Disabled')}
+          </button>
+        </div>
+
+        {/* Typing Feedback Toggle */}
+        <div className={`rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4 border transition-all ${
+          isDark
+            ? 'bg-[#051C27]/90 border-teal-900/60'
+            : 'bg-slate-50 border-teal-100'
+        }`}>
+          <div className="flex items-center gap-3">
+            <div className={`p-2.5 rounded-xl border ${
+              isDark
+                ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
+                : 'bg-cyan-50 text-cyan-700 border-cyan-200'
+            }`}>
+              <Keyboard className="w-5 h-5" />
+            </div>
+            <div>
+              <div className={`text-sm font-bold ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>
+                {language === 'mr' ? 'टंकलेखन फीडबॅक आवाज' : 'Typing Feedback Sound'}
+              </div>
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                {language === 'mr' ? 'अचूक टाइप केल्यावर हलका क्लिक आवाज' : 'A subtle click after each accepted keystroke.'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={onToggleTypingFeedback}
+            aria-pressed={typingFeedbackEnabled}
+            disabled={!soundEnabled}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              !soundEnabled
+                ? isDark ? 'bg-slate-800 text-slate-600 cursor-not-allowed' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                : typingFeedbackEnabled
+                  ? isDark
+                    ? 'bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 font-black shadow-md shadow-cyan-500/20'
+                    : 'bg-gradient-to-r from-cyan-600 to-teal-600 text-white font-black shadow-md shadow-cyan-600/20'
+                  : isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-600'
+            }`}
+          >
+            {typingFeedbackEnabled && soundEnabled
+              ? (language === 'mr' ? 'सुरू (On)' : 'Enabled')
+              : (language === 'mr' ? 'बंद (Off)' : 'Disabled')}
           </button>
         </div>
 
@@ -257,4 +305,3 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     </div>
   );
 };
-

@@ -23,6 +23,7 @@ const AnalyticsView = lazy(() => import('./components/AnalyticsView').then(modul
 const ExamMode = lazy(() => import('./components/ExamMode').then(module => ({ default: module.ExamMode })));
 const OfficialWebsite = lazy(() => import('./components/OfficialWebsite').then(module => ({ default: module.OfficialWebsite })));
 const ReviewView = lazy(() => import('./components/ReviewView').then(module => ({ default: module.ReviewView })));
+const TYPING_FEEDBACK_STORAGE_KEY = 'marathiTypingMasterTypingFeedback';
 
 const LazyViewFallback = () => (
   <div className="min-h-32 flex items-center justify-center text-sm text-teal-500" role="status" aria-live="polite">
@@ -35,6 +36,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<SidebarTab>('course');
   const [language, setLanguage] = useState<'mr' | 'en'>('mr');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [typingFeedbackEnabled, setTypingFeedbackEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return window.localStorage.getItem(TYPING_FEEDBACK_STORAGE_KEY) !== 'false';
+  });
+
+  useEffect(() => {
+    sound.setTypingFeedbackEnabled(typingFeedbackEnabled);
+  }, [typingFeedbackEnabled]);
 
   // The public URL is the product landing page; the app is explicitly opened with ?app=true.
   const [viewMode, setViewMode] = useState<'website' | 'software'>(() => {
@@ -109,6 +118,16 @@ export default function App() {
     sound.setEnabled(nextState);
     if (nextState) {
       sound.playKeyClick();
+    }
+  };
+
+  const handleToggleTypingFeedback = () => {
+    const nextState = !typingFeedbackEnabled;
+    setTypingFeedbackEnabled(nextState);
+    sound.setTypingFeedbackEnabled(nextState);
+    window.localStorage.setItem(TYPING_FEEDBACK_STORAGE_KEY, String(nextState));
+    if (nextState && soundEnabled) {
+      sound.playTypingFeedback();
     }
   };
 
@@ -461,6 +480,8 @@ export default function App() {
               onToggleLanguage={handleToggleLanguage}
               soundEnabled={soundEnabled}
               onToggleSound={handleToggleSound}
+              typingFeedbackEnabled={typingFeedbackEnabled}
+              onToggleTypingFeedback={handleToggleTypingFeedback}
               setUserProgress={setUserProgress}
             />
           )}
