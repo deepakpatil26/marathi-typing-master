@@ -3,7 +3,7 @@
   "productName": "Marathi Typing Master",
   "description": "Professional Marathi Typing Tutor for GCC-TBC 30 & 40 WPM Exam Preparation",
   "author": "Marathi Typing Master",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "main": "dist-electron/main.cjs",
   "type": "module",
