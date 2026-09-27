@@ -17,6 +17,7 @@ import { StudentProfileModal } from './components/StudentProfileModal';
 import { getActiveProfile, updateActiveProfileProgress } from './utils/studentProfiles';
 import { StudentProfile } from './types';
 import { ArrowLeft, X, Keyboard, Globe, Volume2, VolumeX, Sun, Moon, Users } from 'lucide-react';
+import { isElectronApp } from './utils/apiConfig';
 
 const AIPassageGenerator = lazy(() => import('./components/AIPassageGenerator').then(module => ({ default: module.AIPassageGenerator })));
 const AnalyticsView = lazy(() => import('./components/AnalyticsView').then(module => ({ default: module.AnalyticsView })));
@@ -45,8 +46,9 @@ export default function App() {
     sound.setTypingFeedbackEnabled(typingFeedbackEnabled);
   }, [typingFeedbackEnabled]);
 
-  // The public URL is the product landing page; the app is explicitly opened with ?app=true.
+  // Electron always opens the typing software; web visitors see the landing page by default.
   const [viewMode, setViewMode] = useState<'website' | 'software'>(() => {
+    if (isElectronApp()) return 'software';
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       return params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app'
@@ -60,7 +62,10 @@ export default function App() {
     const checkLocation = () => {
       const params = new URLSearchParams(window.location.search);
       setViewMode(
-        params.get('app') === 'true' || params.get('mode') === 'app' || window.location.hash === '#app'
+        isElectronApp() ||
+        params.get('app') === 'true' ||
+        params.get('mode') === 'app' ||
+        window.location.hash === '#app'
           ? 'software'
           : 'website'
       );

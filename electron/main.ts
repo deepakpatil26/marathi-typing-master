@@ -149,7 +149,7 @@ function createWindow() {
               dialog.showMessageBox(mainWindow, {
                 type: 'info',
                 title: 'मराठी टायपिंग मास्टर (Marathi Typing Master)',
-                message: 'मराठी टायपिंग मास्टर v1.0.1',
+                message: 'मराठी टायपिंग मास्टर v1.0.2',
                 detail: 'ISM DVBW Remington Layout Tutor\nGCC-TBC 30 & 40 WPM Exam Simulator\n100% Offline & Private Desktop Application',
                 buttons: ['OK']
               });
