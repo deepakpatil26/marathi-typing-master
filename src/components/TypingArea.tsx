@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Finger, LessonStep, TypingStats, UserProgress } from '../types';
-import { getRemingtonKeyForChar, remingtonKeyToDevanagari, checkDevanagariMatch, isDevanagariConsonant, isDependentVowelSign, isPreposedVowelInput, FINGER_COLORS } from '../data/remingtonMap';
+import { 
+  remingtonKeyToDevanagari, 
+  decomposeTextToRemingtonTokens, 
+  matchUserKeystroke, 
+  RemingtonToken,
+  FINGER_COLORS 
+} from '../data/remingtonMap';
 import { calculateTypingStats, saveUserProgress } from '../utils/telemetry';
 import { sound } from '../utils/audio';
 import { buildDevanagariWordGroups } from '../utils/devanagari';
@@ -52,9 +58,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const [activeTargetText, setActiveTargetText] = useState<string>(lesson.targetText);
   const [activePassageTitle, setActivePassageTitle] = useState<string>('');
 
-  // Typing Session States
+  // Remington Tokenized Keystroke Engine State
+  const remingtonTokens = useMemo(() => decomposeTextToRemingtonTokens(activeTargetText), [activeTargetText]);
+  const [currentTokenIndex, setCurrentTokenIndex] = useState<number>(0);
   const [typedText, setTypedText] = useState<string>('');
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [mistakeIndexes, setMistakeIndexes] = useState<Set<number>>(new Set());
   const [errorCharMap, setErrorCharMap] = useState<Record<string, number>>({});
   
@@ -117,23 +124,33 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const pressedKeysRef = useRef<Set<string>>(new Set());
-  const typedHistoryRef = useRef<{ typedChar: string; advanceCount: number; isError: boolean; expectedToken: string; charIndex: number; isPendingMatra?: boolean }[]>([]);
-  const pendingPreposedMatraRef = useRef<string | null>(null);
+  const typedHistoryRef = useRef<{ 
+    tokenIndex: number; 
+    typedChar: string; 
+    isError: boolean; 
+    expectedChar: string; 
+    charIndex: number 
+  }[]>([]);
 
-  // Determine current expected character
+  // Active expected token
+  const activeToken: RemingtonToken | undefined = remingtonTokens[currentTokenIndex];
+  const currentIndex = activeToken ? activeToken.textCharIndex : activeTargetText.length;
   const currentChar = activeTargetText[currentIndex] || '';
-  const nextTargetChar = activeTargetText[currentIndex + 1] || '';
-  const promptedChar = pendingPreposedMatraRef.current
-    ? currentChar
-    : isDevanagariConsonant(currentChar) && isDependentVowelSign(nextTargetChar)
-      ? nextTargetChar
-      : currentChar;
-  const currentKeyInfo = getRemingtonKeyForChar(promptedChar);
+
+  const currentKeyInfo = activeToken ? {
+    key: activeToken.key,
+    isShift: activeToken.isShift,
+    code: activeToken.code,
+    finger: activeToken.finger,
+    hand: activeToken.hand,
+    displayKey: activeToken.displayKey,
+    charNameMr: activeToken.charNameMr
+  } : null;
 
   // Notify parent of active key & finger placement
   useEffect(() => {
     onActiveTargetChange(currentKeyInfo);
-  }, [currentChar, currentKeyInfo?.key, currentKeyInfo?.isShift, currentKeyInfo?.code, onActiveTargetChange]);
+  }, [currentKeyInfo?.key, currentKeyInfo?.isShift, currentKeyInfo?.code, onActiveTargetChange]);
 
   // Compute text according to current filter & lot index
   const computeTargetText = useCallback((
@@ -224,7 +241,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const resetTypingEngine = useCallback((newText: string) => {
     setActiveTargetText(newText);
     setTypedText('');
-    setCurrentIndex(0);
+    setCurrentTokenIndex(0);
     setMistakeIndexes(new Set());
     setErrorCharMap({});
     setStartTime(null);
@@ -233,7 +250,6 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     setIsCompleted(false);
     setBackspaceCount(0);
     typedHistoryRef.current = [];
-    pendingPreposedMatraRef.current = null;
     pressedKeysRef.current.clear();
     onKeyPressedChange(new Set());
     if (timerRef.current) clearInterval(timerRef.current);
@@ -441,9 +457,8 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       sound.playTypingFeedback();
       if (typedHistoryRef.current.length > 0) {
         const lastToken = typedHistoryRef.current.pop()!;
-        pendingPreposedMatraRef.current = null;
         setBackspaceCount(prev => prev + 1);
-        setCurrentIndex(prev => Math.max(0, prev - lastToken.advanceCount));
+        setCurrentTokenIndex(lastToken.tokenIndex);
         setTypedText(prev => prev.slice(0, -lastToken.typedChar.length));
 
         // Clean error from mistakeIndexes and decrement from errorCharMap
@@ -455,7 +470,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           });
           setErrorCharMap(prev => {
             const next = { ...prev };
-            const ch = lastToken.expectedToken;
+            const ch = lastToken.expectedChar;
             if (next[ch] && next[ch] > 1) {
               next[ch] -= 1;
             } else {
@@ -464,10 +479,6 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             return next;
           });
         }
-      } else if (currentIndex > 0) {
-        setBackspaceCount(prev => prev + 1);
-        setCurrentIndex(prev => prev - 1);
-        setTypedText(prev => prev.slice(0, -1));
       }
       return;
     }
@@ -481,108 +492,69 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
     e.preventDefault();
 
+    if (!activeToken) return;
+
     // Map physical key to Marathi Devanagari character
     let devanagariChar: string | null = null;
-
     if (e.key === ' ') {
       devanagariChar = ' ';
     } else if (e.key.length === 1) {
-      const isShift = e.shiftKey;
-      devanagariChar = remingtonKeyToDevanagari(e.key, isShift, e.code);
-      
-      // Fallback: If user has Devanagari IME layout active
+      devanagariChar = remingtonKeyToDevanagari(e.key, e.shiftKey, e.code);
       if (!devanagariChar && /[\u0900-\u097F]/.test(e.key)) {
         devanagariChar = e.key;
       }
     }
 
-    if (!devanagariChar) return;
+    // Match against active Remington Token
+    const isMatch = matchUserKeystroke(
+      { key: e.key, isShift: e.shiftKey, code: e.code },
+      activeToken,
+      devanagariChar
+    );
 
-    let mistakesBeforeCurrent = mistakeIndexes;
-    let errorsBeforeCurrent = errorCharMap;
-    let pendingMatra = pendingPreposedMatraRef.current;
-
-    if (pendingMatra && !isDevanagariConsonant(devanagariChar)) {
-      const pendingEntry = typedHistoryRef.current[typedHistoryRef.current.length - 1];
-      const expectedToken = activeTargetText[currentIndex] || pendingMatra;
-      if (pendingEntry?.isPendingMatra) {
-        pendingEntry.isPendingMatra = false;
-        pendingEntry.isError = true;
-        pendingEntry.expectedToken = expectedToken;
-        pendingEntry.charIndex = currentIndex;
-      }
-      pendingPreposedMatraRef.current = null;
-      mistakesBeforeCurrent = new Set(mistakeIndexes).add(currentIndex);
-      errorsBeforeCurrent = {
-        ...errorCharMap,
-        [expectedToken]: (errorCharMap[expectedToken] || 0) + 1
-      };
-      setMistakeIndexes(mistakesBeforeCurrent);
-      setErrorCharMap(errorsBeforeCurrent);
-      pendingMatra = null;
-    }
-
-    if (!pendingMatra && isPreposedVowelInput(devanagariChar, activeTargetText[currentIndex] || '')) {
-      typedHistoryRef.current.push({
-        typedChar: devanagariChar,
-        advanceCount: 0,
-        isError: false,
-        expectedToken: activeTargetText[currentIndex],
-        charIndex: currentIndex,
-        isPendingMatra: true
-      });
-      pendingPreposedMatraRef.current = devanagariChar;
-      setTypedText(prev => prev + devanagariChar);
-      sound.playTypingFeedback();
-      return;
-    }
-
-    if (pendingMatra) {
-      const pendingEntry = typedHistoryRef.current[typedHistoryRef.current.length - 1];
-      if (pendingEntry) pendingEntry.isPendingMatra = false;
-      pendingPreposedMatraRef.current = null;
-    }
-
-    // Check against expected character or conjunct sequence using checkDevanagariMatch
-    const matchResult = checkDevanagariMatch(devanagariChar, activeTargetText, currentIndex, pendingMatra || undefined);
-    const isMatch = matchResult.isMatch;
-    const advance = matchResult.advanceCount;
-    const expectedToken = matchResult.expectedToken || activeTargetText[currentIndex] || '';
-    const errorIndex = matchResult.errorIndex ?? currentIndex;
-
-    // Push to token history for exact backspace rollback
-    typedHistoryRef.current.push({
-      typedChar: devanagariChar,
-      advanceCount: advance,
-      isError: !isMatch,
-      expectedToken,
-      charIndex: errorIndex
-    });
+    const typedCharRecord = devanagariChar || e.key;
+    const currentTokenIdx = currentTokenIndex;
+    const nextTokenIdx = currentTokenIndex + 1;
 
     if (isMatch) {
       sound.playTypingFeedback();
-      setTypedText(prev => prev + devanagariChar);
-      const nextIdx = currentIndex + advance;
-      setCurrentIndex(nextIdx);
+      typedHistoryRef.current.push({
+        tokenIndex: currentTokenIdx,
+        typedChar: typedCharRecord,
+        isError: false,
+        expectedChar: activeToken.charProduced,
+        charIndex: activeToken.textCharIndex
+      });
 
-      if (nextIdx >= activeTargetText.length) {
-        handleComplete(mistakesBeforeCurrent.size, errorsBeforeCurrent, backspaceCount);
+      setTypedText(prev => prev + typedCharRecord);
+      setCurrentTokenIndex(nextTokenIdx);
+
+      if (nextTokenIdx >= remingtonTokens.length) {
+        handleComplete(mistakeIndexes.size, errorCharMap, backspaceCount);
       }
     } else {
       sound.playErrorSound();
-      const updatedMistakes = new Set(mistakesBeforeCurrent).add(errorIndex);
+      const updatedMistakes = new Set(mistakeIndexes).add(activeToken.textCharIndex);
       const updatedErrorMap = {
-        ...errorsBeforeCurrent,
-        [expectedToken]: (errorsBeforeCurrent[expectedToken] || 0) + 1
+        ...errorCharMap,
+        [activeToken.charProduced]: (errorCharMap[activeToken.charProduced] || 0) + 1
       };
 
       setMistakeIndexes(updatedMistakes);
       setErrorCharMap(updatedErrorMap);
-      setTypedText(prev => prev + devanagariChar);
-      const nextIdx = currentIndex + advance;
-      setCurrentIndex(nextIdx);
 
-      if (nextIdx >= activeTargetText.length) {
+      typedHistoryRef.current.push({
+        tokenIndex: currentTokenIdx,
+        typedChar: typedCharRecord,
+        isError: true,
+        expectedChar: activeToken.charProduced,
+        charIndex: activeToken.textCharIndex
+      });
+
+      setTypedText(prev => prev + typedCharRecord);
+      setCurrentTokenIndex(nextTokenIdx);
+
+      if (nextTokenIdx >= remingtonTokens.length) {
         handleComplete(updatedMistakes.size, updatedErrorMap, backspaceCount);
       }
     }

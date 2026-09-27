@@ -1,18 +1,16 @@
 /**
  * Automated Verification & Regression Suite for Marathi Typing Master
  * Tests:
- * 1. ISM Remington DVBW Character & Multi-Codepoint Matcher
- * 2. Decomposed vs Composed Matra Handling (e.g. ो, ौ)
- * 3. Conjuncts & Halant Sequence Matching
+ * 1. ISM Remington DVBW Key Mappings
+ * 2. Tokenizer & Akshara Decomposition (ि first, र् Reph after, broken consonants, matras)
+ * 3. Keystroke Matcher (matchUserKeystroke)
  * 4. GCC-TBC 30 & 40 WPM Scoring Formulas & Mistake Penalties
- * 5. Student Profile Data Invariants
  */
 
 import {
-  checkDevanagariMatch,
   remingtonKeyToDevanagari,
-  REMINGTON_KEYBOARD_LAYOUT,
-  isPreposedVowelInput,
+  decomposeTextToRemingtonTokens,
+  matchUserKeystroke,
 } from '../src/data/remingtonMap';
 import {
   calculateTypingStats,
@@ -79,133 +77,96 @@ assert(
     remingtonKeyToDevanagari('z', true, 'KeyZ') === 'र्',
   'KeyZ normal and Shift outputs preserve both Remington ra forms',
 );
+
+// ----------------------------------------------------
+// 2. Tokenizer & Akshara Decomposition Invariants
+// ----------------------------------------------------
+console.log('\n📋 Test Group 2: Remington Tokenizer & Keystroke Decomposer');
+
+// Test 2.1: Pahili Vilanti (ि) is preposed (key 'f' first)
+const tokensJiddi = decomposeTextToRemingtonTokens('जिद्दी');
 assert(
-  remingtonKeyToDevanagari('r', true) === 'त्',
-  'Shift+[R] maps to half-T (त्)',
+  tokensJiddi.length > 0 &&
+    tokensJiddi[0].key === 'f' &&
+    tokensJiddi[0].charProduced === 'ि' &&
+    tokensJiddi[1].key === 't' &&
+    tokensJiddi[1].charProduced === 'ज',
+  'जिद्दी: Pahili Vilanti (key f) is typed BEFORE consonant ja (key t)',
+);
+
+// Test 2.2: Broken Gha (Shift+/) + stem (k) + kana (k) + matra (s) for घोटाला
+const tokensGhotala = decomposeTextToRemingtonTokens('घोटाला');
+assert(
+  tokensGhotala[0].key === '/' &&
+    tokensGhotala[0].isShift === true &&
+    tokensGhotala[1].key === 'k' &&
+    tokensGhotala[2].key === 'k' &&
+    tokensGhotala[3].key === 's',
+  'घोटाला: Broken gha (Shift+/) + stem k + kana k + matra s produces घो',
+);
+
+// Test 2.3: Gopāl (गोपाळ) = g (x) + kana (k) + matra (s)
+const tokensGopal = decomposeTextToRemingtonTokens('गोपाळ');
+assert(
+  tokensGopal[0].key === 'x' &&
+    tokensGopal[1].key === 'k' &&
+    tokensGopal[2].key === 's' &&
+    tokensGopal[3].key === 'i' &&
+    tokensGopal[4].key === 'k' &&
+    tokensGopal[5].key === 'g' &&
+    tokensGopal[5].isShift === true,
+  'गोपाळ: Correct sequence x + k + s + i + k + Shift+G',
+);
+
+// Test 2.4: Sarva (सर्व) = Sa (l) + Va (o) + Reph (Shift+Z)
+const tokensSarva = decomposeTextToRemingtonTokens('सर्व');
+assert(
+  tokensSarva[0].key === 'l' &&
+    tokensSarva[1].key === 'o' &&
+    tokensSarva[2].key === 'z' &&
+    tokensSarva[2].isShift === true,
+  'सर्व: Sa (l) then Va (o) then Reph Shift+Z',
+);
+
+// Test 2.5: Prakar (प्रकार) = Pa (i) + Padstha Ra (z) + Ka (d) + Kana (k) + Ra (j)
+const tokensPrakar = decomposeTextToRemingtonTokens('प्रकार');
+assert(
+  tokensPrakar[0].key === 'i' &&
+    tokensPrakar[1].key === 'z' &&
+    tokensPrakar[1].isShift === false &&
+    tokensPrakar[2].key === 'd' &&
+    tokensPrakar[3].key === 'k' &&
+    tokensPrakar[4].key === 'j',
+  'प्रकार: Pa (i) + Padstha Ra (z) + Ka (d) + Kana (k) + Ra (j)',
 );
 
 // ----------------------------------------------------
-// 2. Devanagari Matcher (checkDevanagariMatch)
+// 3. Keystroke Matcher Validation
 // ----------------------------------------------------
-console.log('\n📋 Test Group 2: Devanagari Sequence & Matra Matcher');
+console.log('\n📋 Test Group 3: matchUserKeystroke Execution');
 
-// Exact single character match
-const test1 = checkDevanagariMatch('क', 'कमळ', 0);
+const fToken = tokensJiddi[0]; // key 'f'
 assert(
-  test1.isMatch && test1.advanceCount === 1,
-  'Exact single character match (क)',
+  matchUserKeystroke({ key: 'f', isShift: false }, fToken, 'ि'),
+  'Matches physical f key for pahili vilanti',
 );
 
-// Space match (at index 4 in "भारत देश")
-const testSpace = checkDevanagariMatch(' ', 'भारत देश', 4);
+const ghaToken = tokensGhotala[0]; // Shift + /
 assert(
-  testSpace.isMatch && testSpace.advanceCount === 1,
-  'Space match at delimiter position',
+  matchUserKeystroke({ key: '/', isShift: true, code: 'Slash' }, ghaToken, 'घ्'),
+  'Matches Shift + / for broken gha',
 );
 
-// Composed O-kar vs separate Aa + E matras
-const oKarUnified = '\u094B'; // ो (unified)
-const oKarDecomposed = '\u093E\u0947'; // ा + े (decomposed)
-const testOComposed = checkDevanagariMatch(
-  oKarUnified,
-  `क${oKarDecomposed}ण`,
-  1,
-);
+const rephToken = tokensSarva[2]; // Shift + Z
 assert(
-  testOComposed.isMatch && testOComposed.advanceCount === 2,
-  'Unified ो matches decomposed ा+े target sequence and advances 2 codepoints',
-);
-
-const testODecomposed = checkDevanagariMatch(
-  oKarDecomposed,
-  `क${oKarUnified}ण`,
-  1,
-);
-assert(
-  testODecomposed.isMatch && testODecomposed.advanceCount === 1,
-  'Decomposed ा+े matches unified ो target character',
-);
-
-// AU-kar matching
-const auKarUnified = '\u094C'; // ौ
-const auKarDecomposed = '\u093E\u0948'; // ा + ै
-const testAu = checkDevanagariMatch(auKarUnified, `ग${auKarDecomposed}रव`, 1);
-assert(
-  testAu.isMatch && testAu.advanceCount === 2,
-  'Unified ौ matches decomposed ा+ै target sequence',
-);
-
-const incompleteOKar = checkDevanagariMatch('ा', `क${'\u094B'}`, 1);
-assert(!incompleteOKar.isMatch, 'Incomplete ा does not match unified ो');
-
-const incompleteAUKar = checkDevanagariMatch('ै', `क${'\u094C'}`, 1);
-assert(!incompleteAUKar.isMatch, 'Incomplete ै does not match unified ौ');
-
-// Multi-character glyph matching (ख decomposed from रव् vs combined ख)
-const testKha = checkDevanagariMatch('ख', 'खरा', 0);
-assert(
-  testKha.isMatch && testKha.advanceCount === 1,
-  'Standard ख character match',
-);
-
-// Conjunct with Halant sequence
-const testConjunct = checkDevanagariMatch('प्र', 'महाराष्ट्र', 0);
-assert(
-  !testConjunct.isMatch,
-  'Incorrect character at pos 0 returns isMatch = false',
-);
-
-const testValidStep = checkDevanagariMatch('म', 'महाराष्ट्र', 0);
-assert(
-  testValidStep.isMatch && testValidStep.advanceCount === 1,
-  'Step 1 of conjunct word correctly matches first char',
-);
-
-const firstVelantiBeforeConsonant = checkDevanagariMatch('क', 'किरण', 0, 'ि');
-assert(
-  isPreposedVowelInput('ि', 'क') &&
-    firstVelantiBeforeConsonant.isMatch &&
-    firstVelantiBeforeConsonant.advanceCount === 2,
-  'First velanti typed before its consonant matches कि',
-);
-
-const longVelantiBeforeConsonant = checkDevanagariMatch('द', 'दीपक', 0, 'ी');
-assert(
-  longVelantiBeforeConsonant.isMatch &&
-    longVelantiBeforeConsonant.advanceCount === 2,
-  'Long velanti typed before its consonant matches दी',
-);
-
-const uKarBeforeConsonant = checkDevanagariMatch('क', 'कुशल', 0, 'ु');
-assert(
-  uKarBeforeConsonant.isMatch && uKarBeforeConsonant.advanceCount === 2,
-  'U-kar typed before its consonant matches कु',
-);
-
-const incorrectPreposedMatra = checkDevanagariMatch('क', 'किरण', 0, 'ु');
-assert(
-  !incorrectPreposedMatra.isMatch &&
-    incorrectPreposedMatra.advanceCount === 2 &&
-    incorrectPreposedMatra.errorIndex === 1,
-  'Incorrect preposed matra is scored against the expected matra',
-);
-
-const slashDha = checkDevanagariMatch('ध्', 'धन', 0);
-assert(
-  slashDha.isMatch && slashDha.advanceCount === 1,
-  'Slash half-Dha output matches full ध in passage text',
-);
-
-assert(
-  checkDevanagariMatch('्र', 'क्र', 1).isMatch &&
-    checkDevanagariMatch('र्', 'र्क', 0).isMatch,
-  'Both KeyZ ra forms match their target conjunct sequences',
+  matchUserKeystroke({ key: 'z', isShift: true, code: 'KeyZ' }, rephToken, 'र्'),
+  'Matches Shift + Z for Reph',
 );
 
 // ----------------------------------------------------
-// 3. Telemetry & GCC-TBC Scoring Engine
+// 4. Telemetry & GCC-TBC Scoring Engine
 // ----------------------------------------------------
-console.log('\n📋 Test Group 3: GCC-TBC Exam Scoring Calculations');
+console.log('\n📋 Test Group 4: GCC-TBC Exam Scoring Calculations');
 
 // Standard practice metrics test (150 correct chars, 0 errors, 60 seconds)
 const statsPractice = calculateTypingStats(150, 0, 0, 60);
