@@ -645,6 +645,22 @@ export const DEV_CHAR_ALIAS: Record<string, string> = {
   '—': '-',
 };
 
+const DEPENDENT_VOWEL_SIGNS = new Set([
+  'ा', 'ि', 'ी', 'ु', 'ू', 'ृ', 'ॄ', 'ॅ', 'े', 'ै', 'ॉ', 'ो', 'ौ',
+]);
+
+export function isDependentVowelSign(char: string): boolean {
+  return DEPENDENT_VOWEL_SIGNS.has(char);
+}
+
+export function isDevanagariConsonant(char: string): boolean {
+  return /^[\u0915-\u0939]$/u.test(char);
+}
+
+export function isPreposedVowelInput(char: string, targetChar: string): boolean {
+  return isDependentVowelSign(char) && isDevanagariConsonant(targetChar);
+}
+
 // Returns key and shift requirements to produce a Devanagari char
 export function getRemingtonKeyForChar(
   char: string,
@@ -729,11 +745,13 @@ export function checkDevanagariMatch(
   typed: string,
   targetText: string,
   currentIndex: number,
+  pendingPreposedMatra?: string,
 ): {
   isMatch: boolean;
   advanceCount: number;
   matchedLength: number;
   expectedToken: string;
+  errorIndex?: number;
 } {
   if (currentIndex >= targetText.length) {
     return {
@@ -747,6 +765,39 @@ export function checkDevanagariMatch(
   const typedNFC = typed.normalize('NFC');
   const typedNFD = typed.normalize('NFD');
   const expectedChar = targetText[currentIndex] || '';
+
+  if (pendingPreposedMatra) {
+    const baseMatch = checkDevanagariMatch(typed, targetText, currentIndex);
+    const matraIndex = currentIndex + baseMatch.advanceCount;
+    const expectedMatra = targetText[matraIndex] || '';
+
+    if (!baseMatch.isMatch) {
+      return {
+        ...baseMatch,
+        isMatch: false,
+        expectedToken: baseMatch.expectedToken || expectedChar,
+        errorIndex: currentIndex,
+      };
+    }
+
+    if (isDependentVowelSign(expectedMatra)) {
+      return {
+        isMatch: pendingPreposedMatra === expectedMatra,
+        advanceCount: baseMatch.advanceCount + 1,
+        matchedLength: baseMatch.matchedLength + 1,
+        expectedToken: expectedMatra,
+        errorIndex: matraIndex,
+      };
+    }
+
+    return {
+      isMatch: false,
+      advanceCount: baseMatch.advanceCount,
+      matchedLength: baseMatch.matchedLength,
+      expectedToken: expectedChar,
+      errorIndex: currentIndex,
+    };
+  }
 
   // 1. Direct multi-character slice match (up to 4 codepoints for complex conjuncts)
   for (
@@ -825,6 +876,19 @@ export function checkDevanagariMatch(
   if (
     expectedChar === 'ख' &&
     (typedNFC === 'ख्' || typedNFC === '\u0916\u094D')
+  ) {
+    return {
+      isMatch: true,
+      advanceCount: 1,
+      matchedLength: 1,
+      expectedToken: expectedChar,
+    };
+  }
+
+  // Remington keys can emit a half consonant for a full consonant in passage text.
+  if (
+    isDevanagariConsonant(expectedChar) &&
+    typedNFC === `${expectedChar}\u094D`
   ) {
     return {
       isMatch: true,

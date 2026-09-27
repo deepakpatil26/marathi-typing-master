@@ -12,6 +12,7 @@ import {
   checkDevanagariMatch,
   remingtonKeyToDevanagari,
   REMINGTON_KEYBOARD_LAYOUT,
+  isPreposedVowelInput,
 } from '../src/data/remingtonMap';
 import {
   calculateTypingStats,
@@ -50,6 +51,12 @@ assert(
   'Key [k] maps to Aa-kar (ा)',
 );
 assert(
+  remingtonKeyToDevanagari('f', false, 'KeyF') === 'ि' &&
+    remingtonKeyToDevanagari('h', false, 'KeyH') === 'ी' &&
+    remingtonKeyToDevanagari('q', false, 'KeyQ') === 'ु',
+  'Remington keys map to first/second velanti and U-kar signs',
+);
+assert(
   remingtonKeyToDevanagari('s', false) === 'े',
   'Key [s] maps to E-kar (े)',
 );
@@ -62,6 +69,15 @@ assert(remingtonKeyToDevanagari('m', false) === 'उ', 'Key [m] maps to U (उ)'
 assert(
   remingtonKeyToDevanagari('e', true) === 'म्',
   'Shift+[E] maps to half-M (म्)',
+);
+assert(
+  remingtonKeyToDevanagari('/', false, 'Slash') === 'ध्',
+  'Slash maps to the Remington half-Dha output (ध्)',
+);
+assert(
+  remingtonKeyToDevanagari('z', false, 'KeyZ') === '्र' &&
+    remingtonKeyToDevanagari('z', true, 'KeyZ') === 'र्',
+  'KeyZ normal and Shift outputs preserve both Remington ra forms',
 );
 assert(
   remingtonKeyToDevanagari('r', true) === 'त्',
@@ -143,6 +159,47 @@ const testValidStep = checkDevanagariMatch('म', 'महाराष्ट्�
 assert(
   testValidStep.isMatch && testValidStep.advanceCount === 1,
   'Step 1 of conjunct word correctly matches first char',
+);
+
+const firstVelantiBeforeConsonant = checkDevanagariMatch('क', 'किरण', 0, 'ि');
+assert(
+  isPreposedVowelInput('ि', 'क') &&
+    firstVelantiBeforeConsonant.isMatch &&
+    firstVelantiBeforeConsonant.advanceCount === 2,
+  'First velanti typed before its consonant matches कि',
+);
+
+const longVelantiBeforeConsonant = checkDevanagariMatch('द', 'दीपक', 0, 'ी');
+assert(
+  longVelantiBeforeConsonant.isMatch &&
+    longVelantiBeforeConsonant.advanceCount === 2,
+  'Long velanti typed before its consonant matches दी',
+);
+
+const uKarBeforeConsonant = checkDevanagariMatch('क', 'कुशल', 0, 'ु');
+assert(
+  uKarBeforeConsonant.isMatch && uKarBeforeConsonant.advanceCount === 2,
+  'U-kar typed before its consonant matches कु',
+);
+
+const incorrectPreposedMatra = checkDevanagariMatch('क', 'किरण', 0, 'ु');
+assert(
+  !incorrectPreposedMatra.isMatch &&
+    incorrectPreposedMatra.advanceCount === 2 &&
+    incorrectPreposedMatra.errorIndex === 1,
+  'Incorrect preposed matra is scored against the expected matra',
+);
+
+const slashDha = checkDevanagariMatch('ध्', 'धन', 0);
+assert(
+  slashDha.isMatch && slashDha.advanceCount === 1,
+  'Slash half-Dha output matches full ध in passage text',
+);
+
+assert(
+  checkDevanagariMatch('्र', 'क्र', 1).isMatch &&
+    checkDevanagariMatch('र्', 'र्क', 0).isMatch,
+  'Both KeyZ ra forms match their target conjunct sequences',
 );
 
 // ----------------------------------------------------

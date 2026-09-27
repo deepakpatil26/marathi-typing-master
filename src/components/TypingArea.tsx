@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Finger, LessonStep, TypingStats, UserProgress } from '../types';
-import { getRemingtonKeyForChar, remingtonKeyToDevanagari, checkDevanagariMatch, FINGER_COLORS } from '../data/remingtonMap';
+import { getRemingtonKeyForChar, remingtonKeyToDevanagari, checkDevanagariMatch, isDevanagariConsonant, isDependentVowelSign, isPreposedVowelInput, FINGER_COLORS } from '../data/remingtonMap';
 import { calculateTypingStats, saveUserProgress } from '../utils/telemetry';
 import { sound } from '../utils/audio';
 import { buildDevanagariWordGroups } from '../utils/devanagari';
@@ -117,16 +117,23 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const pressedKeysRef = useRef<Set<string>>(new Set());
-  const typedHistoryRef = useRef<{ typedChar: string; advanceCount: number; isError: boolean; expectedToken: string; charIndex: number }[]>([]);
+  const typedHistoryRef = useRef<{ typedChar: string; advanceCount: number; isError: boolean; expectedToken: string; charIndex: number; isPendingMatra?: boolean }[]>([]);
+  const pendingPreposedMatraRef = useRef<string | null>(null);
 
   // Determine current expected character
   const currentChar = activeTargetText[currentIndex] || '';
-  const currentKeyInfo = getRemingtonKeyForChar(currentChar);
+  const nextTargetChar = activeTargetText[currentIndex + 1] || '';
+  const promptedChar = pendingPreposedMatraRef.current
+    ? currentChar
+    : isDevanagariConsonant(currentChar) && isDependentVowelSign(nextTargetChar)
+      ? nextTargetChar
+      : currentChar;
+  const currentKeyInfo = getRemingtonKeyForChar(promptedChar);
 
   // Notify parent of active key & finger placement
   useEffect(() => {
     onActiveTargetChange(currentKeyInfo);
-  }, [currentChar, onActiveTargetChange]);
+  }, [currentChar, currentKeyInfo?.key, currentKeyInfo?.isShift, currentKeyInfo?.code, onActiveTargetChange]);
 
   // Compute text according to current filter & lot index
   const computeTargetText = useCallback((
@@ -226,6 +233,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     setIsCompleted(false);
     setBackspaceCount(0);
     typedHistoryRef.current = [];
+    pendingPreposedMatraRef.current = null;
     pressedKeysRef.current.clear();
     onKeyPressedChange(new Set());
     if (timerRef.current) clearInterval(timerRef.current);
@@ -433,6 +441,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       sound.playTypingFeedback();
       if (typedHistoryRef.current.length > 0) {
         const lastToken = typedHistoryRef.current.pop()!;
+        pendingPreposedMatraRef.current = null;
         setBackspaceCount(prev => prev + 1);
         setCurrentIndex(prev => Math.max(0, prev - lastToken.advanceCount));
         setTypedText(prev => prev.slice(0, -lastToken.typedChar.length));
@@ -489,11 +498,57 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
     if (!devanagariChar) return;
 
+    let mistakesBeforeCurrent = mistakeIndexes;
+    let errorsBeforeCurrent = errorCharMap;
+    let pendingMatra = pendingPreposedMatraRef.current;
+
+    if (pendingMatra && !isDevanagariConsonant(devanagariChar)) {
+      const pendingEntry = typedHistoryRef.current[typedHistoryRef.current.length - 1];
+      const expectedToken = activeTargetText[currentIndex] || pendingMatra;
+      if (pendingEntry?.isPendingMatra) {
+        pendingEntry.isPendingMatra = false;
+        pendingEntry.isError = true;
+        pendingEntry.expectedToken = expectedToken;
+        pendingEntry.charIndex = currentIndex;
+      }
+      pendingPreposedMatraRef.current = null;
+      mistakesBeforeCurrent = new Set(mistakeIndexes).add(currentIndex);
+      errorsBeforeCurrent = {
+        ...errorCharMap,
+        [expectedToken]: (errorCharMap[expectedToken] || 0) + 1
+      };
+      setMistakeIndexes(mistakesBeforeCurrent);
+      setErrorCharMap(errorsBeforeCurrent);
+      pendingMatra = null;
+    }
+
+    if (!pendingMatra && isPreposedVowelInput(devanagariChar, activeTargetText[currentIndex] || '')) {
+      typedHistoryRef.current.push({
+        typedChar: devanagariChar,
+        advanceCount: 0,
+        isError: false,
+        expectedToken: activeTargetText[currentIndex],
+        charIndex: currentIndex,
+        isPendingMatra: true
+      });
+      pendingPreposedMatraRef.current = devanagariChar;
+      setTypedText(prev => prev + devanagariChar);
+      sound.playTypingFeedback();
+      return;
+    }
+
+    if (pendingMatra) {
+      const pendingEntry = typedHistoryRef.current[typedHistoryRef.current.length - 1];
+      if (pendingEntry) pendingEntry.isPendingMatra = false;
+      pendingPreposedMatraRef.current = null;
+    }
+
     // Check against expected character or conjunct sequence using checkDevanagariMatch
-    const matchResult = checkDevanagariMatch(devanagariChar, activeTargetText, currentIndex);
+    const matchResult = checkDevanagariMatch(devanagariChar, activeTargetText, currentIndex, pendingMatra || undefined);
     const isMatch = matchResult.isMatch;
     const advance = matchResult.advanceCount;
     const expectedToken = matchResult.expectedToken || activeTargetText[currentIndex] || '';
+    const errorIndex = matchResult.errorIndex ?? currentIndex;
 
     // Push to token history for exact backspace rollback
     typedHistoryRef.current.push({
@@ -501,7 +556,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       advanceCount: advance,
       isError: !isMatch,
       expectedToken,
-      charIndex: currentIndex
+      charIndex: errorIndex
     });
 
     if (isMatch) {
@@ -511,14 +566,14 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       setCurrentIndex(nextIdx);
 
       if (nextIdx >= activeTargetText.length) {
-        handleComplete(mistakeIndexes.size, errorCharMap, backspaceCount);
+        handleComplete(mistakesBeforeCurrent.size, errorsBeforeCurrent, backspaceCount);
       }
     } else {
       sound.playErrorSound();
-      const updatedMistakes = new Set(mistakeIndexes).add(currentIndex);
+      const updatedMistakes = new Set(mistakesBeforeCurrent).add(errorIndex);
       const updatedErrorMap = {
-        ...errorCharMap,
-        [expectedToken]: (errorCharMap[expectedToken] || 0) + 1
+        ...errorsBeforeCurrent,
+        [expectedToken]: (errorsBeforeCurrent[expectedToken] || 0) + 1
       };
 
       setMistakeIndexes(updatedMistakes);

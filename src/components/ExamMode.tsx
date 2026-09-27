@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ExamResult, Finger } from '../types';
 import { EXAM_PASSAGES } from '../data/curriculum';
-import { remingtonKeyToDevanagari, getRemingtonKeyForChar, checkDevanagariMatch } from '../data/remingtonMap';
+import { remingtonKeyToDevanagari, getRemingtonKeyForChar, checkDevanagariMatch, isDevanagariConsonant, isDependentVowelSign, isPreposedVowelInput } from '../data/remingtonMap';
 import { evaluateGccTbcExam } from '../utils/telemetry';
 import { sound } from '../utils/audio';
 import { buildDevanagariWordGroups } from '../utils/devanagari';
@@ -56,21 +56,29 @@ export const ExamMode: React.FC<ExamModeProps> = ({
   const startTimeRef = useRef<number | null>(null);
   const finishedRef = useRef<boolean>(false);
   const pressedKeysRef = useRef<Set<string>>(new Set());
-  const typedHistoryRef = useRef<{ typedChar: string; advanceCount: number; isError: boolean; expectedToken: string; charIndex: number }[]>([]);
+  const typedHistoryRef = useRef<{ typedChar: string; advanceCount: number; isError: boolean; expectedToken: string; charIndex: number; isPendingMatra?: boolean }[]>([]);
+  const pendingPreposedMatraRef = useRef<string | null>(null);
 
   // Current key prompt
   const currentChar = targetText[currentIndex] || '';
-  const currentKeyInfo = getRemingtonKeyForChar(currentChar);
+  const nextTargetChar = targetText[currentIndex + 1] || '';
+  const promptedChar = pendingPreposedMatraRef.current
+    ? currentChar
+    : isDevanagariConsonant(currentChar) && isDependentVowelSign(nextTargetChar)
+      ? nextTargetChar
+      : currentChar;
+  const currentKeyInfo = getRemingtonKeyForChar(promptedChar);
 
   useEffect(() => {
     if (isExamRunning) {
       onActiveTargetChange(currentKeyInfo);
     }
-  }, [currentChar, isExamRunning, onActiveTargetChange]);
+  }, [currentChar, currentKeyInfo?.key, currentKeyInfo?.isShift, currentKeyInfo?.code, isExamRunning, onActiveTargetChange]);
 
   const startExam = () => {
     finishedRef.current = false;
     typedHistoryRef.current = [];
+    pendingPreposedMatraRef.current = null;
     setIsExamRunning(true);
     setTypedText('');
     setCurrentIndex(0);
@@ -169,6 +177,7 @@ export const ExamMode: React.FC<ExamModeProps> = ({
 
         if (typedHistoryRef.current.length > 0) {
           const lastToken = typedHistoryRef.current.pop()!;
+          pendingPreposedMatraRef.current = null;
           setCurrentIndex(prev => Math.max(0, prev - lastToken.advanceCount));
           setTypedText(prev => prev.slice(0, -lastToken.typedChar.length));
 
@@ -208,17 +217,56 @@ export const ExamMode: React.FC<ExamModeProps> = ({
 
     if (!devanagariChar) return;
 
-    const matchResult = checkDevanagariMatch(devanagariChar, targetText, currentIndex);
+    let mistakesBeforeCurrent = mistakeIndexes;
+    let pendingMatra = pendingPreposedMatraRef.current;
+
+    if (pendingMatra && !isDevanagariConsonant(devanagariChar)) {
+      const pendingEntry = typedHistoryRef.current[typedHistoryRef.current.length - 1];
+      if (pendingEntry?.isPendingMatra) {
+        pendingEntry.isPendingMatra = false;
+        pendingEntry.isError = true;
+        pendingEntry.expectedToken = targetText[currentIndex] || pendingMatra;
+        pendingEntry.charIndex = currentIndex;
+      }
+      pendingPreposedMatraRef.current = null;
+      mistakesBeforeCurrent = new Set(mistakeIndexes).add(currentIndex);
+      setMistakeIndexes(mistakesBeforeCurrent);
+      pendingMatra = null;
+    }
+
+    if (!pendingMatra && isPreposedVowelInput(devanagariChar, targetText[currentIndex] || '')) {
+      typedHistoryRef.current.push({
+        typedChar: devanagariChar,
+        advanceCount: 0,
+        isError: false,
+        expectedToken: targetText[currentIndex],
+        charIndex: currentIndex,
+        isPendingMatra: true
+      });
+      pendingPreposedMatraRef.current = devanagariChar;
+      setTypedText(prev => prev + devanagariChar);
+      sound.playTypingFeedback();
+      return;
+    }
+
+    if (pendingMatra) {
+      const pendingEntry = typedHistoryRef.current[typedHistoryRef.current.length - 1];
+      if (pendingEntry) pendingEntry.isPendingMatra = false;
+      pendingPreposedMatraRef.current = null;
+    }
+
+    const matchResult = checkDevanagariMatch(devanagariChar, targetText, currentIndex, pendingMatra || undefined);
     const isMatch = matchResult.isMatch;
     const advance = matchResult.advanceCount;
     const expectedToken = matchResult.expectedToken || targetText[currentIndex] || '';
+    const errorIndex = matchResult.errorIndex ?? currentIndex;
 
     typedHistoryRef.current.push({
       typedChar: devanagariChar,
       advanceCount: advance,
       isError: !isMatch,
       expectedToken,
-      charIndex: currentIndex
+      charIndex: errorIndex
     });
 
     if (isMatch) {
@@ -228,11 +276,11 @@ export const ExamMode: React.FC<ExamModeProps> = ({
       setCurrentIndex(nextIdx);
 
       if (nextIdx >= targetText.length) {
-        finishExam(nextIdx, mistakeIndexes);
+        finishExam(nextIdx, mistakesBeforeCurrent);
       }
     } else {
       sound.playErrorSound();
-      const updatedMistakes = new Set(mistakeIndexes).add(currentIndex);
+      const updatedMistakes = new Set(mistakesBeforeCurrent).add(errorIndex);
       setMistakeIndexes(updatedMistakes);
       setTypedText(prev => prev + devanagariChar);
       const nextIdx = currentIndex + advance;
